@@ -1,5 +1,5 @@
 
-# SHELL=
+SHELL=/bin/bash
 
 TEST_VM_DIR=./test-vm
 

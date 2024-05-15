@@ -1,0 +1,77 @@
+dotfiles_repo=~/dotfiles-nix
+dotfiles_config=~/dotfiles-nix/home-manager/modules
+
+# rcs
+brc () {
+cd $dotfiles_config/bash; v
+}
+vrc () {
+cd $dotfiles_config/nvim; v
+}
+rrc () {
+cd $dotfiles_config/ranger; v
+}
+krc () {
+cd $dotfiles_config/kitty; v
+}
+dfrc () {
+cd $dotfiles_repo; v
+}
+
+# vim
+v () {
+if [ -f ./Session.vim ] ; then
+  nvim -S Session.vim $@
+else
+  nvim $@
+fi
+}
+
+function ranger {
+  local IFS=$'\t\n'
+  local tempfile="$(mktemp -t tmp.XXXXXX)"
+  local ranger_cmd=(
+    command
+    ranger
+    --cmd="map Q chain shell echo %d > "$tempfile"; quitall"
+  )
+
+  ${ranger_cmd[@]} "$@"
+  if [[ -s "$tempfile" ]] && [[ "$(cat -- "$tempfile")" != "$(echo -n `pwd`)" ]]; then
+    command zoxide add "$(cat -- "$tempfile")" && cd -- "$(cat -- "$tempfile")" || return
+  fi
+  command rm -f -- "$tempfile" 2>/dev/null
+}
+
+alias g=lazygit
+alias d=lazydocker
+alias t=taskwarrior-tui
+alias r=ranger
+
+alias fd='fd --ignore-case --hidden --follow'
+alias rg='rg --smart-case --hidden --follow'
+
+gd () {
+if [ -f ./project.godot ] ; then
+  if [[ "$(top -b -n 1 | grep godot)" ]] ; then
+    echo ""
+  else
+    godot -e &> /dev/null &
+    # kitty @ launch --type tab --cwd current --keep-focus godot --editor
+    echo "press enter"; read;
+  fi
+  # task context godot
+  # v -c 'norm \ ft'
+  v --listen /tmp/godot_external_editor
+
+  # if [ -f ./Session.vim ] ; then
+  #   NVIM_LISTEN_ADDRESS=/tmp/nvimsocket nvim -S Session.vim
+  # else
+  #   NVIM_LISTEN_ADDRESS=/tmp/nvimsocket nvim
+  # fi
+else
+  echo "not a godot project"
+fi
+}
+
+# vim:ft=sh

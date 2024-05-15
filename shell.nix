@@ -7,5 +7,6 @@ pkgs.mkShell {
     nixpkgs-fmt
     deadnix
     nixd
+    niv
   ];
 }
