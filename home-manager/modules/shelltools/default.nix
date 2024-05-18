@@ -5,7 +5,6 @@
     ripgrep
     gh
     glab
-    direnv
     hyperfine # benchmarking
     license-cli # generate license
     gibo # generate gitignore
@@ -23,6 +22,15 @@
   };
 
   programs = {
+
+    direnv = {
+      enable = true;
+      enableBashIntegration = true;
+      config = {
+        load_dotenv = true;
+      };
+      nix-direnv.enable = true;
+    };
 
     bat = {
       enable = true;
