@@ -5,7 +5,7 @@
     font = {
       size = 13;
       package = pkgs.fira-code-nerdfont;
-      name = "Fire Code";
+      name = "FiraCode Nerd Font";
     };
 
     extraConfig =

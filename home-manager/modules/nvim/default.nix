@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }: {
   home.packages = with pkgs; [
-    nvimpager
+    # nvimpager
     neovim-remote
   ];
 
@@ -9,7 +9,7 @@
       EDITOR = lib.mkForce "nvim";
       VISUAL = lib.mkForce "nvim";
       MANPAGER = lib.mkForce "nvim +Man!";
-      PAGER = lib.mkForce "nvimpager";
+      # PAGER = lib.mkForce "nvimpager";
     };
 
   programs.neovim = {

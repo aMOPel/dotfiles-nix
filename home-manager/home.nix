@@ -4,26 +4,33 @@ let
   pkgs = import sources.nixpkgs { };
 in
 {
-
   imports = [
     ./modules/nvim
     ./modules/kitty
     ./modules/bash
+    ./modules/git
     ./modules/shelltools
     ./modules/ranger
+    ./modules/lazygit
   ];
 
-  home.sessionVariables =
-    {
-      EDITOR = lib.mkDefault "vim";
-      VISUAL = lib.mkDefault "vim";
-      MANPAGER = lib.mkDefault "less";
-      PAGER = lib.mkDefault "less";
-    };
+  # uninstall = true;
+  # targets.genericLinux.enable = true;
+
+  programs.home-manager.enable = true;
 
   home.username = "momo";
   home.homeDirectory = "/home/momo";
+  home.language.base = "en_US";
+  home.keyboard.layout = "us";
+  home.preferXdgDirectories = true;
 
+  home.sessionVariables = {
+    EDITOR = lib.mkDefault "vim";
+    VISUAL = lib.mkDefault "vim";
+    MANPAGER = lib.mkDefault "less";
+    PAGER = lib.mkDefault "less";
+  };
 
   home.packages = with pkgs; [
     niv
@@ -33,8 +40,6 @@ in
   home.file = {
     "dotfiles-nix".source = ./..;
   };
-
-  programs.home-manager.enable = true;
 
   home.stateVersion = "23.11";
 }

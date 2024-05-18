@@ -27,7 +27,7 @@
     bat = {
       enable = true;
       config = {
-        style = "number,changes,header";
+        style = "numbers,changes,header";
         theme = "base16-256";
       };
     };

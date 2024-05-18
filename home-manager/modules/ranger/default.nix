@@ -27,6 +27,10 @@ in
         name = "devicons";
         src = sources.ranger-devicons2;
       }
+      {
+        name = "context.py";
+        src = ./plugins/context.py;
+      }
     ];
   };
   xdg.configFile =
@@ -34,6 +38,9 @@ in
       "ranger/commands.py".text = builtins.readFile ./commands.py;
       "ranger/rc.conf".text = builtins.readFile ./rc.conf;
       "ranger/rifle.conf".text = builtins.readFile ./rifle.conf;
-      "ranger/scope.sh".text = builtins.readFile ./scope.sh;
+      "ranger/scope.sh" = {
+        executable = true;
+        text = builtins.readFile ./scope.sh;
+      };
     };
 }
