@@ -1,102 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  filetypePlugins = with pkgs; {
-    angular = [ ];
-    sh = [
-      vimPlugins.nvim-treesitter-parsers.bash
-      nodePackages.bash-language-server
-      shellcheck
-      shfmt # TODO:
-    ];
-    cmake = [
-      vimPlugins.nvim-treesitter-parsers.cmake
-      cmake-language-server
-    ];
-    cpp = [
-      vimPlugins.nvim-treesitter-parsers.c
-      vimPlugins.nvim-treesitter-parsers.cpp
-      rocmPackages.llvm.clang-tools-extra
-    ];
-    css = [
-      vimPlugins.nvim-treesitter-parsers.css
-      vimPlugins.nvim-treesitter-parsers.scss
-      tailwindcss-language-server
-      vscode-langservers-extracted
-      stylelint
-      prettierd
-    ];
-    dockerfile = [
-      vimPlugins.nvim-treesitter-parsers.dockerfile
-      dockerfile-language-server-nodejs
-      hadolint
-      dockfmt # TODO:
-    ];
-    gdscript = [
-      vimPlugins.nvim-treesitter-parsers.gdscript
-      vimPlugins.nvim-treesitter-parsers.godot_resource
-      gdtoolkit
-    ];
-    git = [
-      vimPlugins.nvim-treesitter-parsers.gitignore
-      vimPlugins.nvim-treesitter-parsers.gitattributes
-      vimPlugins.nvim-treesitter-parsers.gitcommit
-      vimPlugins.nvim-treesitter-parsers.git_config
-      vimPlugins.nvim-treesitter-parsers.git_rebase
-      vimPlugins.nvim-treesitter-parsers.diff
-      gitlint
-      commitlint
-    ];
-    go = [
-      vimPlugins.nvim-treesitter-parsers.go
-      vimPlugins.nvim-treesitter-parsers.gowork
-      vimPlugins.nvim-treesitter-parsers.gomod
-      vimPlugins.nvim-treesitter-parsers.gosum
-      gofumpt
-      golangci-lint
-      gopls
-      delve
-    ];
-    html = [
-      vimPlugins.nvim-treesitter-parsers.html
-      vimPlugins.nvim-treesitter-parsers.xml
-      vscode-langservers-extracted
-      prettierd
-    ];
-    json = [
-      vimPlugins.nvim-treesitter-parsers.json
-      vimPlugins.nvim-treesitter-parsers.json5
-      vimPlugins.nvim-treesitter-parsers.jsonc
-      vscode-langservers-extracted
-      jq
-      jsonlint
-    ];
-    lua = [
-      vimPlugins.nvim-treesitter-parsers.lua
-      vimPlugins.nvim-treesitter-parsers.luadoc
-      vimPlugins.nvim-treesitter-parsers.luap
-      lua-language-server
-      luacheck
-    ];
-    markdown = [ ];
-    nim = [ ];
-    nix = [ ];
-    python = [ ];
-    tex = [ ];
-    toml = [ ];
-    typescript = [ ];
-    vim = [ ];
-    vue = [ ];
-    yaml = [
-      vimPlugins.nvim-treesitter-parsers.yaml
-      yaml-language-server
-    ];
-    misc = [
-      docker-compose-language-service
-      editorconfig-checker
-      dotenv-linter
-    ];
-
-  };
+  filetypePackages = import ./filetypePackages.nix { inherit lib pkgs; };
 in
 {
   home.packages = with pkgs; [
@@ -183,26 +87,6 @@ in
       cmp-fuzzy-path
       cmp-nvim-lsp
 
-      # filetypes
-      # nim-nvim
-      # vim-kitty
-      vim-vue
-      vim-markdown
-      typescript-vim
-      vim-godot
-      # dockerfile-vim
-      # requirements-txt-vim
-      gitignore-vim
-      # vim-compiler-python
-      vim-go
-      vim-nix
-
-      # lsp
-      nvim-lspconfig
-      SchemaStore-nvim
-      nvim-lint
-      formatter-nvim
-
       # treesitter
       nvim-treesitter
       nvim-treesitter-context
@@ -263,60 +147,6 @@ in
       nvim-bqf
       # qf-nvim
 
-    ]) ++ (with pkgs.vimPlugins.nvim-treesitter-parsers; [
-      bash
-      bibtex
-      c
-      cmake
-      comment
-      cpp
-      css
-      csv
-      diff
-      dockerfile
-      gdscript
-      git_config
-      git_rebase
-      gitattributes
-      gitcommit
-      gitignore
-      go
-      godot_resource
-      gomod
-      gosum
-      gowork
-      gpg
-      html
-      http
-      ini
-      javascript
-      jsdoc
-      json
-      json5
-      jsonc
-      latex
-      lua
-      luadoc
-      luap
-      make
-      markdown
-      markdown_inline
-      nim
-      nim_format_string
-      python
-      query
-      regex
-      requirements
-      rst
-      sql
-      ssh_config
-      toml
-      typescript
-      vim
-      vimdoc
-      vue
-      xml
-      yaml
-    ]);
+    ] ++ filetypePackages);
   };
 }
