@@ -1,4 +1,104 @@
-{ config, lib, pkgs, ... }: {
+{ config, lib, pkgs, ... }:
+let
+  filetypePlugins = with pkgs; {
+    angular = [ ];
+    sh = [
+      vimPlugins.nvim-treesitter-parsers.bash
+      nodePackages.bash-language-server
+      shellcheck
+      shfmt # TODO:
+    ];
+    cmake = [
+      vimPlugins.nvim-treesitter-parsers.cmake
+      cmake-language-server
+    ];
+    cpp = [
+      vimPlugins.nvim-treesitter-parsers.c
+      vimPlugins.nvim-treesitter-parsers.cpp
+      rocmPackages.llvm.clang-tools-extra
+    ];
+    css = [
+      vimPlugins.nvim-treesitter-parsers.css
+      vimPlugins.nvim-treesitter-parsers.scss
+      tailwindcss-language-server
+      vscode-langservers-extracted
+      stylelint
+      prettierd
+    ];
+    dockerfile = [
+      vimPlugins.nvim-treesitter-parsers.dockerfile
+      dockerfile-language-server-nodejs
+      hadolint
+      dockfmt # TODO:
+    ];
+    gdscript = [
+      vimPlugins.nvim-treesitter-parsers.gdscript
+      vimPlugins.nvim-treesitter-parsers.godot_resource
+      gdtoolkit
+    ];
+    git = [
+      vimPlugins.nvim-treesitter-parsers.gitignore
+      vimPlugins.nvim-treesitter-parsers.gitattributes
+      vimPlugins.nvim-treesitter-parsers.gitcommit
+      vimPlugins.nvim-treesitter-parsers.git_config
+      vimPlugins.nvim-treesitter-parsers.git_rebase
+      vimPlugins.nvim-treesitter-parsers.diff
+      gitlint
+      commitlint
+    ];
+    go = [
+      vimPlugins.nvim-treesitter-parsers.go
+      vimPlugins.nvim-treesitter-parsers.gowork
+      vimPlugins.nvim-treesitter-parsers.gomod
+      vimPlugins.nvim-treesitter-parsers.gosum
+      gofumpt
+      golangci-lint
+      gopls
+      delve
+    ];
+    html = [
+      vimPlugins.nvim-treesitter-parsers.html
+      vimPlugins.nvim-treesitter-parsers.xml
+      vscode-langservers-extracted
+      prettierd
+    ];
+    json = [
+      vimPlugins.nvim-treesitter-parsers.json
+      vimPlugins.nvim-treesitter-parsers.json5
+      vimPlugins.nvim-treesitter-parsers.jsonc
+      vscode-langservers-extracted
+      jq
+      jsonlint
+    ];
+    lua = [
+      vimPlugins.nvim-treesitter-parsers.lua
+      vimPlugins.nvim-treesitter-parsers.luadoc
+      vimPlugins.nvim-treesitter-parsers.luap
+      lua-language-server
+      luacheck
+    ];
+    markdown = [ ];
+    nim = [ ];
+    nix = [ ];
+    python = [ ];
+    tex = [ ];
+    toml = [ ];
+    typescript = [ ];
+    vim = [ ];
+    vue = [ ];
+    yaml = [
+      vimPlugins.nvim-treesitter-parsers.yaml
+      yaml-language-server
+    ];
+    misc = [
+      docker-compose-language-service
+      editorconfig-checker
+      dotenv-linter
+    ];
+
+  };
+in
+{
   home.packages = with pkgs; [
     # nvimpager
     neovim-remote
@@ -20,12 +120,36 @@
     vimdiffAlias = true;
     plugins = (with pkgs.vimPlugins; [
       # common
-      plenary-nvim
-      fzfWrapper
-      fzf-vim
-      telescope-fzf-native-nvim
-      fuzzy-nvim
-      nui-nvim
+      {
+        type = "lua";
+        plugin = plenary-nvim;
+        optional = true;
+      }
+      {
+        type = "lua";
+        plugin = fzfWrapper;
+        optional = true;
+      }
+      {
+        type = "lua";
+        plugin = fzf-vim;
+        optional = true;
+      }
+      {
+        type = "lua";
+        plugin = telescope-fzf-native-nvim;
+        optional = true;
+      }
+      {
+        type = "lua";
+        plugin = fuzzy-nvim;
+        optional = true;
+      }
+      {
+        type = "lua";
+        plugin = nui-nvim;
+        optional = true;
+      }
 
       # basics
       indent-blankline-nvim
