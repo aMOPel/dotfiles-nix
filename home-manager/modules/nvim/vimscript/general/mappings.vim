@@ -2,6 +2,13 @@
 " mappings
 " inoremap jk <ESC>
 
+" commenting
+ounmap gc
+omap ic gc
+omap ac gc
+vmap ic gc
+vmap ac gc
+
 " incremental numbering visual selection
 xnoremap <leader>i1 :s/\%V/0<C-V><TAB>/<CR>gvg<C-A>gv:retab<ESC>gvI<C-G>u<ESC>gv/ <CR>:s/\%V /./<CR>
 

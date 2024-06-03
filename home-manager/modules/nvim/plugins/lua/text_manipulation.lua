@@ -111,6 +111,31 @@ table.insert(plugins, {
 			},
 			n_lines = 50,
 			search_method = "cover_or_nearest",
+			a = spec_treesitter({
+				a = "@parameter.outer",
+				i = "@parameter.inner",
+			}),
+			c = spec_treesitter({ a = "@comment.outer", i = "@comment.inner" }),
+			f = spec_treesitter({
+				a = "@function.outer",
+				i = "@function.inner",
+			}),
+			-- "@assignment.inner",
+			-- "@assignment.outer",
+			-- @loop.inner
+			-- @loop.outer
+			-- @block.inner
+			-- @block.outer
+			-- @call.inner
+			-- @call.outer
+			-- @assignment.inner
+			-- @assignment.outer
+			-- "@assignment.rhs",
+			-- "@assignment.lhs",
+			-- "@return.inner",
+			-- "@return.outer",
+			-- "@statement.outer",
+			-- "@number.inner",
 		})
 	end,
 })
@@ -119,48 +144,6 @@ table.insert(plugins, {
 	name = "vim-sandwich",
 	setup = function()
 		vim.cmd([[runtime vimscript/vim-sandwich/surround.vim]])
-	end,
-	config = function() end,
-})
-
-table.insert(plugins, {
-	name = "Comment.nvim",
-	setup = function() end,
-	config = function()
-		require("Comment").setup({
-			padding = true,
-			sticky = true,
-			mappings = {
-				basic = true,
-				extra = true,
-				extended = false,
-			},
-			toggler = {
-				line = "gcc",
-				block = "|||",
-			},
-			opleader = {
-				line = "gc",
-				block = "||",
-			},
-			pre_hook = require(
-				"ts_context_commentstring.integrations.comment_nvim"
-			).create_pre_hook(),
-		})
-	end,
-})
-
-table.insert(plugins, {
-	name = "vim-surround-funk",
-	setup = function()
-		vim.g.surround_funk_create_mappings = 0
-		local map = utils.map
-		map("n", "dsf", "<Plug>(DeleteSurroundingFunction)")
-		map("n", "dsF", "<Plug>(DeleteSurroundingFUNCTION)")
-		map("n", "csf", "<Plug>(ChangeSurroundingFunction)")
-		map("n", "csF", "<Plug>(ChangeSurroundingFUNCTION)")
-		map("n", "ysf", "<Plug>(YankSurroundingFunction)")
-		map("n", "ysF", "<Plug>(YankSurroundingFUNCTION)")
 	end,
 	config = function() end,
 })

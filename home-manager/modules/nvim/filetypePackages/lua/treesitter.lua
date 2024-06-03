@@ -20,36 +20,7 @@ local treesitter = function()
 		},
 		textobjects = {
 			select = {
-				enable = { "nim" },
 				lookahead = true,
-				keymaps = {
-					-- You can use the capture groups defined in textobjects.scm
-					["iz"] = "@assignment.inner",
-					["az"] = "@assignment.outer",
-					["if"] = "@function.inner",
-					["af"] = "@function.outer",
-					-- @loop.inner
-					-- @loop.outer
-					-- @block.inner
-					-- @block.outer
-					-- @call.inner
-					-- @call.outer
-					["ia"] = "@parameter.inner",
-					["aa"] = "@parameter.outer",
-					["ic"] = "@comment.inner",
-					["ac"] = "@comment.outer",
-					-- @assignment.inner
-					-- @assignment.outer
-					["im"] = "@assignment.rhs",
-					["am"] = "@assignment.lhs",
-					["ir"] = "@return.inner",
-					["ar"] = "@return.outer",
-					["as"] = "@statement.outer",
-					["in"] = "@number.inner",
-				},
-				-- selection_modes = {
-				--   ['@function.outer'] = 'v', -- linewise
-				-- },
 				include_surrounding_whitespace = false,
 			},
 		},
@@ -79,12 +50,5 @@ local treesitter_context = function()
 	})
 end
 
-local treesitter_context_comment_string = function()
-	require("ts_context_commentstring").setup({
-		enable_autocmd = false,
-	})
-end
-
 treesitter()
 treesitter_context()
-treesitter_context_comment_string()

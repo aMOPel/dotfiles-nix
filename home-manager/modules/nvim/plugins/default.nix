@@ -89,7 +89,6 @@ in
     # text manipulation
     vim-textobj-user
     # vim-textobj-indent
-    vim-textobj-comment
     vim-textobj-entire
     # textobj-word-column-vim
     mini-nvim
@@ -101,8 +100,6 @@ in
     vim-abolish
     vim-sandwich
     vim-exchange
-    comment-nvim
-    # vim-surround-funk
     camelcasemotion
     vim-argwrap
 

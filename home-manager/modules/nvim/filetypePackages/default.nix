@@ -304,7 +304,6 @@ let
     nvim-treesitter
     nvim-treesitter-context
     nvim-treesitter-textobjects
-    nvim-ts-context-commentstring
 
     # debug
     nvim-dap
@@ -313,6 +312,7 @@ let
   ];
 in
 {
+  # TODO: only enable chosen filetypes
   plugins =
     extraPlugins ++
     lib.lists.flatten

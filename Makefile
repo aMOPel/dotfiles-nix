@@ -9,4 +9,4 @@ build-test-vm:
 
 .PHONY=start-test-vm
 start-test-vm: build-test-vm
-	./result/bin/run-nixos-vm
+	./result/bin/run-nixos-vm &>/dev/null &
