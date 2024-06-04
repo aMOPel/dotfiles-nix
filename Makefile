@@ -5,8 +5,8 @@ TEST_VM_DIR=./test-vm
 
 .PHONY=build-test-vm
 build-test-vm:
-	nix-build '<nixpkgs/nixos>' -A vm -I nixpkgs=${TEST_VM_DIR}/nixpkgs.nix -I nixos-config=${TEST_VM_DIR}/configuration.nix
+	nix-build ${TEST_VM_DIR}/nixos_vm.nix --show-trace
 
 .PHONY=start-test-vm
-start-test-vm: build-test-vm
-	./result/bin/run-nixos-vm &>/dev/null &
+start-test-vm:
+	./result/bin/run-nixos-vm -m 8196 -smp 4 -vga virtio -display gtk
