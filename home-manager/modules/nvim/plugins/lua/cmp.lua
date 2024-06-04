@@ -2,11 +2,11 @@ plugins = g.plugins
 
 table.insert(plugins, {
 	name = "nvim-cmp",
-	setup = function() end,
-	config = function()
+	setup = function()
 		vim.opt.completeopt = { "menu", "menuone", "noselect" }
 		vim.opt.complete = {}
-
+	end,
+	config = function()
 		local cmp = require("cmp")
 
 		local compare = require("cmp.config.compare")
@@ -18,7 +18,6 @@ table.insert(plugins, {
 				end,
 			},
 			window = {
-				-- completion = cmp.config.window.bordered{col_offset=-1},
 				documentation = cmp.config.disable,
 			},
 			mapping = cmp.mapping.preset.insert({
@@ -42,6 +41,7 @@ table.insert(plugins, {
 					name = "fuzzy_path",
 					keyword_length = 3,
 					max_item_count = 10,
+					option = { fd_timeout_msec = 1500 },
 				},
 			}, {
 				{ name = "nvim_lua", max_item_count = 20 },
@@ -128,16 +128,14 @@ table.insert(plugins, {
 table.insert(plugins, {
 	name = "vim-vsnip",
 	setup = function()
-		-- local map = require 'utils'.map
 		vim.g.vsnip_snippet_dir =
 			vim.fn.expand("$XDG_CONFIG_HOME/nvim/snippets")
-
 		vim.cmd([[
-imap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<tab>'
-smap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<tab>'
+imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
 imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
-]])
+xmap        <Tab>   <Plug>(vsnip-cut-text)]])
 	end,
 	config = function() end,
 })
@@ -152,11 +150,8 @@ table.insert(plugins, {
 
 table.insert(plugins, {
 	name = "cmp-cmdline",
-	setup = function() end,
-	config = function()
-		local map = utils.map
-		map("c", "<tab>", "<nop>")
-		map("c", "<s-tab>", "<nop>")
+	setup = function()
 		vim.opt.wildmenu = false
 	end,
+	config = function() end,
 })
