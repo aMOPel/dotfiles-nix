@@ -1,4 +1,4 @@
-{ username }: { config, lib, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 let
   sources = import ../nix/sources.nix;
   pkgs = import sources.nixpkgs { };
@@ -19,7 +19,24 @@ in
 
   myModules.neovim = {
     enable = true;
-    filetypes = [ "go" ];
+    filetypes = [
+      "go"
+      "nix"
+      "typescript"
+      "css"
+      "dockerfile"
+      "git"
+      "html"
+      "json"
+      "lua"
+      "vim"
+      "markdown"
+      "python"
+      "sh"
+      "toml"
+      "yaml"
+      "misc"
+    ];
   };
 
   programs.home-manager.enable = true;
