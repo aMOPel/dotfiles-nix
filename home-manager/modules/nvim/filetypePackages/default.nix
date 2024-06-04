@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ filetypes ? [ ], lib, pkgs, ... }:
 let
   pluginKeys = [
     "tsParsers"
@@ -106,6 +106,7 @@ let
             vim.g.go_code_completion_enabled = 0
           '';
         }
+        nvim-dap-go
       ];
     };
 
@@ -308,27 +309,37 @@ let
     # debug
     nvim-dap
     nvim-dap-ui
-    nvim-dap-go
   ];
+
+  # if list is empty, use all filetypes
+  allFiletypes = if builtins.length filetypes == 0 then builtins.attrNames filetypePackages else filetypes;
+  # pick only chosen filetypePackages
+  enabledFiletypePackages = lib.attrsets.filterAttrs (name: value: builtins.elem name allFiletypes) filetypePackages;
+  # pick only chosen lua files from ftconfigs/
+  enabledFtconfigPaths = builtins.filter
+    (e: builtins.elem
+      (lib.strings.removeSuffix ".lua" (builtins.baseNameOf e))
+      allFiletypes)
+    (lib.filesystem.listFilesRecursive ./lua/ft/ftconfigs);
+
 in
 {
-  # TODO: only enable chosen filetypes
   plugins =
     extraPlugins ++
     lib.lists.flatten
       (builtins.map
-        (name: builtins.catAttrs name (builtins.attrValues filetypePackages))
+        (name: builtins.catAttrs name (builtins.attrValues enabledFiletypePackages))
         pluginKeys);
   packages =
     lib.lists.flatten
       (builtins.map
-        (name: builtins.catAttrs name (builtins.attrValues filetypePackages))
+        (name: builtins.catAttrs name (builtins.attrValues enabledFiletypePackages))
         packageKeys);
   extraConfig =
     "\n\n"
     + builtins.readFile ./lua/globals.lua
     + builtins.readFile ./lua/utils.lua
-    + builtins.concatStringsSep "\n\n" (lib.lists.forEach (lib.filesystem.listFilesRecursive ./lua/ft/ftconfigs) builtins.readFile)
+    + builtins.concatStringsSep "\n\n" (lib.lists.forEach enabledFtconfigPaths builtins.readFile)
     + builtins.readFile ./lua/lsp.lua
     + builtins.readFile ./lua/debug.lua
     + builtins.readFile ./lua/treesitter.lua

@@ -17,6 +17,11 @@ in
   # uninstall = true;
   # targets.genericLinux.enable = true;
 
+  myModules.neovim = {
+    enable = true;
+    filetypes = [ "go" ];
+  };
+
   programs.home-manager.enable = true;
 
   home.username = "momo";
@@ -36,10 +41,6 @@ in
     niv
     vim
   ];
-
-  home.file = {
-    "dotfiles-nix".source = ./..;
-  };
 
   home.stateVersion = "23.11";
 }
