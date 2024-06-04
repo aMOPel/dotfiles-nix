@@ -95,6 +95,8 @@ table.insert(plugins, {
 			end, diagnostics)
 			return diagnostics
 		end
+
+		local spec_treesitter = require("mini.ai").gen_spec.treesitter
 		require("mini.ai").setup({
 			custom_textobjects = {
 				d = miniAiDiagnostics,
