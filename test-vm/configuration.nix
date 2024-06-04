@@ -7,6 +7,7 @@ let
   sources = import ../nix/sources.nix;
   pkgs = import sources.nixpkgs { };
   home-manager = pkgs.callPackage sources.home-manager { };
+  my-home = import ../home-manager/home.nix;
 in
 {
   imports = [
@@ -14,7 +15,7 @@ in
     {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
-      home-manager.users.momo = import ../home-manager/home.nix;
+      home-manager.users.momo = my-home { username = "momo"; };
     }
   ];
 

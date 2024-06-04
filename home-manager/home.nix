@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ username }: { config, lib, pkgs, ... }:
 let
   sources = import ../nix/sources.nix;
   pkgs = import sources.nixpkgs { };
@@ -24,8 +24,8 @@ in
 
   programs.home-manager.enable = true;
 
-  home.username = "momo";
-  home.homeDirectory = "/home/momo";
+  home.username = username;
+  home.homeDirectory = "/home/${username}";
   home.language.base = "en_US";
   home.keyboard.layout = "us";
   home.preferXdgDirectories = true;
