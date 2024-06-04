@@ -26,7 +26,7 @@ in
 
   home.username = username;
   home.homeDirectory = "/home/${username}";
-  home.language.base = "en_US";
+  home.language.base = "en_US.UTF-8";
   home.keyboard.layout = "us";
   home.preferXdgDirectories = true;
 
