@@ -32,6 +32,16 @@ let
       # TODO:
       # linters = [ stylelint ];
       # formatters = [ prettierd ];
+      ftplugins = with vimPlugins; [
+        {
+          type = "lua";
+          plugin = emmet-vim;
+          config = ''
+            -- vim.g.user_emmet_leader_key = '<C-v>'
+            -- vim.g.user_emmet_mode = 'in'
+          '';
+        }
+      ];
     };
 
     cypher = {
@@ -114,6 +124,16 @@ let
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [ html xml ];
       lsps = [ vscode-langservers-extracted ];
       formatters = [ prettierd ];
+      ftplugins = with vimPlugins; [
+        {
+          type = "lua";
+          plugin = emmet-vim;
+          config = ''
+            -- vim.g.user_emmet_leader_key = '<C-v>'
+            -- vim.g.user_emmet_mode = 'in'
+          '';
+        }
+      ];
     };
 
     json = {
@@ -235,6 +255,30 @@ let
       ftplugins = with vimPlugins; [
         typescript-vim
 
+        {
+          type = "lua";
+          plugin = package-info-nvim;
+          config = ''
+            require("package-info").setup()
+
+            local noremap = utils.noremap_buffer
+            noremap("n", "<leader>js", ":lua require('package-info').show()<CR>")
+            noremap("n", "<leader>jh", ":lua require('package-info').hide()<CR>")
+            noremap("n", "<leader>ju", ":lua require('package-info').update()<CR>")
+            noremap("n", "<leader>jd", ":lua require('package-info').delete()<CR>")
+            noremap("n", "<leader>ji", ":lua require('package-info').install()<CR>")
+            noremap(
+              "n",
+              "<leader>jr",
+              ":lua require('package-info').reinstall()<CR>"
+            )
+            noremap(
+              "n",
+              "<leader>jp",
+              ":lua require('package-info').change_version()<CR>"
+            )
+          '';
+        }
         # TODO:
         # typescript-tools-vim
       ];
@@ -288,14 +332,6 @@ let
       ftplugins = with vimPlugins; [
         {
           type = "lua";
-          plugin = emmet-vim;
-          config = ''
-            -- vim.g.user_emmet_leader_key = '<C-v>'
-            -- vim.g.user_emmet_mode = 'in'
-          '';
-        }
-        {
-          type = "lua";
           plugin = nvim-colorizer-lua;
           config = ''
             require("colorizer").setup({
@@ -309,30 +345,6 @@ let
                 },
               },
             })
-          '';
-        }
-        {
-          type = "lua";
-          plugin = package-info-nvim;
-          config = ''
-            require("package-info").setup()
-
-            local noremap = utils.noremap_buffer
-            noremap("n", "<leader>js", ":lua require('package-info').show()<CR>")
-            noremap("n", "<leader>jh", ":lua require('package-info').hide()<CR>")
-            noremap("n", "<leader>ju", ":lua require('package-info').update()<CR>")
-            noremap("n", "<leader>jd", ":lua require('package-info').delete()<CR>")
-            noremap("n", "<leader>ji", ":lua require('package-info').install()<CR>")
-            noremap(
-              "n",
-              "<leader>jr",
-              ":lua require('package-info').reinstall()<CR>"
-            )
-            noremap(
-              "n",
-              "<leader>jp",
-              ":lua require('package-info').change_version()<CR>"
-            )
           '';
         }
       ];
