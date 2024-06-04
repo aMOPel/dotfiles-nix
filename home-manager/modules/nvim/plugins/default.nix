@@ -12,6 +12,54 @@ let
     };
     meta.homepage = "https://github.com/ten3roberts/qf.nvim";
   };
+
+  vim-cutlass = pkgs.vimUtils.buildVimPlugin {
+    pname = "vim-cutlass";
+    version = "2024-06-04";
+    src = pkgs.fetchFromGitHub {
+      owner = "svermeulen";
+      repo = "vim-cutlass";
+      rev = "7afd649415541634c8ce317fafbc31cd19d57589";
+      sha256 = "sha256-j5W9q905ApDf3fvCIS4UwyHYnEZu5Ictn+6JkV/xjig=";
+    };
+    meta.homepage = "https://github.com/svermeulen/vim-cutlass";
+  };
+
+  vim-ipmotion = pkgs.vimUtils.buildVimPlugin {
+    pname = "vim-ipmotion";
+    version = "2024-06-04";
+    src = pkgs.fetchFromGitHub {
+      owner = "justinmk";
+      repo = "vim-ipmotion";
+      rev = "74762a4fae452766e462ca563c169f781971bad9";
+      sha256 = "sha256-+giBR41RdCwhCPII1ru2ROX08be540M00KQeOqbS4sc=";
+    };
+    meta.homepage = "https://github.com/justinmk/vim-ipmotion";
+  };
+
+  vim-shot-f = pkgs.vimUtils.buildVimPlugin {
+    pname = "vim-shot-f";
+    version = "2024-06-04";
+    src = pkgs.fetchFromGitHub {
+      owner = "deris";
+      repo = "vim-shot-f";
+      rev = "eea71d2a1038aa87fe175de9150b39dc155e5e7f";
+      sha256 = "sha256-iAPvIs/lhW+w5kFTZKaY97D/kfCGtqKrJVFvZ8cHu+c=";
+    };
+    meta.homepage = "https://github.com/deris/vim-shot-f";
+  };
+
+  vim-yoink = pkgs.vimUtils.buildVimPlugin {
+    pname = "vim-cutlass";
+    version = "2024-06-04";
+    src = pkgs.fetchFromGitHub {
+      owner = "svermeulen";
+      repo = "vim-yoink";
+      rev = "89ed6934679fdbc3c20f552b50b1f869f624cd22";
+      sha256 = "sha256-ekGKOYzmdaMqAun/3fRGlhA7bLKuhzsXsEcFNukgFWU=";
+    };
+    meta.homepage = "https://github.com/svermeulen/vim-yoink";
+  };
 in
 {
   plugins = with pkgs.vimPlugins; [
@@ -50,11 +98,12 @@ in
     # basics
     indent-blankline-nvim
     vim-matchup
-    # vim-cutlass
+    vim-asterisk
+    vim-cutlass
     vim-unimpaired
-    # vim-shot-f
-    vim-highlightedyank
-    # vim-ipmotion
+    vim-obsession
+    vim-shot-f
+    vim-ipmotion
     vim-repeat
     vim-dotenv
 
@@ -96,7 +145,7 @@ in
     sideways-vim
     # vim-schlepp REPLACE with mini.move
     vim-subversive
-    # vim-yoink
+    vim-yoink
     vim-abolish
     vim-sandwich
     vim-exchange
@@ -112,7 +161,7 @@ in
     vim-rhubarb
     rnvimr
     todo-comments-nvim
-    # vim-maximizer
+    # vim-maximizer REPLACE with mini
     # TODO:
     # undotree
     nvim-bqf

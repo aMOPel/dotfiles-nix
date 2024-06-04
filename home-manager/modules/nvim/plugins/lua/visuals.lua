@@ -162,33 +162,26 @@ table.insert(plugins, {
 	name = "nvim-hlslens",
 	setup = function() end,
 	config = function()
-		local kopts = { noremap = true, silent = true }
-		vim.api.nvim_set_keymap(
+		vim.keymap.set(
 			"n",
 			"n",
-			[[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]],
-			kopts
+			[[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]]
 		)
-		vim.api.nvim_set_keymap(
+		vim.keymap.set(
 			"n",
 			"N",
-			[[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]],
-			kopts
+			[[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]]
 		)
-		vim.api.nvim_set_keymap(
-			"n",
+		vim.keymap.set(
+			{ "n", "x" },
 			"*",
-			[[<Plug>(asterisk-z*)<Cmd>lua require('hlslens').start()<CR>]],
-			{}
+			[[<Plug>(asterisk-z*)<Cmd>lua require('hlslens').start()<CR>]]
 		)
-		vim.api.nvim_set_keymap(
-			"x",
-			"*",
-			[[<Plug>(asterisk-z*)<Cmd>lua require('hlslens').start()<CR>]],
-			{}
+		vim.keymap.set(
+			{ "n", "x" },
+			"#",
+			[[<Plug>(asterisk-z#)<Cmd>lua require('hlslens').start()<CR>]]
 		)
-
-		-- vim.api.nvim_set_keymap('n', '<Leader>l', ':noh<CR>', kopts)
 	end,
 })
 
