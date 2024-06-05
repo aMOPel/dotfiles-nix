@@ -110,3 +110,14 @@ table.insert(plugins, {
 		)
 	end,
 })
+
+table.insert(plugins, {
+	name = "mini.sessions",
+	setup = function() end,
+	config = function()
+		require("mini.sessions").setup()
+		vim.api.nvim_create_user_command("SessionStart", function()
+			require("mini.sessions").write("Session.vim")
+		end, { desc = "start new local session" })
+	end,
+})

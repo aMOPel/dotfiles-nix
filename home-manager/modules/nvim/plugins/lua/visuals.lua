@@ -37,8 +37,16 @@ table.insert(plugins, {
 	config = function()
 		-- local gps = require("nvim-gps")
 
-		local function ObsessionStatusMod()
-			return vim.fn.ObsessionStatus("Session", "")
+		local function SessionStatus()
+			local local_session =
+				require("mini.sessions").detected["Session.vim"]
+			local session_running = local_session ~= nil
+				and local_session.type == "local"
+			if session_running then
+				return "Session"
+			else
+				return ""
+			end
 		end
 
 		require("lualine").setup({
@@ -119,7 +127,9 @@ table.insert(plugins, {
 				lualine_c = {
 					-- { gps.get_location, cond = gps.is_available },
 				},
-				lualine_x = { ObsessionStatusMod },
+				lualine_x = {
+					SessionStatus,
+				},
 				lualine_y = {
 					{ "encoding" },
 					{ "fileformat" },
