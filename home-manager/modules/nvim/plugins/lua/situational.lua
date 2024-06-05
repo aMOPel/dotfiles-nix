@@ -140,18 +140,6 @@ table.insert(plugins, {
 	end,
 })
 
-table.insert(plugins, {
-	name = "vim-maximizer",
-	setup = function()
-		vim.g.maximizer_set_default_mapping = 0
-
-		local noremap = utils.noremap
-		noremap("n", "<C-W>m", ":MaximizerToggle!<CR>")
-		noremap("n", "<C-W><C-M>", ":MaximizerToggle!<CR>")
-	end,
-	config = function() end,
-})
-
 -- table.insert(plugins, {
 --   name = 'vim-dispatch',
 --   setup = function()

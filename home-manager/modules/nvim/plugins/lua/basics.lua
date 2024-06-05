@@ -91,3 +91,22 @@ table.insert(plugins, {
 		require("mini.bracketed").setup()
 	end,
 })
+
+table.insert(plugins, {
+	name = "mini.misc",
+	setup = function() end,
+	config = function()
+		vim.keymap.set(
+			"n",
+			"<C-W>m",
+			require("mini.misc").zoom,
+			{ desc = "maximize current window" }
+		)
+		vim.keymap.set(
+			"n",
+			"<C-W><C-M>",
+			require("mini.misc").zoom,
+			{ desc = "maximize current window" }
+		)
+	end,
+})

@@ -156,7 +156,6 @@ in
     vim-rhubarb
     rnvimr
     todo-comments-nvim
-    # vim-maximizer REPLACE with mini
     # TODO:
     # undotree
     nvim-bqf
