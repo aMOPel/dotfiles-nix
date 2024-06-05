@@ -50,7 +50,7 @@ let
   };
 
   vim-yoink = pkgs.vimUtils.buildVimPlugin {
-    pname = "vim-cutlass";
+    pname = "vim-yoink";
     version = "2024-06-04";
     src = pkgs.fetchFromGitHub {
       owner = "svermeulen";
