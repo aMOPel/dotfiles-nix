@@ -2,6 +2,7 @@
 let
   sources = import ../nix/sources.nix;
   pkgs = import sources.nixpkgs { };
+  lib = pkgs.lib;
 in
 {
   imports = [
@@ -55,6 +56,7 @@ in
   };
 
   home.packages = with pkgs; [
+    brave
     niv
     vim
   ];
