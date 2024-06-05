@@ -24,7 +24,3 @@ vim.tbl_deep_extend("force", g.formatter.filetype, {
 		}
 	end,
 })
-
--- vim.tbl_deep_extend("force", g.formatter.on_save, {
--- 	"*." .. ft,
--- })

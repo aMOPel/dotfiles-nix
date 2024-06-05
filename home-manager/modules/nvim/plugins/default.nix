@@ -145,6 +145,7 @@ in
     onedark-nvim
     nvim-scrollbar
     nvim-hlslens
+    dressing-nvim
 
     # text manipulation
     vim-textobj-user
@@ -158,9 +159,7 @@ in
     camelcasemotion
 
     # situational
-    # TODO:
     toggleterm-nvim
-    # vim-floaterm
     vim-grepper
     vim-fugitive
     vim-rhubarb
@@ -172,7 +171,6 @@ in
     qf-nvim
 
     # giveitashot
-    dressing-nvim
   ];
 
   extraConfig =
@@ -182,7 +180,7 @@ in
     + builtins.readFile ./lua/visuals.lua
     + builtins.readFile ./lua/situational.lua
     + builtins.readFile ./lua/text_manipulation.lua
-    # + builtins.readFile ./lua/giveitashot.lua
+    + builtins.readFile ./lua/giveitashot.lua
     + builtins.readFile ./lua/after.lua
   ;
 }

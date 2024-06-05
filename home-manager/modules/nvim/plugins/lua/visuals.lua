@@ -23,20 +23,10 @@ table.insert(plugins, {
 	end,
 })
 
--- table.insert(plugins, {
--- 	name = "nvim-gps",
--- 	setup = function() end,
--- 	config = function()
--- 		require("nvim-gps").setup()
--- 	end,
--- })
-
 table.insert(plugins, {
 	name = "lualine.nvim",
 	setup = function() end,
 	config = function()
-		-- local gps = require("nvim-gps")
-
 		local function SessionStatus()
 			local local_session =
 				require("mini.sessions").detected["Session.vim"]

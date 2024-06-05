@@ -5,20 +5,6 @@ vim.tbl_deep_extend("force", g.lsp.fts, {
 })
 
 vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
-	-- ltex = function(on_attach, capabilities)
-	-- 	return {
-	-- 		capabilities = capabilities,
-	-- 		on_attach = on_attach,
-	-- 		settings = {
-	-- 			ltex = {
-	-- 				language = "auto",
-	-- 				diagnosticSeverity = "information",
-	-- 				sentenceCacheSize = 2000,
-	-- 			},
-	-- 		},
-	-- 	}
-	-- end,
-
 	ltex = "default",
 })
 

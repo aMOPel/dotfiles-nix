@@ -10,9 +10,7 @@ table.insert(plugins, {
 				enabled = true,
 			},
 			exclude = {
-				filetypes = {
-					"floaterm",
-				},
+				filetypes = {},
 			},
 		})
 	end,
