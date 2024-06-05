@@ -88,21 +88,21 @@ vim.keymap.set(
 
 vim.keymap.set(
 	{ "n" },
-	"sg",
+	"<leader>sg",
 	[[mz*:%s///g\|norm g`z<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>]],
-	{ desc = "Indent and jump to first non-blank character linewise" }
+	{ desc = "Quick substitute whole file" }
 )
 
 vim.keymap.set(
 	{ "x" },
-	"sg",
+	"<leader>sg",
 	[[:s//g<Left><Left>]],
-	{ desc = "Indent and jump to first non-blank character linewise" }
+	{ desc = "Quick substitute within selected area" }
 )
 
 vim.keymap.set({ "n" }, "<c-e>", [[:e ./<c-n>]], { desc = "quick file search" })
 
-vim.keymap.set({ "n" }, "<c-b>", [[:b <c-n>]], { desc = "quick buffer search" })
+vim.keymap.set({ "n" }, "<c-q>", [[:b <c-n>]], { desc = "quick buffer search" })
 
 vim.keymap.set(
 	{ "t" },
