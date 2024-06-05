@@ -173,7 +173,6 @@ in
 
     # giveitashot
     dressing-nvim
-    telescope-nvim
   ];
 
   extraConfig =
