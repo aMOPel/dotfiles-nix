@@ -1,17 +1,17 @@
-ft = "toml"
+local ft = "toml"
 
-utils.addTable(g.lsp.fts, {
+vim.tbl_deep_extend("force", g.lsp.fts, {
 	ft,
 })
 
--- utils.addTable(g.lsp.servers.lsp_installer, {
---   'taplo',
--- })
+vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
+	"taplo",
+})
 
--- utils.addTable(g.formatter.filetype, {
--- 	[ft] = { require("formatter.filetypes")[ft].taplo },
--- })
---
--- utils.addTable(g.formatter.on_save, {
---  "*." .. ft,
--- })
+vim.tbl_deep_extend("force", g.formatter.filetype, {
+	[ft] = { require("formatter.filetypes")[ft].taplo },
+})
+
+vim.tbl_deep_extend("force", g.formatter.on_save, {
+	"*." .. ft,
+})

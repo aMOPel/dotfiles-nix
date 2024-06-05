@@ -1,9 +1,9 @@
-ft = "dockerfile"
+local ft = "dockerfile"
 
-utils.addTable(g.lsp.fts, {
+vim.tbl_deep_extend("force", g.lsp.fts, {
 	ft,
 })
 
-utils.addTable(g.lsp.servers.lsp_installer, {
+vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
 	dockerls = "default",
 })

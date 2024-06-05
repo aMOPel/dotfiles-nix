@@ -1,10 +1,10 @@
-ft = "html"
+local ft = "html"
 
-utils.addTable(g.lsp.fts, {
+vim.tbl_deep_extend("force", g.lsp.fts, {
 	ft,
 })
 
-utils.addTable(g.lsp.servers.lsp_installer, {
+vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
 	html = function(on_attach, capabilities)
 		local add_on_attach = function(client, bufnr)
 			client.server_capabilities.document_formatting = false
@@ -20,27 +20,10 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 	end,
 })
 
-utils.addTable(g.formatter.filetype, {
+vim.tbl_deep_extend("force", g.formatter.filetype, {
 	[ft] = { require("formatter.filetypes")[ft].prettierd },
 })
 
-utils.addTable(g.formatter.on_save, {
+vim.tbl_deep_extend("force", g.formatter.on_save, {
 	"*." .. ft,
-})
-
-local configs = {}
-
-configs[ft] = function()
-	local optl = vim.opt_local
-	utils.noremap(
-		"n",
-		"<leader>m",
-		':exec "!brave-browser --new-window -- "  .  resolve(expand("%:p"))<cr>'
-	)
-end
-
-vim.api.nvim_create_autocmd({ "Filetype" }, {
-	group = "MyFt",
-	pattern = { ft },
-	callback = configs[ft],
 })

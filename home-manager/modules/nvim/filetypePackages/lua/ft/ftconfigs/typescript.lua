@@ -1,30 +1,26 @@
-ft = "typescript"
+local ft = "typescript"
 
-utils.addTable(g.lsp.fts, {
+vim.tbl_deep_extend("force", g.lsp.fts, {
 	ft,
 	"javascript",
 })
 
-utils.addTable(g.lsp.servers.lsp_installer, {
+vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
 	tsserver = "default",
 })
 
-utils.addTable(g.linter.filetype, {
+vim.tbl_deep_extend("force", g.linter.filetype, {
 	[ft] = { "eslint_d" },
 	javascript = { "eslint_d" },
 })
 
-utils.addTable(g.formatter.filetype, {
+vim.tbl_deep_extend("force", g.formatter.filetype, {
 	[ft] = {
-		-- function() pcall(
-		--   function(arg) vim.cmd(arg) end,
-		--   'TypescriptOrganizeImports'
-		-- ) end,
 		require("formatter.filetypes")[ft].prettierd,
 	},
 })
 
-utils.addTable(g.dap.filetype, {
+vim.tbl_deep_extend("force", g.dap.filetype, {
 	[ft] = function()
 		local dap = require("dap")
 		require("dap").adapters["pwa-node"] = {
@@ -52,16 +48,49 @@ local configs = {}
 
 configs[ft] = function()
 	local optl = vim.opt_local
-	utils.noremap(
+	require("package-info").setup()
+
+	vim.keymap.set(
 		"n",
-		"gq",
-		[[
-:TypescriptAddMissingImports<cr>
-:sleep 300m<cr>
-:TypescriptOrganizeImports<cr>
-:sleep 300m<cr>
-:update<cr>
-:FormatWrite<cr>]]
+		"<leader>js",
+		":lua require('package-info').show()<CR>",
+		{ desc = "package info show" }
+	)
+	vim.keymap.set(
+		"n",
+		"<leader>jh",
+		":lua require('package-info').hide()<CR>",
+		{ desc = "package info hide" }
+	)
+	vim.keymap.set(
+		"n",
+		"<leader>ju",
+		":lua require('package-info').update()<CR>",
+		{ desc = "package info update" }
+	)
+	vim.keymap.set(
+		"n",
+		"<leader>jd",
+		":lua require('package-info').delete()<CR>",
+		{ desc = "package info delete" }
+	)
+	vim.keymap.set(
+		"n",
+		"<leader>ji",
+		":lua require('package-info').install()<CR>",
+		{ desc = "package info install" }
+	)
+	vim.keymap.set(
+		"n",
+		"<leader>jr",
+		":lua require('package-info').reinstall()<CR>",
+		{ desc = "package info reinstall" }
+	)
+	noremap(
+		"n",
+		"<leader>jp",
+		":lua require('package-info').change_version()<CR>",
+		{ desc = "package info change version" }
 	)
 end
 
@@ -70,7 +99,3 @@ vim.api.nvim_create_autocmd({ "Filetype" }, {
 	pattern = { ft },
 	callback = configs[ft],
 })
-
--- utils.addTable(g.formatter.on_save, {
--- 	"*." .. ft,
--- })

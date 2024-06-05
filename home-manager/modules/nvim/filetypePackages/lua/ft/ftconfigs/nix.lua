@@ -1,38 +1,25 @@
-ft = "nix"
+local ft = "nix"
 
-utils.addTable(g.lsp.fts, {
+vim.tbl_deep_extend("force", g.lsp.fts, {
 	ft,
 })
 
-utils.addTable(g.lsp.servers.lsp_installer, {
-	-- server_name = function(on_attach, capabilities) end,
+vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
 	nixd = "default",
 })
 
-utils.addTable(g.treesitter.indent.disable, {
+vim.tbl_deep_extend("force", g.treesitter.indent.disable, {
 	ft,
 })
 
-utils.addTable(g.formatter.filetype, {
+vim.tbl_deep_extend("force", g.formatter.filetype, {
 	[ft] = { require("formatter.filetypes")[ft].nixpkgs_fmt },
 })
 
-utils.addTable(g.formatter.on_save, {
+vim.tbl_deep_extend("force", g.formatter.on_save, {
 	"*." .. ft,
 })
 
-utils.addTable(g.linter.filetype, {
+vim.tbl_deep_extend("force", g.linter.filetype, {
 	[ft] = { "nix", "deadnix" },
 })
-
--- local configs = {}
---
--- configs[ft] = function()
--- 	local optl = vim.opt_local
--- end
---
--- vim.api.nvim_create_autocmd({ "Filetype" }, {
--- 	group = "MyFt",
--- 	pattern = { ft },
--- 	callback = configs[ft],
--- })

@@ -1,23 +1,19 @@
-ft = "nim"
+local ft = "nim"
 
-utils.addTable(g.lsp.fts, {
+vim.tbl_deep_extend("force", g.lsp.fts, {
 	ft,
 	-- 'nims',
 })
 
--- utils.addTable(g.lsp.servers.lsp_installer, {
--- 	nimls = "default",
--- })
-
-utils.addTable(g.lsp.servers.lsp_installer, {
+vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
 	nim_langserver = "default",
 })
 
-utils.addTable(g.treesitter.indent.disable, {
+vim.tbl_deep_extend("force", g.treesitter.indent.disable, {
 	ft,
 })
 
-utils.addTable(g.formatter.filetype, {
+vim.tbl_deep_extend("force", g.formatter.filetype, {
 	[ft] = function()
 		return {
 			exe = "nimpretty",
@@ -29,16 +25,6 @@ utils.addTable(g.formatter.filetype, {
 	end,
 })
 
--- utils.addTable(g.formatter.on_save, {
+-- vim.tbl_deep_extend("force", g.formatter.on_save, {
 -- 	"*." .. ft,
 -- })
-
-local configs = {}
-
-configs[ft] = function() end
-
-vim.api.nvim_create_autocmd({ "Filetype" }, {
-	group = "MyFt",
-	pattern = { ft },
-	callback = configs[ft],
-})

@@ -2,13 +2,13 @@
 --
 -- ft = 'tex'
 --
--- utils.addTable(g.lsp.fts, {
+-- vim.tbl_deep_extend("force", g.lsp.fts, {
 --   ft,
 --   'latex',
 --   'bib',
 -- })
 --
--- utils.addTable(g.lsp.servers.lsp_installer, {
+-- vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
 --   texlab = function(on_attach, capabilities)
 --     local util = require "lspconfig".util
 --     return {
@@ -76,7 +76,7 @@
 --   -- end,
 -- })
 --
--- utils.addTable(g.treesitter.ensure_installed, {
+-- vim.tbl_deep_extend("force", g.treesitter.ensure_installed, {
 --   'latex',
 --   'bibtex',
 -- })

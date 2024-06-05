@@ -1,18 +1,18 @@
-ft = "gdscript"
+local ft = "gdscript"
 
-utils.addTable(g.lsp.fts, {
+vim.tbl_deep_extend("force", g.lsp.fts, {
 	ft,
 })
 
-utils.addTable(g.lsp.servers.lsp_installer, {
+vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
 	gdscript = "default",
 })
 
-utils.addTable(g.treesitter.indent.disable, {
+vim.tbl_deep_extend("force", g.treesitter.indent.disable, {
 	ft,
 })
 
-utils.addTable(g.formatter.filetype, {
+vim.tbl_deep_extend("force", g.formatter.filetype, {
 	[ft] = {
 		function()
 			return {
@@ -25,15 +25,15 @@ utils.addTable(g.formatter.filetype, {
 	},
 })
 
-utils.addTable(g.formatter.on_save, {
+vim.tbl_deep_extend("force", g.formatter.on_save, {
 	"*.gd",
 })
 
-utils.addTable(g.linter.filetype, {
+vim.tbl_deep_extend("force", g.linter.filetype, {
 	[ft] = { "gdlint" },
 })
 
-utils.addTable(g.dap.filetype, {
+vim.tbl_deep_extend("force", g.dap.filetype, {
 	[ft] = function()
 		local dap = require("dap")
 		dap.adapters.godot = {
@@ -66,9 +66,6 @@ configs[ft] = function()
 
 	optl.tabstop = 2
 	optl.shiftwidth = 2
-
-	optl.makeprg = "godot --headless --script %"
-	-- utils.noremap('n', '<leader>lf', ':exec "!gdformat -l 80 "  .  resolve(expand("%:p"))<cr>')
 end
 
 vim.api.nvim_create_autocmd({ "Filetype" }, {

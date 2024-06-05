@@ -1,9 +1,34 @@
 local setup_dap = function()
-	utils.noremap("n", "<leader>db", ":DapToggleBreakpoint<cr>")
-	utils.noremap("n", "<leader>dd", ":DapContinue<cr>")
-	utils.noremap("n", "<leader>di", ":DapStepInto<cr>")
-	utils.noremap("n", "<leader>do", ":DapStepOut<cr>")
-	utils.noremap("n", "<leader>dt", ":DapTerminate<cr>")
+	vim.keymap.set(
+		"n",
+		"<leader>db",
+		"<cmd>DapToggleBreakpoint<cr>",
+		{ desc = "dap toggle breakpoint" }
+	)
+	vim.keymap.set(
+		"n",
+		"<leader>dd",
+		"<cmd>DapContinue<cr>",
+		{ desc = "dap continue" }
+	)
+	vim.keymap.set(
+		"n",
+		"<leader>di",
+		"<cmd>DapStepInto<cr>",
+		{ desc = "dap step into" }
+	)
+	vim.keymap.set(
+		"n",
+		"<leader>do",
+		"<cmd>DapStepOut<cr>",
+		{ desc = "dap step out" }
+	)
+	vim.keymap.set(
+		"n",
+		"<leader>dt",
+		"<cmd>DapTerminate<cr>",
+		{ desc = "dap terminate" }
+	)
 	for filetype, callback in pairs(g.dap.filetype) do
 		callback()
 	end
@@ -13,7 +38,12 @@ local setup_dap_ui = function()
 	local dap, dapui = require("dap"), require("dapui")
 	dapui.setup()
 
-	utils.noremap("n", "<leader>du", [[:lua require("dapui").toggle()<cr>]])
+	vim.keymap.set(
+		"n",
+		"<leader>du",
+		[[<cmd>lua require("dapui").toggle()<cr>]],
+		{ desc = "dap ui toggle" }
+	)
 
 	dap.listeners.after.event_initialized["dapui_config"] = function()
 		dapui.open()
@@ -26,10 +56,5 @@ local setup_dap_ui = function()
 	end
 end
 
-local setup_dap_go = function()
-	require("dap-go").setup()
-end
-
 setup_dap()
 setup_dap_ui()
-setup_dap_go()

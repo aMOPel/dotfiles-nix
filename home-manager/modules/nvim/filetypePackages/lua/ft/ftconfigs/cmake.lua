@@ -1,11 +1,9 @@
--- local g = require 'globals'
---
--- ft = 'cmake'
---
--- utils.addTable(g.lsp.fts, {
---   ft,
--- })
---
--- utils.addTable(g.lsp.servers.lsp_installer, {
---   cmake = 'default',
--- })
+local ft = "cmake"
+
+vim.tbl_deep_extend("force", g.lsp.fts, {
+	ft,
+})
+
+vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
+	cmake = "default",
+})

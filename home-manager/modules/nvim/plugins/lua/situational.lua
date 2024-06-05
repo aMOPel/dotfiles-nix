@@ -70,9 +70,12 @@ table.insert(plugins, {
 table.insert(plugins, {
 	name = "vim-grepper",
 	setup = function()
-		local noremap = utils.noremap
-		local map = utils.map
-		noremap("n", "<c-f>", ":Grepper -tool rg<CR>")
+		vim.keymap.set(
+			"n",
+			"<c-f>",
+			"<cmd>Grepper -tool rg<CR>",
+			{ desc = "ripgrep" }
+		)
 
 		vim.cmd([[
 aug Grepper

@@ -1,10 +1,10 @@
-ft = "css"
+local ft = "css"
 
-utils.addTable(g.lsp.fts, {
+vim.tbl_deep_extend("force", g.lsp.fts, {
 	ft,
 })
 
-utils.addTable(g.lsp.servers.lsp_installer, {
+vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
 	tailwindcss = function(on_attach, capabilities)
 		local add_on_attach = function(client, bufnr)
 			client.server_capabilities.document_formatting = false
@@ -13,12 +13,7 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 		end
 
 		return {
-			init_options = {
-				userLanguages = {
-					nim = "twig",
-				},
-			},
-			filetypes = { "html", "vue", "css", "nim" },
+			filetypes = { "html", "vue", "css" },
 			capabilities = capabilities,
 			on_attach = add_on_attach,
 		}

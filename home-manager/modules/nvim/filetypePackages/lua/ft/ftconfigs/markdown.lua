@@ -1,10 +1,10 @@
-ft = "markdown"
+local ft = "markdown"
 
-utils.addTable(g.lsp.fts, {
+vim.tbl_deep_extend("force", g.lsp.fts, {
 	ft,
 })
 
-utils.addTable(g.lsp.servers.lsp_installer, {
+vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
 	-- ltex = function(on_attach, capabilities)
 	-- 	return {
 	-- 		capabilities = capabilities,
@@ -22,80 +22,19 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 	ltex = "default",
 })
 
-utils.addTable(g.formatter.filetype, {
+vim.tbl_deep_extend("force", g.formatter.filetype, {
 	[ft] = { require("formatter.filetypes")[ft].prettierd },
 })
 
-utils.addTable(g.formatter.on_save, {
+vim.tbl_deep_extend("force", g.formatter.on_save, {
 	"*." .. ft,
 })
 
-utils.addTable(g.linter.filetype, {
+vim.tbl_deep_extend("force", g.linter.filetype, {
 	[ft] = {
 		"proselint",
 		"write_good",
 		"alex",
 		"markdownlint",
 	},
-})
-
-utils.addTable(g.linter.custom_linter, {
-	"",
-})
-
-local configs = {}
-
-configs[ft] = function()
-	local optl = vim.opt_local
-	-- " setl spelllang=en,de
-	-- " setl spell
-	-- " setl textwidth=80
-	--
-	-- " setl linebreak
-	-- " setl showbreak="> "
-	-- " setl breakindent
-	-- " setl formatoptions+=wa
-
-	optl.foldenable = false
-	optl.foldcolumn = "0"
-	optl.tabstop = 4
-	optl.shiftwidth = 4
-
-	vim.g.GripRunning = 0
-	function start_grip()
-		if vim.g.GripRunning == 0 then
-			local id = vim.fn.jobstart({ "grip", vim.fn.expand("%") }, {
-				on_exit = function(job_id, data, name)
-					print("grip exited")
-				end,
-				-- on_stderr = function(job_id, data, name) print('grip error: ') vim.pretty_print(data) end,
-			})
-			vim.g.GripRunning = 1
-			vim.g.GripProcId = id
-		else
-			print("grip is already running")
-		end
-	end
-
-	-- in case you want to stop it manually
-	function stop_grip()
-		if vim.g.GripRunning == 1 then
-			vim.fn.jobstop(vim.g.GripProcId)
-			vim.g.GripRunning = 0
-		else
-			print("grip is not running")
-		end
-	end
-
-	utils.noremap(
-		"n",
-		"<leader>n",
-		':exec "lua start_grip()" | call system(["brave-browser", "--new-window", "--", "http://localhost:6419/"])<cr>'
-	)
-end
-
-vim.api.nvim_create_autocmd({ "Filetype" }, {
-	group = "MyFt",
-	pattern = { ft },
-	callback = configs[ft],
 })

@@ -1,10 +1,10 @@
-ft = "yaml"
+local ft = "yaml"
 
-utils.addTable(g.lsp.fts, {
+vim.tbl_deep_extend("force", g.lsp.fts, {
 	ft,
 })
 
-utils.addTable(g.lsp.servers.lsp_installer, {
+vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
 	yamlls = function(on_attach, capabilities)
 		return {
 			capabilities = capabilities,
@@ -22,10 +22,10 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 	end,
 })
 
-utils.addTable(g.formatter.filetype, {
+vim.tbl_deep_extend("force", g.formatter.filetype, {
 	[ft] = { require("formatter.filetypes")[ft].prettierd },
 })
 
-utils.addTable(g.formatter.on_save, {
+vim.tbl_deep_extend("force", g.formatter.on_save, {
 	"*." .. ft,
 })

@@ -1,37 +1,37 @@
-ft = "gitcommit"
+local ft = "gitcommit"
 
--- utils.addTable(g.lsp.fts, {
+-- vim.tbl_deep_extend("force", g.lsp.fts, {
 -- 	ft,
 -- })
 
--- utils.addTable(g.lsp.servers.lsp_installer, {
+-- vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
 -- 	-- server_name = function(on_attach, capabilities) end,
 -- 	server_name = "default",
 -- })
 
--- utils.addTable(g.treesitter.indent.disable, {
+-- vim.tbl_deep_extend("force", g.treesitter.indent.disable, {
 -- 	ft,
 -- })
 
--- utils.addTable(g.formatter.filetype, {
+-- vim.tbl_deep_extend("force", g.formatter.filetype, {
 -- 	[ft] = { require("formatter.filetypes")[ft].prettierd },
 -- })
 
--- utils.addTable(g.formatter.on_save, {
+-- vim.tbl_deep_extend("force", g.formatter.on_save, {
 -- 	"*." .. ft,
 -- })
 
-utils.addTable(g.linter.filetype, {
+vim.tbl_deep_extend("force", g.linter.filetype, {
 	[ft] = {
 		"gitlint",
 	},
 })
 
-utils.addTable(g.linter.custom_linter, {
+vim.tbl_deep_extend("force", g.linter.custom_linter, {
 	"",
 })
 
--- utils.addTable(g.dap.filetype, {
+-- vim.tbl_deep_extend("force", g.dap.filetype, {
 -- 	"",
 -- })
 

@@ -1,25 +1,25 @@
-ft = "python"
+local ft = "python"
 
-utils.addTable(g.lsp.fts, {
+vim.tbl_deep_extend("force", g.lsp.fts, {
 	ft,
 })
 
-utils.addTable(g.lsp.servers.lsp_installer, {
+vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
 	pylsp = "default",
 })
 
-utils.addTable(g.treesitter.indent.disable, {
+vim.tbl_deep_extend("force", g.treesitter.indent.disable, {
 	ft,
 })
 
-utils.addTable(g.formatter.filetype, {
+vim.tbl_deep_extend("force", g.formatter.filetype, {
 	[ft] = {
 		require("formatter.filetypes")[ft].black,
 		require("formatter.filetypes")[ft].isort,
 	},
 })
 
-utils.addTable(g.formatter.on_save, {
+vim.tbl_deep_extend("force", g.formatter.on_save, {
 	"*." .. ft,
 })
 
@@ -28,12 +28,6 @@ local configs = {}
 configs[ft] = function()
 	local optl = vim.opt_local
 	optl.foldmethod = "indent"
-	-- " setl foldexpr=nvim#treesitter#foldexpr()
-	utils.noremap(
-		"n",
-		"<leader>n",
-		':exec "FloatermNew --autoclose=0 --disposable python3 " . resolve(expand("%:p")) <CR>'
-	)
 end
 
 vim.api.nvim_create_autocmd({ "Filetype" }, {
