@@ -8,14 +8,37 @@ table.insert(plugins, {
 		vim.g.yoinkIncludeDeleteOperations = 1
 
 		local map = utils.map
-		map("n", "<c-n>", "<plug>(YoinkPostPasteSwapBack)")
-		map("n", "<c-p>", "<plug>(YoinkPostPasteSwapForward)")
-		map("n", "p", "<plug>(YoinkPaste_p)")
-		map("n", "P", "<plug>(YoinkPaste_P)")
-		map("n", "[y", "<plug>(YoinkRotateBack)")
-		map("n", "]y", "<plug>(YoinkRotateForward)")
-		map("n", "y", "<plug>(YoinkYankPreserveCursorPosition)")
-		map("x", "y", "<plug>(YoinkYankPreserveCursorPosition)")
+		vim.keymap.set(
+			"n",
+			"<c-n>",
+			"<plug>(YoinkPostPasteSwapBack)",
+			{ desc = "cycle next register" }
+		)
+		vim.keymap.set(
+			"n",
+			"<c-p>",
+			"<plug>(YoinkPostPasteSwapForward)",
+			{ desc = "cycle prev register" }
+		)
+		vim.keymap.set("n", "p", "<plug>(YoinkPaste_p)", { desc = "paste" })
+		vim.keymap.set(
+			"n",
+			"P",
+			"<plug>(YoinkPaste_P)",
+			{ desc = "paste before" }
+		)
+		vim.keymap.set(
+			"n",
+			"y",
+			"<plug>(YoinkYankPreserveCursorPosition)",
+			{ desc = "yank" }
+		)
+		vim.keymap.set(
+			"x",
+			"y",
+			"<plug>(YoinkYankPreserveCursorPosition)",
+			{ desc = "yank" }
+		)
 	end,
 	config = function() end,
 })
@@ -53,10 +76,18 @@ table.insert(plugins, {
 			{ desc = "substitute with register" }
 		)
 
-		local noremap = utils.noremap
-		noremap("n", "R", "<plug>(SubversiveSubvertRange)")
-		noremap("x", "R", "<plug>(SubversiveSubvertRange)")
-		noremap("n", "RR", "<plug>(SubversiveSubvertWordRange)")
+		vim.keymap.set(
+			{ "n", "x" },
+			"R",
+			"<plug>(SubversiveSubvertRange)",
+			{ desc = "camel case word forward" }
+		)
+		vim.keymap.set(
+			"n",
+			"RR",
+			"<plug>(SubversiveSubvertWordRange)",
+			{ desc = "camel case word forward" }
+		)
 	end,
 	config = function() end,
 })
@@ -64,53 +95,30 @@ table.insert(plugins, {
 table.insert(plugins, {
 	name = "CamelCaseMotion",
 	setup = function()
-		-- vim.g.camelcasemotion_key = ','
-		local map = utils.map
-		map("", "gw", "<Plug>CamelCaseMotion_w")
-		map("", "gb", "<Plug>CamelCaseMotion_b")
-		map("", "ge", "<Plug>CamelCaseMotion_e")
-		map({ "x", "o" }, "igw", "<Plug>CamelCaseMotion_iw")
-		map({ "x", "o" }, "igb", "<Plug>CamelCaseMotion_ib")
-		map({ "x", "o" }, "ige", "<Plug>CamelCaseMotion_ie")
-	end,
-	config = function() end,
-})
-
-table.insert(plugins, {
-	name = "vim-log-print",
-	setup = function()
-		vim.g["log_print#default_mappings"] = 0
-
-		vim.g["log_print#languages"] = {
-			gdscript = { pre = "print(", post = ")" },
-			typescript = { pre = "console.log(", post = ")" },
-			sh = { pre = "echo " },
-			nim = { pre = "print " },
-		}
-
-		local map = utils.map
-		map("n", "gl", "<Plug>LogPrintToggle")
-		map("n", "[g", "<Plug>LogPrintAbove")
-		map("n", "]g", "<Plug>LogPrintBelow")
-	end,
-	config = function() end,
-})
-
-table.insert(plugins, {
-	name = "textobj-word-column.vim",
-	setup = function()
-		vim.g.textobj_wordcolumn_no_default_key_mappings = 1
-
-		vim.fn["textobj#user#map"]("wordcolumn", {
-			word = {
-				["select-i"] = "io",
-				["select-a"] = "ao",
-			},
-			WORD = {
-				["select-i"] = "iO",
-				["select-a"] = "aO",
-			},
-		})
+		vim.keymap.set(
+			{ "n", "x" },
+			"gw",
+			"<Plug>CamelCaseMotion_w",
+			{ desc = "camel case word forward" }
+		)
+		vim.keymap.set(
+			{ "n", "x" },
+			"gb",
+			"<Plug>CamelCaseMotion_b",
+			{ desc = "camel case word backward" }
+		)
+		vim.keymap.set(
+			{ "n", "x" },
+			"ge",
+			"<Plug>CamelCaseMotion_e",
+			{ desc = "camel case word end" }
+		)
+		vim.keymap.set(
+			{ "x", "o" },
+			"igw",
+			"<Plug>CamelCaseMotion_iw",
+			{ desc = "inside camel case word" }
+		)
 	end,
 	config = function() end,
 })
