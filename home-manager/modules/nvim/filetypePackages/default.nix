@@ -66,7 +66,22 @@ let
       ];
       formatter = [ gdtoolkit ];
       linters = [ gdtoolkit ];
-      ftplugins = with vimPlugins; [ vim-godot ];
+      ftplugins = with vimPlugins; [
+        {
+          type = lua;
+          plugin = vim-godot;
+          config = ''
+            vim.filetype.add({
+            	pattern = {
+            		["*.tscn"] = "dosini",
+            		["*.tres"] = "dosini",
+            		["*.import"] = "dosini",
+            		["*.godot"] = "dosini",
+            	},
+            })
+          '';
+        }
+      ];
     };
 
     git = {
