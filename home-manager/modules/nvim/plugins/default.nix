@@ -100,7 +100,6 @@ in
     vim-matchup
     vim-asterisk
     vim-cutlass
-    vim-unimpaired
     vim-obsession
     vim-shot-f
     vim-ipmotion

@@ -1,27 +1,34 @@
 -- stolen from mini.basics
-DiagnosticToggle = {}
-DiagnosticToggle.diagnostic_is_enabled = function(buf_id)
-	return vim.diagnostic.is_enabled({ bufnr = buf_id })
+PutEmptyLine = {}
+PutEmptyLine.put_empty_line = function(put_above)
+	-- This has a typical workflow for enabling dot-repeat:
+	-- - On first call it sets `operatorfunc`, caches data, and calls
+	--   `operatorfunc` on current cursor position.
+	-- - On second call it performs task: puts `v:count1` empty lines
+	--   above/below current line.
+	if type(put_above) == "boolean" then
+		vim.o.operatorfunc = "v:lua.PutEmptyLine.put_empty_line"
+		PutEmptyLine.cache_empty_line = { put_above = put_above }
+		return "g@l"
+	end
+
+	local target_line = vim.fn.line(".")
+		- (PutEmptyLine.cache_empty_line.put_above and 1 or 0)
+	vim.fn.append(target_line, vim.fn["repeat"]({ "" }, vim.v.count1))
 end
-DiagnosticToggle.buffer_diagnostic_state = {}
-DiagnosticToggle.toggle_diagnostic = function()
-	local buf_id = vim.api.nvim_get_current_buf()
-	local is_enabled = DiagnosticToggle.diagnostic_is_enabled(buf_id)
+_G.PutEmptyLine = PutEmptyLine
 
-	vim.diagnostic.enable(not is_enabled, { bufnr = buf_id })
-
-	local new_buf_state = not is_enabled
-	DiagnosticToggle.buffer_diagnostic_state[buf_id] = new_buf_state
-
-	return new_buf_state and "  diagnostic" or "nodiagnostic"
-end
-
--- akin to unimpaired mappings
 vim.keymap.set(
 	{ "n" },
-	"yoe",
-	DiagnosticToggle.toggle_diagnostic,
-	{ desc = "toggle diagnostics" }
+	"[ ",
+	"v:lua.PutEmptyLine.put_empty_line(v:true)",
+	{ expr = true, desc = "Put empty line above" }
+)
+vim.keymap.set(
+	{ "n" },
+	"] ",
+	"v:lua.PutEmptyLine.put_empty_line(v:false)",
+	{ expr = true, desc = "Put empty line below" }
 )
 
 vim.keymap.set(

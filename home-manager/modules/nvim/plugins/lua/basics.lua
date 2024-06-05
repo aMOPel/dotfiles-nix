@@ -61,11 +61,33 @@ table.insert(plugins, {
 })
 
 table.insert(plugins, {
-	name = "buildin highlight yank",
+	name = "mini.basics",
 	setup = function()
-		vim.cmd(
-			[[autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup='IncSearch', timeout=500}]]
-		)
+		require("mini.basics").setup({
+			options = {
+				basic = false,
+				extra_ui = false,
+				win_borders = "bold",
+			},
+			mappings = {
+				basic = false,
+				option_toggle_prefix = [[yo]],
+				windows = false,
+				move_with_alt = false,
+			},
+			autocommands = {
+				basic = false,
+				relnum_in_visual_mode = false,
+			},
+		})
 	end,
 	config = function() end,
+})
+
+table.insert(plugins, {
+	name = "mini.bracketed",
+	setup = function() end,
+	config = function()
+		require("mini.bracketed").setup()
+	end,
 })
