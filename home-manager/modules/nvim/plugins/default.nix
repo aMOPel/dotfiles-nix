@@ -60,6 +60,19 @@ let
     };
     meta.homepage = "https://github.com/svermeulen/vim-yoink";
   };
+
+  textobj-word-column-vim = pkgs.vimUtils.buildVimPlugin {
+    pname = "textobj-word-column-vim";
+    version = "2024-06-05";
+    src = pkgs.fetchFromGitHub {
+      owner = "coderifous";
+      repo = "textobj-word-column.vim";
+      rev = "cb40e1459817a7fa23741ff6df05e4481bde5a33";
+      sha256 = "sha256-6brmwkaxlSDLm2xXHkV6CsOL+bvsWLsZwE94eaRXFb0=";
+    };
+    meta.homepage = "https://github.com/coderifous/textobj-word-column.vim";
+  };
+
 in
 {
   plugins = with pkgs.vimPlugins; [
@@ -135,7 +148,7 @@ in
 
     # text manipulation
     vim-textobj-user
-    # textobj-word-column-vim
+    textobj-word-column-vim
     mini-nvim
     dial-nvim
     sideways-vim
