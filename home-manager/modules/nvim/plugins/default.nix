@@ -140,7 +140,6 @@ in
     mini-nvim
     dial-nvim
     sideways-vim
-    # vim-schlepp REPLACE with mini.move
     vim-subversive
     vim-yoink
     vim-abolish

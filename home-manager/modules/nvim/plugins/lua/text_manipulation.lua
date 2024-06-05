@@ -1,20 +1,25 @@
 plugins = g.plugins
 
 table.insert(plugins, {
-	name = "vim-schlepp",
-	setup = function()
-		vim.g["Schlepp#useShiftWidthLines"] = 1
-		vim.g["Schlepp#dupLinesDir"] = "down"
-		vim.g["Schlepp#dupBlockDir"] = "right"
-
-		local map = utils.map
-		map("x", "gd", "<Plug>SchleppDupSmart")
-		map("x", "<up>", "<Plug>SchleppUp")
-		map("x", "<down>", "<Plug>SchleppDown")
-		map("x", "<left>", "<Plug>SchleppLeft")
-		map("x", "<right>", "<Plug>SchleppRight")
+	name = "mini.move",
+	setup = function() end,
+	config = function()
+		require("mini.move").setup({
+			mappings = {
+				left = "<left>",
+				right = "<right>",
+				down = "<down>",
+				up = "<up>",
+				line_left = "<left>",
+				line_right = "<right>",
+				line_down = "<down>",
+				line_up = "<up>",
+			},
+			options = {
+				reindent_linewise = true,
+			},
+		})
 	end,
-	config = function() end,
 })
 
 table.insert(plugins, {
