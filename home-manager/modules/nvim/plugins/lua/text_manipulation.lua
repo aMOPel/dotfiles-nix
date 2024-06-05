@@ -128,51 +128,9 @@ table.insert(plugins, {
 	setup = function() end,
 	config = function()
 		local augend = require("dial.augend")
-		local augend_leftright = augend.constant.new({
-			elements = { "left", "right" },
-			word = false,
-			cyclic = true,
-			preserve_case = true,
-		})
-		local augend_onoff = augend.constant.new({
-			elements = { "on", "off" },
-			word = false,
-			cyclic = true,
-			preserve_case = true,
-		})
 
 		require("dial.config").augends:register_group({
 			default = {
-				-- this disables the jumping for leftright and onoff
-				augend.user.new({
-					find = function(line, cursor)
-						local range = augend_leftright:find(line, cursor)
-						if range ~= nil then
-							if range.from <= cursor and cursor <= range.to then
-								return range
-							end
-						end
-						return nil
-					end,
-					add = function(text, addend, cursor)
-						return augend_leftright:add(text, addend, cursor)
-					end,
-				}),
-				augend.user.new({
-					find = function(line, cursor)
-						local range = augend_onoff:find(line, cursor)
-						if range ~= nil then
-							if range.from <= cursor and cursor <= range.to then
-								return range
-							end
-						end
-						return nil
-					end,
-					add = function(text, addend, cursor)
-						return augend_onoff:add(text, addend, cursor)
-					end,
-				}),
-
 				augend.integer.alias.decimal,
 				augend.integer.alias.hex,
 				augend.integer.alias.octal,
@@ -194,14 +152,11 @@ table.insert(plugins, {
 				augend.hexcolor.new({
 					case = "lower",
 				}),
-				-- augend.constant.new { elements = { 'and', 'or' }, word = true, cyclic = true, },
 				augend.constant.new({
 					elements = { "&&", "||" },
 					word = false,
 					cyclic = true,
 				}),
-				-- augend.constant.new { elements = { 'on', 'off' }, word = false, cyclic = true, },
-				-- augend.constant.new { elements = { 'right', 'left' }, word = true, cyclic = true, },
 				augend.constant.new({
 					elements = { "!=", "==" },
 					word = false,
@@ -240,13 +195,30 @@ table.insert(plugins, {
 			},
 		})
 
-		local noremap = utils.noremap
-		noremap("n", "<C-a>", require("dial.map").inc_normal())
-		noremap("n", "<C-x>", require("dial.map").dec_normal())
-		noremap("v", "<C-a>", require("dial.map").inc_visual())
-		noremap("v", "<C-x>", require("dial.map").dec_visual())
-		noremap("v", "g<C-a>", require("dial.map").inc_gvisual())
-		noremap("v", "g<C-x>", require("dial.map").dec_gvisual())
+		vim.keymap.set("n", "<C-a>", function()
+			require("dial.map").manipulate("increment", "normal")
+		end, { desc = "dial increment" })
+		vim.keymap.set("n", "<C-x>", function()
+			require("dial.map").manipulate("decrement", "normal")
+		end, { desc = "dial decrement" })
+		vim.keymap.set("n", "g<C-a>", function()
+			require("dial.map").manipulate("increment", "gnormal")
+		end, { desc = "dial increment" })
+		vim.keymap.set("n", "g<C-x>", function()
+			require("dial.map").manipulate("decrement", "gnormal")
+		end, { desc = "dial decrement" })
+		vim.keymap.set("v", "<C-a>", function()
+			require("dial.map").manipulate("increment", "visual")
+		end, { desc = "dial increment" })
+		vim.keymap.set("v", "<C-x>", function()
+			require("dial.map").manipulate("decrement", "visual")
+		end, { desc = "dial decrement" })
+		vim.keymap.set("v", "g<C-a>", function()
+			require("dial.map").manipulate("increment", "gvisual")
+		end, { desc = "dial increment" })
+		vim.keymap.set("v", "g<C-x>", function()
+			require("dial.map").manipulate("decrement", "gvisual")
+		end, { desc = "dial decrement" })
 	end,
 })
 
