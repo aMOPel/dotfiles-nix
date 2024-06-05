@@ -290,3 +290,11 @@ table.insert(plugins, {
 		})
 	end,
 })
+
+table.insert(plugins, {
+	name = "mini.notify",
+	setup = function() end,
+	config = function()
+		require("mini.notify").setup({})
+	end,
+})
