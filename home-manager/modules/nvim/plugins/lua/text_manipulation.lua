@@ -397,7 +397,7 @@ table.insert(plugins, {
 
 		vim.keymap.set(
 			"n",
-			"yss",
+			"gss",
 			"gs_",
 			{ remap = true, desc = "surround whole line" }
 		)
