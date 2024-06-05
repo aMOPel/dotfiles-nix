@@ -23,6 +23,29 @@ table.insert(plugins, {
 })
 
 table.insert(plugins, {
+	name = "mini.operators",
+	setup = function() end,
+	config = function()
+		require("mini.operators").setup({
+			evaluate = {},
+			exchange = {
+				prefix = "gx",
+				reindent_linewise = true,
+			},
+			multiply = {},
+			replace = {
+				prefix = "S",
+				reindent_linewise = true,
+			},
+			sort = {
+				prefix = "gs",
+				func = nil,
+			},
+		})
+	end,
+})
+
+table.insert(plugins, {
 	name = "vim-yoink",
 	setup = function()
 		vim.g.yoinkAutoFormatPaste = 0
@@ -51,9 +74,6 @@ table.insert(plugins, {
 		vim.g.subversivePreserveCursorPosition = 1
 
 		local map = utils.map
-		map("n", "S", "<plug>(SubversiveSubstitute)")
-		map("n", "SS", "<plug>(SubversiveSubstituteLine)")
-		-- map("n", "SL", "<plug>(SubversiveSubstituteEndOfLine)")
 
 		map("x", "P", "<plug>(SubversiveSubstitute)")
 		map("x", "p", "<plug>(SubversiveSubstitute)")
@@ -62,22 +82,6 @@ table.insert(plugins, {
 		noremap("n", "R", "<plug>(SubversiveSubvertRange)")
 		noremap("x", "R", "<plug>(SubversiveSubvertRange)")
 		noremap("n", "RR", "<plug>(SubversiveSubvertWordRange)")
-	end,
-	config = function() end,
-})
-
-table.insert(plugins, {
-	name = "vim-exchange",
-	setup = function()
-		vim.g.exchange_no_mappings = 1
-		vim.g.exchange_indent = "=="
-
-		local map = utils.map
-		map("n", "gx", "<Plug>(Exchange)")
-		map("x", "gx", "<Plug>(Exchange)")
-		map("n", "gxc", "<Plug>(ExchangeClear)")
-		map("n", "gxx", "<Plug>(ExchangeLine)")
-		map("n", "gX", "<Plug>(ExchangeLine):norm! $<cr>")
 	end,
 	config = function() end,
 })

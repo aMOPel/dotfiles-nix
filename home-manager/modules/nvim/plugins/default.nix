@@ -144,7 +144,6 @@ in
     vim-yoink
     vim-abolish
     vim-sandwich
-    vim-exchange
     camelcasemotion
     vim-argwrap
 

@@ -48,8 +48,8 @@ table.insert(plugins, {
 		noremap("n", "<c-f>", ":Grepper -tool rg<CR>")
 		-- noremap('n', '<leader>*', ':Grepper -tool rg -cword -noprompt<cr>')
 
-		map("n", "gs", "<Plug>(GrepperOperator)")
-		map("x", "gs", "<Plug>(GrepperOperator)")
+		-- map("n", "gs", "<Plug>(GrepperOperator)")
+		-- map("x", "gs", "<Plug>(GrepperOperator)")
 
 		vim.cmd([[
 aug Grepper
