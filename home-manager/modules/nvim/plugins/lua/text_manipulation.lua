@@ -321,66 +321,6 @@ table.insert(plugins, {
 	end,
 })
 
--- table.insert(plugins, {
--- 	name = "targets.vim",
--- 	setup = function() end,
--- 	config = function()
--- 		vim.g.targets_aiAI = { "a", "i", " ", " " }
--- 		vim.g.targets_nl = { " ", " " }
--- 		vim.g.targets_seekRanges =
--- 			"cc cr cb cB lc ac Ac lr rr ll lb ar ab lB Ar aB Ab AB rb rB al Al"
--- 		vim.cmd([[
--- autocmd MyPlugins User targets#mappings#user call targets#mappings#extend({
---     \ 'a': {'argument': [{'o': '[{([]', 'c': '[])}]', 's': ','}]},
---     \ })
--- ]])
-
--- vim.api.nvim_create_autocmd(
---   { 'User' },
---   {
---   pattern = 'targets#mappings#user',
---   group = 'MyAutoCmd',
---   callback = function()
---     vim.fn['targets#mappings#extend']({
---       a = {},
---     })
---   end,
---   once = true,
--- })
--- 	end,
--- })
-
--- table.insert(plugins, {
---   name = 'cool-substitute.nvim',
---   setup = function()
---   end,
---   config = function()
---     require'cool-substitute'.setup({
---       setup_keybindings = true,
---       mappings = {
---         start = '<leader>sw', -- Mark word / region
---         start_word = '<leader>sW', -- Mark word / region. Edit only full word
---         start_and_edit = '', -- Mark word / region and also edit
---         start_and_edit_word = '', -- Mark word / region and also edit.  Edit only full word.
---         apply_substitute_and_next = '?', -- Start substitution / Go to next substitution
---         apply_substitute_and_prev = '!', -- same as M but backwards
---         apply_substitute_all = '<leader>ss', -- Substitute all
---         force_terminate_substitute = '<leader>sc', -- Terminate macro (if some bug happens)
---         redo_last_record = '',
---         terminate_substitute = '<esc>',
---         skip_substitute = '<cr>',
---         goto_next = '<C-j>',
---         goto_previous = '<C-k>',
---       },
---       reg_char = 's', -- letter to save macro (Dont use number or uppercase here)
---       mark_char = 's', -- mark the position at start of macro
---       writing_substitution_color = "#ECBE7B", -- for status line
---       applying_substitution_color = "#98be65", -- for status line
---       edit_word_when_starting_with_substitute_key = true -- (press M to mark and edit when not executing anything anything)
---     })
---   end,
--- })
-
 table.insert(plugins, {
 	name = "sideways.vim",
 	setup = function()
