@@ -356,8 +356,7 @@ table.insert(plugins, {
 			split = {
 				hooks_post = {
 					mini_splitjoin.gen_hook.add_trailing_separator({
-						"%b()",
-						"%b[]",
+						brackets = { "%b[]" },
 					}),
 				},
 			},
