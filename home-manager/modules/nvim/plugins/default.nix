@@ -143,7 +143,6 @@ in
     vim-yoink
     vim-abolish
     camelcasemotion
-    vim-argwrap
 
     # situational
     # TODO:

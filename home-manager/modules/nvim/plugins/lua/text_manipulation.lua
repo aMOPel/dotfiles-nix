@@ -176,16 +176,6 @@ table.insert(plugins, {
 })
 
 table.insert(plugins, {
-	name = "vim-argwrap",
-	setup = function()
-		local noremap = utils.noremap
-		noremap("n", "gj", ":ArgWrap<CR>")
-		vim.g.argwrap_tail_comma_braces = "[{"
-	end,
-	config = function() end,
-})
-
-table.insert(plugins, {
 	name = "textobj-word-column.vim",
 	setup = function()
 		vim.g.textobj_wordcolumn_no_default_key_mappings = 1
@@ -409,6 +399,32 @@ table.insert(plugins, {
 			mappings = {
 				start = "",
 				start_with_preview = "ga",
+			},
+		})
+	end,
+})
+
+table.insert(plugins, {
+	name = "mini.splitjoin",
+	setup = function() end,
+	config = function()
+		local mini_splitjoin = require("mini.splitjoin")
+		mini_splitjoin.setup({
+			mappings = {
+				toggle = "gj",
+			},
+			split = {
+				hooks_post = {
+					mini_splitjoin.gen_hook.add_trailing_separator({
+						"%b()",
+						"%b[]",
+					}),
+				},
+			},
+			join = {
+				hooks_post = {
+					mini_splitjoin.gen_hook.del_trailing_separator(),
+				},
 			},
 		})
 	end,
