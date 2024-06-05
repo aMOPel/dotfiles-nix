@@ -28,10 +28,30 @@ table.insert(plugins, {
 		vim.g.subversivePromptWithActualCommand = 1
 		vim.g.subversivePreserveCursorPosition = 1
 
-		local map = utils.map
-
-		map("x", "P", "<plug>(SubversiveSubstitute)")
-		map("x", "p", "<plug>(SubversiveSubstitute)")
+		vim.keymap.set(
+			{ "n", "x" },
+			"S",
+			"<plug>(SubversiveSubstitute)",
+			{ desc = "substitute with register" }
+		)
+		vim.keymap.set(
+			"n",
+			"SS",
+			"<plug>(SubversiveSubstituteLine)",
+			{ desc = "substitute whole line" }
+		)
+		vim.keymap.set(
+			"x",
+			"P",
+			"<plug>(SubversiveSubstitute)",
+			{ desc = "substitute with register" }
+		)
+		vim.keymap.set(
+			"x",
+			"p",
+			"<plug>(SubversiveSubstitute)",
+			{ desc = "substitute with register" }
+		)
 
 		local noremap = utils.noremap
 		noremap("n", "R", "<plug>(SubversiveSubvertRange)")
@@ -225,9 +245,18 @@ table.insert(plugins, {
 table.insert(plugins, {
 	name = "sideways.vim",
 	setup = function()
-		local noremap = utils.noremap
-		noremap("n", "<left>", ":SidewaysLeft<cr>")
-		noremap("n", "<right>", ":SidewaysRight<cr>")
+		vim.keymap.set(
+			"n",
+			"<left>",
+			"<cmd>SidewaysLeft<cr>",
+			{ desc = "move list element left" }
+		)
+		vim.keymap.set(
+			"n",
+			"<right>",
+			"<cmd>SidewaysRight<cr>",
+			{ desc = "move list element right" }
+		)
 	end,
 	config = function() end,
 })
@@ -296,8 +325,8 @@ table.insert(plugins, {
 				right = "<right>",
 				down = "<down>",
 				up = "<up>",
-				line_left = "<left>",
-				line_right = "<right>",
+				line_left = "",
+				line_right = "",
 				line_down = "<down>",
 				line_up = "<up>",
 			},
@@ -313,18 +342,15 @@ table.insert(plugins, {
 	setup = function() end,
 	config = function()
 		require("mini.operators").setup({
-			evaluate = {},
+			evaluate = { prefix = "" },
 			exchange = {
 				prefix = "gx",
 				reindent_linewise = true,
 			},
-			multiply = {},
-			replace = {
-				prefix = "S",
-				reindent_linewise = true,
-			},
+			multiply = { prefix = "" },
+			replace = { prefix = "" },
 			sort = {
-				prefix = "gs",
+				prefix = "go",
 				func = nil,
 			},
 		})
@@ -374,34 +400,25 @@ table.insert(plugins, {
 	setup = function() end,
 	config = function()
 		require("mini.surround").setup({
-			-- Module mappings. Use `''` (empty string) to disable one.
 			mappings = {
-				add = "ys", -- Add surrounding in Normal and Visual modes
-				delete = "ds", -- Delete surrounding
-				find = "", -- Find surrounding (to the right)
-				find_left = "", -- Find surrounding (to the left)
-				highlight = "", -- Highlight surrounding
-				replace = "cs", -- Replace surrounding
-				update_n_lines = "", -- Update `n_lines`
+				add = "gs",
+				delete = "ds",
+				find = "",
+				find_left = "",
+				highlight = "",
+				replace = "cs",
+				update_n_lines = "",
 
-				suffix_last = "", -- Suffix to search with "prev" method
-				suffix_next = "", -- Suffix to search with "next" method
+				suffix_last = "",
+				suffix_next = "",
 			},
 			search_method = "cover_or_next",
 		})
 
-		-- Remap adding surrounding to Visual mode selection
-		vim.keymap.del("x", "ys")
-		vim.keymap.set(
-			"x",
-			"S",
-			[[:<C-u>lua MiniSurround.add('visual')<CR>]],
-			{ silent = true, desc = "surround in visual mode" }
-		)
 		vim.keymap.set(
 			"n",
 			"yss",
-			"ys_",
+			"gs_",
 			{ remap = true, desc = "surround whole line" }
 		)
 	end,
