@@ -89,7 +89,7 @@ vim.keymap.set(
 vim.keymap.set(
 	{ "n" },
 	"<leader>sg",
-	[[mz*:%s///g\|norm g`z<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>]],
+	[[mz*:%s///g|norm g`z<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>]],
 	{ desc = "Quick substitute whole file" }
 )
 
