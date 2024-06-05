@@ -159,8 +159,8 @@ in
 
     # situational
     # TODO:
-    # toggleterm-nvim
-    vim-floaterm
+    toggleterm-nvim
+    # vim-floaterm
     vim-grepper
     vim-fugitive
     vim-rhubarb

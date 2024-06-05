@@ -1,43 +1,70 @@
 plugins = g.plugins
 
 table.insert(plugins, {
-	name = "vim-floaterm",
-	setup = function()
-		vim.g.floaterm_shell = "bash"
-		vim.g.floaterm_width = 0.9
-		vim.g.floaterm_height = 0.8
-		vim.g.floaterm_opener = "tabe"
+	name = "toggleterm.nvim",
+	setup = function() end,
+	config = function()
+		local function rh(height)
+			return math.floor(height * vim.o.lines)
+		end
+		local function rw(width)
+			return math.floor(width * vim.o.columns)
+		end
 
-		local noremap = utils.noremap
-		noremap("n", "<leader>ff", ":FloatermToggle --cwd=<buffer> <CR>")
-		noremap("t", "<C-W>c", "<C-\\><C-n><C-W>c")
-		noremap("t", "<C-W><c-c>", "<C-\\><C-n><C-W>c")
-		noremap("t", "<C-W>w", "<C-\\>:FloatermNext<cr>")
-		noremap("t", "<C-W><c-w>", "<C-\\>:FloatermNext<cr>")
-		noremap("t", "<C-W>n", "<C-\\>:FloatermNew<cr>")
-		noremap("t", "<C-W><c-n>", "<C-\\>:FloatermNew<cr>")
-		noremap(
-			"n",
-			"<leader>fm",
-			':exec "FloatermNew --cwd=<buffer> --autoclose=0 --disposable " . &makeprg<CR>'
-		)
-		noremap(
-			"n",
-			"<leader>fg",
-			":FloatermNew --cwd=<buffer> --autoclose=1 --width=1.0 --height=1.0 lazygit<CR>"
-		)
-		noremap(
-			"n",
-			"<leader>ft",
-			":FloatermNew --cwd=<buffer> --autoclose=2 --disposable taskwarrior-tui<CR>"
-		)
-		noremap(
-			"n",
-			"<leader>fw",
-			":FloatermNew --cwd=<buffer> --autoclose=0 --disposable --width=0.9 timew week<CR>"
-		)
+		require("toggleterm").setup({
+			open_mapping = [[<leader>ff]],
+			shell = "$SHELL",
+			direction = "float",
+			float_opts = {
+				width = rw(0.9),
+				height = rh(0.9),
+			},
+		})
+
+		vim.keymap.set("n", "<leader>fs", "<cmd>TermSelect<cr>", {
+			desc = "select terminal",
+		})
+
+		-- TERMIAL WINDOW KEYMAPS
+		function set_terminal_keymaps()
+			local opts = { buffer = 0 }
+			vim.keymap.set("t", "<f11>", [[<C-\><C-n>]], opts)
+			vim.keymap.set("t", "<C-w>", [[<C-\><C-n><C-w>]], opts)
+		end
+
+		vim.api.nvim_create_autocmd({ "TermOpen" }, {
+			group = "MyAutoCmd",
+			pattern = { "term://*toggleterm#*" },
+			callback = function(ev)
+				set_terminal_keymaps()
+			end,
+			desc = "set window keymaps in toggle term",
+		})
+
+		function setup_tui(cmd, lhs)
+			local Terminal = require("toggleterm.terminal").Terminal
+			local tui = Terminal:new({
+				cmd = cmd,
+				hidden = true,
+				direction = "float",
+				float_opts = {
+					width = rw(1.0),
+					height = rh(1.0),
+				},
+			})
+			vim.keymap.set("n", lhs, function()
+				tui:toggle()
+			end, {
+				noremap = true,
+				silent = true,
+				desc = "toggle " .. cmd .. " floating terminal",
+			})
+		end
+
+		-- TUIs
+		setup_tui("lazygit", "<leader>fg")
+		setup_tui("taskwarrior-tui", "<leader>ft")
 	end,
-	config = function() end,
 })
 
 table.insert(plugins, {
