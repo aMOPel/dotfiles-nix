@@ -7,7 +7,6 @@ table.insert(plugins, {
 		vim.g.yoinkSavePersistently = 1
 		vim.g.yoinkIncludeDeleteOperations = 1
 
-		local map = utils.map
 		vim.keymap.set(
 			"n",
 			"<c-n>",
@@ -171,6 +170,7 @@ table.insert(plugins, {
 						"WARN",
 						"PERF",
 						"NOTE",
+						"TEST",
 					},
 					word = true,
 					cyclic = true,

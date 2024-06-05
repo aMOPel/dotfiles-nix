@@ -7,7 +7,7 @@ table.insert(plugins, {
 		require("nvim-web-devicons").setup({
 			override = {
 				nim = {
-					icon = "👑",
+					icon = "",
 					name = "nim",
 				},
 			},
@@ -54,18 +54,6 @@ table.insert(plugins, {
 				theme = "onedark",
 				component_separators = { left = "", right = "" },
 				section_separators = { left = "", right = "" },
-				disabled_filetypes = {
-					statusline = {},
-					winbar = {},
-				},
-				ignore_focus = {},
-				always_divide_middle = true,
-				globalstatus = false,
-				refresh = {
-					statusline = 1000,
-					tabline = 1000,
-					winbar = 1000,
-				},
 			},
 			sections = {
 				lualine_a = { "mode" },
@@ -124,9 +112,7 @@ table.insert(plugins, {
 			tabline = {
 				lualine_a = { "tabs" },
 				lualine_b = { "branch", "diff" },
-				lualine_c = {
-					-- { gps.get_location, cond = gps.is_available },
-				},
+				lualine_c = {},
 				lualine_x = {
 					SessionStatus,
 				},
@@ -162,7 +148,8 @@ table.insert(plugins, {
 				"man",
 				"nvim-dap-ui",
 				"mundo",
-				"mason",
+				"toggleterm",
+				"trouble",
 			},
 		})
 	end,
@@ -170,8 +157,7 @@ table.insert(plugins, {
 
 table.insert(plugins, {
 	name = "nvim-hlslens",
-	setup = function() end,
-	config = function()
+	setup = function()
 		vim.keymap.set(
 			"n",
 			"n",
@@ -193,6 +179,7 @@ table.insert(plugins, {
 			[[<Plug>(asterisk-z#)<Cmd>lua require('hlslens').start()<CR>]]
 		)
 	end,
+	config = function() end,
 })
 
 table.insert(plugins, {
@@ -200,93 +187,13 @@ table.insert(plugins, {
 	setup = function() end,
 	config = function()
 		require("scrollbar").setup({
-			show = true,
-			show_in_active_only = false,
-			set_highlights = true,
-			folds = 1000, -- handle folds, set to number to disable folds if no. of lines in buffer exceeds this
-			max_lines = false, -- disables if no. of lines in buffer exceeds this
 			handle = {
-				text = " ",
-				color = nil,
-				cterm = nil,
 				highlight = "Visual",
-				hide_if_all_visible = true, -- Hides handle if all lines are visible
 			},
-			marks = {
-				Search = {
-					-- text = { "ﰯ" },
-					text = { "" },
-					priority = 0,
-					color = nil,
-					cterm = nil,
-					highlight = "WarningMsg",
-				},
-				Error = {
-					text = { "" },
-					priority = 1,
-					color = nil,
-					cterm = nil,
-					highlight = "DiagnosticError",
-				},
-				Warn = {
-					text = { "" },
-					priority = 2,
-					color = nil,
-					cterm = nil,
-					highlight = "DiagnosticWarn",
-				},
-				Info = {
-					text = { "" },
-					priority = 3,
-					color = nil,
-					cterm = nil,
-					highlight = "DiagnosticInfo",
-				},
-				Hint = {
-					text = { "" },
-					priority = 4,
-					color = nil,
-					cterm = nil,
-					highlight = "DiagnosticHint",
-				},
-				Misc = {
-					text = { "" },
-					priority = 5,
-					color = nil,
-					cterm = nil,
-					highlight = "Normal",
-				},
-			},
-			excluded_buftypes = {
-				"terminal",
-			},
-			excluded_filetypes = {
-				"prompt",
-				"TelescopePrompt",
-			},
-			autocmd = {
-				render = {
-					"BufWinEnter",
-					"TabEnter",
-					"TermEnter",
-					"WinEnter",
-					"CmdwinLeave",
-					"TextChanged",
-					"VimResized",
-					"WinScrolled",
-				},
-				clear = {
-					"BufWinLeave",
-					"TabLeave",
-					"TermLeave",
-					"WinLeave",
-				},
-			},
-			handlers = {
-				diagnostic = true,
-				search = false, -- Requires hlslens to be loaded, will run require("scrollbar.handlers.search").setup() for you
-			},
+			excluded_buftypes = {},
+			excluded_filetypes = {},
 		})
+
 		require("scrollbar.handlers.search").setup({
 			auto_enable = true,
 			enable_incsearch = true,
