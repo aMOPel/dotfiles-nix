@@ -143,7 +143,6 @@ in
     vim-subversive
     vim-yoink
     vim-abolish
-    vim-sandwich
     camelcasemotion
     vim-argwrap
 

@@ -141,14 +141,6 @@ table.insert(plugins, {
 })
 
 table.insert(plugins, {
-	name = "vim-sandwich",
-	setup = function()
-		vim.cmd([[runtime vimscript/vim-sandwich/surround.vim]])
-	end,
-	config = function() end,
-})
-
-table.insert(plugins, {
 	name = "CamelCaseMotion",
 	setup = function()
 		-- vim.g.camelcasemotion_key = ','
@@ -419,5 +411,37 @@ table.insert(plugins, {
 				start_with_preview = "ga",
 			},
 		})
+	end,
+})
+
+table.insert(plugins, {
+	name = "mini.surround",
+	setup = function() end,
+	config = function()
+		require("mini.surround").setup({
+			-- Module mappings. Use `''` (empty string) to disable one.
+			mappings = {
+				add = "ys", -- Add surrounding in Normal and Visual modes
+				delete = "ds", -- Delete surrounding
+				find = "", -- Find surrounding (to the right)
+				find_left = "", -- Find surrounding (to the left)
+				highlight = "", -- Highlight surrounding
+				replace = "cs", -- Replace surrounding
+				update_n_lines = "", -- Update `n_lines`
+
+				suffix_last = "", -- Suffix to search with "prev" method
+				suffix_next = "", -- Suffix to search with "next" method
+			},
+			search_method = "cover_or_next",
+		})
+
+		-- Remap adding surrounding to Visual mode selection
+		vim.keymap.del("x", "ys")
+		vim.keymap.set("x", "S", function()
+			require("mini.surround").add("visual")
+		end, { silent = true })
+
+		-- Make special mapping for "add surrounding for line"
+		vim.keymap.set("n", "yss", "ys_", { remap = true })
 	end,
 })

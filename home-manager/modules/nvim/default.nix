@@ -31,7 +31,6 @@ in
     programs.neovim =
       let
         plugins = import ./plugins { inherit lib pkgs; };
-        vimscript = import ./vimscript { inherit lib pkgs; };
         lua = import ./config { inherit lib pkgs; };
         filetypePackages = import ./filetypePackages {
           inherit lib pkgs;
@@ -46,7 +45,6 @@ in
         vimdiffAlias = true;
         plugins = filetypePackages.plugins ++ plugins.plugins;
         extraPackages = filetypePackages.packages;
-        extraConfig = vimscript.extraConfig;
         extraLuaConfig = lua.extraConfig + filetypePackages.extraConfig + plugins.extraConfig;
       };
   };
