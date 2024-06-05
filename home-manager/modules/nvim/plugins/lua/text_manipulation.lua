@@ -1,51 +1,6 @@
 plugins = g.plugins
 
 table.insert(plugins, {
-	name = "mini.move",
-	setup = function() end,
-	config = function()
-		require("mini.move").setup({
-			mappings = {
-				left = "<left>",
-				right = "<right>",
-				down = "<down>",
-				up = "<up>",
-				line_left = "<left>",
-				line_right = "<right>",
-				line_down = "<down>",
-				line_up = "<up>",
-			},
-			options = {
-				reindent_linewise = true,
-			},
-		})
-	end,
-})
-
-table.insert(plugins, {
-	name = "mini.operators",
-	setup = function() end,
-	config = function()
-		require("mini.operators").setup({
-			evaluate = {},
-			exchange = {
-				prefix = "gx",
-				reindent_linewise = true,
-			},
-			multiply = {},
-			replace = {
-				prefix = "S",
-				reindent_linewise = true,
-			},
-			sort = {
-				prefix = "gs",
-				func = nil,
-			},
-		})
-	end,
-})
-
-table.insert(plugins, {
 	name = "vim-yoink",
 	setup = function()
 		vim.g.yoinkAutoFormatPaste = 0
@@ -84,60 +39,6 @@ table.insert(plugins, {
 		noremap("n", "RR", "<plug>(SubversiveSubvertWordRange)")
 	end,
 	config = function() end,
-})
-
-table.insert(plugins, {
-	name = "mini.ai",
-	setup = function() end,
-	config = function()
-		local gen_ai_spec = require("mini.extra").gen_ai_spec
-
-		local spec_treesitter = require("mini.ai").gen_spec.treesitter
-		require("mini.ai").setup({
-			custom_textobjects = {
-				e = gen_ai_spec.buffer(),
-				d = gen_ai_spec.diagnostic(),
-				i = gen_ai_spec.indent(),
-			},
-			mappings = {
-				around = "a",
-				inside = "i",
-				around_next = "",
-				inside_next = "",
-				around_last = "",
-				inside_last = "",
-				goto_left = "",
-				goto_right = "",
-			},
-			n_lines = 50,
-			search_method = "cover_or_nearest",
-			a = spec_treesitter({
-				a = "@parameter.outer",
-				i = "@parameter.inner",
-			}),
-			c = spec_treesitter({ a = "@comment.outer", i = "@comment.inner" }),
-			f = spec_treesitter({
-				a = "@function.outer",
-				i = "@function.inner",
-			}),
-			-- "@assignment.inner",
-			-- "@assignment.outer",
-			-- @loop.inner
-			-- @loop.outer
-			-- @block.inner
-			-- @block.outer
-			-- @call.inner
-			-- @call.outer
-			-- @assignment.inner
-			-- @assignment.outer
-			-- "@assignment.rhs",
-			-- "@assignment.lhs",
-			-- "@return.inner",
-			-- "@return.outer",
-			-- "@statement.outer",
-			-- "@number.inner",
-		})
-	end,
 })
 
 table.insert(plugins, {
@@ -329,6 +230,105 @@ table.insert(plugins, {
 		noremap("n", "<right>", ":SidewaysRight<cr>")
 	end,
 	config = function() end,
+})
+
+table.insert(plugins, {
+	name = "mini.ai",
+	setup = function() end,
+	config = function()
+		local gen_ai_spec = require("mini.extra").gen_ai_spec
+
+		local spec_treesitter = require("mini.ai").gen_spec.treesitter
+		require("mini.ai").setup({
+			custom_textobjects = {
+				e = gen_ai_spec.buffer(),
+				d = gen_ai_spec.diagnostic(),
+				i = gen_ai_spec.indent(),
+			},
+			mappings = {
+				around = "a",
+				inside = "i",
+				around_next = "",
+				inside_next = "",
+				around_last = "",
+				inside_last = "",
+				goto_left = "",
+				goto_right = "",
+			},
+			n_lines = 50,
+			search_method = "cover_or_nearest",
+			a = spec_treesitter({
+				a = "@parameter.outer",
+				i = "@parameter.inner",
+			}),
+			c = spec_treesitter({ a = "@comment.outer", i = "@comment.inner" }),
+			f = spec_treesitter({
+				a = "@function.outer",
+				i = "@function.inner",
+			}),
+			-- "@assignment.inner",
+			-- "@assignment.outer",
+			-- @loop.inner
+			-- @loop.outer
+			-- @block.inner
+			-- @block.outer
+			-- @call.inner
+			-- @call.outer
+			-- @assignment.inner
+			-- @assignment.outer
+			-- "@assignment.rhs",
+			-- "@assignment.lhs",
+			-- "@return.inner",
+			-- "@return.outer",
+			-- "@statement.outer",
+			-- "@number.inner",
+		})
+	end,
+})
+
+table.insert(plugins, {
+	name = "mini.move",
+	setup = function() end,
+	config = function()
+		require("mini.move").setup({
+			mappings = {
+				left = "<left>",
+				right = "<right>",
+				down = "<down>",
+				up = "<up>",
+				line_left = "<left>",
+				line_right = "<right>",
+				line_down = "<down>",
+				line_up = "<up>",
+			},
+			options = {
+				reindent_linewise = true,
+			},
+		})
+	end,
+})
+
+table.insert(plugins, {
+	name = "mini.operators",
+	setup = function() end,
+	config = function()
+		require("mini.operators").setup({
+			evaluate = {},
+			exchange = {
+				prefix = "gx",
+				reindent_linewise = true,
+			},
+			multiply = {},
+			replace = {
+				prefix = "S",
+				reindent_linewise = true,
+			},
+			sort = {
+				prefix = "gs",
+				func = nil,
+			},
+		})
+	end,
 })
 
 table.insert(plugins, {
