@@ -136,8 +136,6 @@ in
 
     # text manipulation
     vim-textobj-user
-    # vim-textobj-indent
-    vim-textobj-entire
     # textobj-word-column-vim
     mini-nvim
     dial-nvim
