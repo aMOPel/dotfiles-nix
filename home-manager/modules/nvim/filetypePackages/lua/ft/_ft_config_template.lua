@@ -1,35 +1,35 @@
 local ft = "filetype_name"
 
-vim.tbl_deep_extend("force", g.lsp.fts, {
+utils.addTable(g.lsp.fts, {
 	ft,
 })
 
-vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
+utils.addTable(g.lsp.servers.lsp_installer, {
 	-- server_name = function(on_attach, capabilities) end,
 	server_name = "default",
 })
 
-vim.tbl_deep_extend("force", g.treesitter.indent.disable, {
+utils.addTable(g.treesitter.indent.disable, {
 	ft,
 })
 
-vim.tbl_deep_extend("force", g.formatter.filetype, {
+utils.addTable(g.formatter.filetype, {
 	[ft] = { require("formatter.filetypes")[ft].prettierd },
 })
 
-vim.tbl_deep_extend("force", g.formatter.on_save, {
+utils.addTable(g.formatter.on_save, {
 	"*." .. ft,
 })
 
-vim.tbl_deep_extend("force", g.linter.filetype, {
+utils.addTable(g.linter.filetype, {
 	"",
 })
 
-vim.tbl_deep_extend("force", g.linter.custom_linter, {
+utils.addTable(g.linter.custom_linter, {
 	"",
 })
 
-vim.tbl_deep_extend("force", g.dap.filetype, {
+utils.addTable(g.dap.filetype, {
 	"",
 })
 

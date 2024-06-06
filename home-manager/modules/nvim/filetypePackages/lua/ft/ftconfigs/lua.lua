@@ -1,10 +1,10 @@
 local ft = "lua"
 
-vim.tbl_deep_extend("force", g.lsp.fts, {
+utils.addTable(g.lsp.fts, {
 	ft,
 })
 
-vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
+utils.addTable(g.lsp.servers.lsp_installer, {
 	lua_ls = function(on_attach, capabilities)
 		return {
 			capabilities = capabilities,
@@ -16,7 +16,7 @@ vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
 					and not vim.loop.fs_stat(path .. "/.luarc.jsonc")
 				then
 					client.config.settings =
-						vim.tbl_deep_extend("force", client.config.settings, {
+						utils.addTable(client.config.settings, {
 							Lua = {
 								runtime = {
 									-- Tell the language server which version of Lua you're using
@@ -48,7 +48,7 @@ vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
 	end,
 })
 
-vim.tbl_deep_extend("force", g.formatter.filetype, {
+utils.addTable(g.formatter.filetype, {
 	[ft] = function()
 		return {
 			exe = "stylua",
@@ -66,6 +66,6 @@ vim.tbl_deep_extend("force", g.formatter.filetype, {
 	end,
 })
 
-vim.tbl_deep_extend("force", g.formatter.on_save, {
+utils.addTable(g.formatter.on_save, {
 	"*." .. ft,
 })

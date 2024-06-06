@@ -133,7 +133,7 @@ end
 
 local setup_linters = function()
 	local lint = require("lint")
-	-- vim.tbl_deep_extend("force", lint.linters, g.linter.custom_linter)
+	-- utils.addTable(lint.linters, g.linter.custom_linter)
 	lint.linters_by_ft = g.linter.filetype
 	vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
 		group = "MyAutoCmd",
@@ -142,7 +142,7 @@ local setup_linters = function()
 		end,
 	})
 
-	vim.tbl_deep_extend("force", g.formatter.filetype, {
+	utils.addTable(g.formatter.filetype, {
 		["*"] = {
 			require("formatter.filetypes").any.remove_trailing_whitespace,
 		},

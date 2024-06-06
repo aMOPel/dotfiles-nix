@@ -1,9 +1,9 @@
 local ft = "sh"
 
-vim.tbl_deep_extend("force", g.lsp.fts, {
+utils.addTable(g.lsp.fts, {
 	ft,
 })
 
-vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
+utils.addTable(g.lsp.servers.lsp_installer, {
 	bashls = "default",
 })

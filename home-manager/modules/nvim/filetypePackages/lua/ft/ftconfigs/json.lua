@@ -1,10 +1,10 @@
 local ft = "json"
 
-vim.tbl_deep_extend("force", g.lsp.fts, {
+utils.addTable(g.lsp.fts, {
 	ft,
 })
 
-vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
+utils.addTable(g.lsp.servers.lsp_installer, {
 	jsonls = function(on_attach, capabilities)
 		return {
 			capabilities = capabilities,
@@ -18,10 +18,10 @@ vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
 	end,
 })
 
-vim.tbl_deep_extend("force", g.formatter.filetype, {
+utils.addTable(g.formatter.filetype, {
 	[ft] = { require("formatter.filetypes")[ft].jq },
 })
 
-vim.tbl_deep_extend("force", g.formatter.on_save, {
+utils.addTable(g.formatter.on_save, {
 	"*." .. ft,
 })

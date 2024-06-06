@@ -1,12 +1,12 @@
 local ft = "cpp"
 
-vim.tbl_deep_extend("force", g.lsp.fts, {
+utils.addTable(g.lsp.fts, {
 	"c",
 	"cpp",
 	"objc",
 	"objcpp",
 })
 
-vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
+utils.addTable(g.lsp.servers.lsp_installer, {
 	clangd = "default",
 })

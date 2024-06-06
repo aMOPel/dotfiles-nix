@@ -1,18 +1,18 @@
 local ft = "gdscript"
 
-vim.tbl_deep_extend("force", g.lsp.fts, {
+utils.addTable(g.lsp.fts, {
 	ft,
 })
 
-vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
+utils.addTable(g.lsp.servers.lsp_installer, {
 	gdscript = "default",
 })
 
-vim.tbl_deep_extend("force", g.treesitter.indent.disable, {
+utils.addTable(g.treesitter.indent.disable, {
 	ft,
 })
 
-vim.tbl_deep_extend("force", g.formatter.filetype, {
+utils.addTable(g.formatter.filetype, {
 	[ft] = {
 		function()
 			return {
@@ -25,15 +25,15 @@ vim.tbl_deep_extend("force", g.formatter.filetype, {
 	},
 })
 
-vim.tbl_deep_extend("force", g.formatter.on_save, {
+utils.addTable(g.formatter.on_save, {
 	"*.gd",
 })
 
-vim.tbl_deep_extend("force", g.linter.filetype, {
+utils.addTable(g.linter.filetype, {
 	[ft] = { "gdlint" },
 })
 
-vim.tbl_deep_extend("force", g.dap.filetype, {
+utils.addTable(g.dap.filetype, {
 	[ft] = function()
 		local dap = require("dap")
 		dap.adapters.godot = {

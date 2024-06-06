@@ -1,26 +1,26 @@
 local ft = "typescript"
 
-vim.tbl_deep_extend("force", g.lsp.fts, {
+utils.addTable(g.lsp.fts, {
 	ft,
 	"javascript",
 })
 
-vim.tbl_deep_extend("force", g.lsp.servers.lsp_installer, {
+utils.addTable(g.lsp.servers.lsp_installer, {
 	tsserver = "default",
 })
 
-vim.tbl_deep_extend("force", g.linter.filetype, {
+utils.addTable(g.linter.filetype, {
 	[ft] = { "eslint_d" },
 	javascript = { "eslint_d" },
 })
 
-vim.tbl_deep_extend("force", g.formatter.filetype, {
+utils.addTable(g.formatter.filetype, {
 	[ft] = {
 		require("formatter.filetypes")[ft].prettierd,
 	},
 })
 
-vim.tbl_deep_extend("force", g.dap.filetype, {
+utils.addTable(g.dap.filetype, {
 	[ft] = function()
 		local dap = require("dap")
 		require("dap").adapters["pwa-node"] = {

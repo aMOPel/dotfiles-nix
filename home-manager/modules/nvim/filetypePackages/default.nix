@@ -388,6 +388,7 @@ in
   extraConfig =
     "\n\n"
     + builtins.readFile ./lua/globals.lua
+    + builtins.readFile ./lua/utils.lua
     + builtins.concatStringsSep "\n\n" (lib.lists.forEach enabledFtconfigPaths builtins.readFile)
     + builtins.readFile ./lua/lsp.lua
     + builtins.readFile ./lua/debug.lua
