@@ -95,19 +95,19 @@ table.insert(plugins, {
 	name = "CamelCaseMotion",
 	setup = function()
 		vim.keymap.set(
-			{ "n", "x" },
+			{ "n", "x", "o" },
 			"gw",
 			"<Plug>CamelCaseMotion_w",
 			{ desc = "camel case word forward" }
 		)
 		vim.keymap.set(
-			{ "n", "x" },
+			{ "n", "x", "o" },
 			"gb",
 			"<Plug>CamelCaseMotion_b",
 			{ desc = "camel case word backward" }
 		)
 		vim.keymap.set(
-			{ "n", "x" },
+			{ "n", "x", "o" },
 			"ge",
 			"<Plug>CamelCaseMotion_e",
 			{ desc = "camel case word end" }
