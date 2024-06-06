@@ -14,6 +14,10 @@
     shellIntegration.mode = "no-cursor";
 
     settings = {
+      font_family = "FiraCode Nerd Font Ret";
+      bold_font = "FiraCode Nerd Font Bold";
+      italic_font = "FiraCode Nerd Font Light";
+      bodl_italic_font = "FiraCode Nerd Font Med";
       disable_ligatures = "cursor";
       font_features = "FiraCode-Retina +zero";
 

@@ -15,6 +15,10 @@ in
     ./modules/lazygit
   ];
 
+  fonts.fontconfig = {
+    enable = true;
+  };
+
   # uninstall = true;
   # targets.genericLinux.enable = true;
 
