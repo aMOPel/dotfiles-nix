@@ -4,9 +4,6 @@ let
 in
 pkgs.mkShell {
   packages = with pkgs; [
-    nixpkgs-fmt
-    deadnix
-    nixd
     niv
   ];
 }
