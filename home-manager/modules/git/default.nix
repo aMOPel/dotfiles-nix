@@ -26,6 +26,10 @@ in
       enable = true;
       userName = cfg.userName;
       userEmail = cfg.userEmail;
+      ignores = [
+        "Session.vim"
+        ".direnv/"
+      ];
     };
 
     programs.bash = {
