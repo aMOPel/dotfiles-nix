@@ -3,6 +3,7 @@ let
   sources = import ../nix/sources.nix;
   pkgs = import sources.nixpkgs { };
   lib = pkgs.lib;
+  personalInfo = import ./personal_info.nix { inherit lib; };
 in
 {
   imports = [
@@ -17,6 +18,12 @@ in
 
   # uninstall = true;
   # targets.genericLinux.enable = true;
+
+  myModules.git = {
+    enable = true;
+    userName = personalInfo.git.userName;
+    userEmail = personalInfo.git.userEmail;
+  };
 
   myModules.neovim = {
     enable = true;
@@ -42,8 +49,8 @@ in
 
   programs.home-manager.enable = true;
 
-  home.username = username;
-  home.homeDirectory = "/home/${username}";
+  home.username = personalInfo.username;
+  home.homeDirectory = personalInfo.homeDirectory;
   home.language.base = "en_US.UTF-8";
   home.keyboard.layout = "us";
   home.preferXdgDirectories = true;
