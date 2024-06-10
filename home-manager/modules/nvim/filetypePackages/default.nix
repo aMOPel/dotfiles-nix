@@ -1,5 +1,19 @@
 { filetypes ? [ ], lib, pkgs, ... }:
 let
+
+  vim-grip = pkgs.vimUtils.buildVimPlugin {
+    pname = "vim-grip";
+    version = "2024-06-07";
+    src = pkgs.fetchFromGitHub {
+      owner = "PratikBhusal";
+      repo = "vim-grip";
+      rev = "b89bc5fe850da96d2ea5bb8764c71b2020d0f10b";
+      sha256 = "sha256-if2ibS96vIXdeAVE9I+oTkxvHdYbgMyWyO6LKUD/QY8=";
+    };
+    meta.homepage = "https://github.com/PratikBhusal/vim-grip";
+  };
+
+
   pluginKeys = [
     "tsParsers"
     "ftplugins"
@@ -9,6 +23,7 @@ let
     "linters"
     "formatters"
     "debuggers"
+    "extraTools"
   ];
   filetypePackages = with pkgs; {
     angular = { };
@@ -188,14 +203,9 @@ let
         markdownlint-cli
       ];
       formatters = [ prettierd ];
+      extraTools = [ python312Packages.grip ];
       ftplugins = with vimPlugins; [
-        {
-          type = "lua";
-          plugin = vim-markdown;
-          config = ''
-            vim.g.vim_markdown_folding_disabled = 1
-          '';
-        }
+        vim-grip
       ];
     };
 
