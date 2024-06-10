@@ -15,4 +15,4 @@ switch:
 
 .PHONY: install
 install:
-	nix-shell '<home-manager>' -A install ./hm-shell.nix
+	nix-shell ./hm-install.nix -A install
