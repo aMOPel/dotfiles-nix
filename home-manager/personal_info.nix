@@ -7,6 +7,12 @@ let
       userName = "";
       userEmail = "";
     };
+    task = {
+      context = {
+        # test.read = "pro:test";
+        # test.write = "pro:test";
+      };
+    };
   };
 in
 # check that every leaf is differ from emtpy string

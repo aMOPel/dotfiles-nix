@@ -13,10 +13,16 @@ in
     ./modules/git
     ./modules/shelltools
     ./modules/ranger
+    ./modules/task
   ];
 
   # uninstall = true;
   # targets.genericLinux.enable = true;
+
+  myModules.task = {
+    enable = true;
+    context = personalInfo.task.context;
+  };
 
   myModules.git = {
     enable = true;

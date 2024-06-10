@@ -28,7 +28,6 @@ fi
 }
 
 alias d=lazydocker
-alias t=taskwarrior-tui
 
 alias fd='fd --ignore-case --hidden --follow'
 alias rg='rg --smart-case --hidden --follow'
