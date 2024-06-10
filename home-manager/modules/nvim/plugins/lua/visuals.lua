@@ -180,6 +180,71 @@ table.insert(plugins, {
 			handle = {
 				highlight = "Visual",
 			},
+			marks = {
+				Cursor = {
+					text = "•",
+					priority = 0,
+					gui = nil,
+					color = nil,
+					cterm = nil,
+					color_nr = nil, -- cterm
+					highlight = "Normal",
+				},
+				Search = {
+					text = { "" },
+					priority = 1,
+					gui = nil,
+					color = nil,
+					cterm = nil,
+					color_nr = nil, -- cterm
+					highlight = "WarningMsg",
+				},
+				Error = {
+					text = { "" },
+					priority = 2,
+					gui = nil,
+					color = nil,
+					cterm = nil,
+					color_nr = nil, -- cterm
+					highlight = "DiagnosticError",
+				},
+				Warn = {
+					text = { "" },
+					priority = 3,
+					gui = nil,
+					color = nil,
+					cterm = nil,
+					color_nr = nil, -- cterm
+					highlight = "DiagnosticWarn",
+				},
+				Info = {
+					text = { "" },
+					priority = 4,
+					gui = nil,
+					color = nil,
+					cterm = nil,
+					color_nr = nil, -- cterm
+					highlight = "DiagnosticInfo",
+				},
+				Hint = {
+					text = { "" },
+					priority = 5,
+					gui = nil,
+					color = nil,
+					cterm = nil,
+					color_nr = nil, -- cterm
+					highlight = "DiagnosticHint",
+				},
+				Misc = {
+					text = { "" },
+					priority = 6,
+					gui = nil,
+					color = nil,
+					cterm = nil,
+					color_nr = nil, -- cterm
+					highlight = "Normal",
+				},
+			},
 			excluded_buftypes = {},
 			excluded_filetypes = {},
 		})
