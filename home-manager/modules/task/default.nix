@@ -49,6 +49,12 @@ in
       package = pkgs.taskwarrior3;
       config = {
         context = cfg.context;
+
+        uda.priority.values = "H,M,,L";
+        urgency.uda.priority.L.coefficient = "-0.5";
+        search.case.sensitive = "no";
+        dateformat.info = "H:N:S - D.M.Y";
+        verbose = "blank,header,footnote,label,new-id,new-uuid,affected,edit,special,project,sync,unwait,recur";
       };
     };
 
