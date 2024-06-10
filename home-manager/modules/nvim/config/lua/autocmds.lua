@@ -29,20 +29,6 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 	desc = "quick search and replace in quickfix",
 })
 
-vim.api.nvim_create_autocmd({ "FileType" }, {
-	group = "MyAutoCmd",
-	pattern = { "help" },
-	callback = function(ev)
-		vim.keymap.set(
-			{ "n" },
-			"go",
-			[[<c-]>]],
-			{ buffer = true, desc = "follow tags in helpfiles easier" }
-		)
-	end,
-	desc = "follow tags in helpfiles easier",
-})
-
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
 	group = "MyAutoCmd",
 	pattern = { "*" },
