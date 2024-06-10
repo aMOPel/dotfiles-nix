@@ -16,6 +16,29 @@ in
     RANGER_LOAD_DEFAULT_RC = "FALSE";
   };
 
+  programs.bash = {
+    # mind the `''${ranger_cmd[@]} "$@"` line, `''` escaped the string interpolation
+    bashrcExtra = ''
+      function ranger {
+        local IFS=$'\t\n'
+        local tempfile="$(mktemp -t tmp.XXXXXX)"
+        local ranger_cmd=(
+          command
+          ranger
+          --cmd="map Q chain shell echo %d > "$tempfile"; quitall"
+        )
+
+        ''${ranger_cmd[@]} "$@"
+        if [[ -s "$tempfile" ]] && [[ "$(cat -- "$tempfile")" != "$(echo -n `pwd`)" ]]; then
+          command zoxide add "$(cat -- "$tempfile")" && cd -- "$(cat -- "$tempfile")" || return
+        fi
+        command rm -f -- "$tempfile" 2>/dev/null
+      }
+
+      alias r=ranger
+    '';
+  };
+
   programs.ranger = {
     enable = true;
     plugins = [
@@ -33,6 +56,7 @@ in
       }
     ];
   };
+
   xdg.configFile =
     {
       "ranger/commands.py".text = builtins.readFile ./commands.py;
