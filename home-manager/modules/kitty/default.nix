@@ -1,4 +1,9 @@
 { pkgs, ... }: {
+
+  fonts.fontconfig = {
+    enable = true;
+  };
+
   programs.kitty = {
     enable = true;
 
