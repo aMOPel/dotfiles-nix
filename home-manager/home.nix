@@ -13,7 +13,6 @@ in
     ./modules/git
     ./modules/shelltools
     ./modules/ranger
-    ./modules/lazygit
   ];
 
   # uninstall = true;
@@ -21,6 +20,7 @@ in
 
   myModules.git = {
     enable = true;
+    enableLazygit = true;
     userName = personalInfo.git.userName;
     userEmail = personalInfo.git.userEmail;
   };

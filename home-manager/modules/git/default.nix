@@ -5,6 +5,8 @@ in
 {
   options.myModules.git = {
     enable = lib.mkEnableOption "git";
+    enableLazygit = lib.mkEnableOption "lazygit";
+
     userName = lib.mkOption {
       type = lib.types.str;
       default = "";
@@ -25,5 +27,16 @@ in
       userName = cfg.userName;
       userEmail = cfg.userEmail;
     };
+
+    programs.bash = {
+      shellAliases = {
+        g = "lazygit";
+      };
+    };
+
+    programs.lazygit = lib.mkIf cfg.enableLazygit {
+      enable = true;
+    };
   };
+
 }
