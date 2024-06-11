@@ -22,7 +22,7 @@
       font_family = "FiraCode Nerd Font Ret";
       bold_font = "FiraCode Nerd Font Bold";
       italic_font = "FiraCode Nerd Font Light";
-      bodl_italic_font = "FiraCode Nerd Font Med";
+      bold_italic_font = "FiraCode Nerd Font Med";
       disable_ligatures = "cursor";
       font_features = "FiraCode-Retina +zero";
 
@@ -33,15 +33,12 @@
       mouse_hide_wait = "0";
 
       url_style = "curly";
-      open_url_modifiers = "kitty_mod";
       open_url_with = "default";
       url_prefixes = "http https file ftp gemini irc gopher mailto news git";
       detect_urls = "yes";
 
       strip_trailing_spaces = "smart";
       copy_on_select = "no";
-      rectangle_select_modifiers = "ctrl+alt";
-      terminal_select_modifiers = "shift";
       select_by_word_characters = ":@-./_~?&=%+#";
       click_interval = "-1.0";
       focus_follows_mouse = "no";
