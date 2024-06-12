@@ -116,7 +116,7 @@ configs[ft] = function()
 		":lua require('package-info').reinstall()<CR>",
 		{ desc = "package info reinstall" }
 	)
-	noremap(
+	vim.keymap.set(
 		"n",
 		"<leader>jp",
 		":lua require('package-info').change_version()<CR>",
