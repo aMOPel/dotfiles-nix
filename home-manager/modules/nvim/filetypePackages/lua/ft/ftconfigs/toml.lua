@@ -5,7 +5,7 @@ utils.addTable(g.lsp.fts, {
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
-	"taplo",
+	taplo = "default",
 })
 
 utils.addTable(g.formatter.filetype, {
