@@ -13,12 +13,17 @@ table.insert(plugins, {
 
 		require("toggleterm").setup({
 			open_mapping = [[<leader>ff]],
+			insert_mappings = false,
+			terminal_mappings = false,
 			shell = "$SHELL",
 			direction = "float",
 			float_opts = {
 				width = rw(0.9),
 				height = rh(0.9),
 			},
+			on_open = function(term)
+				vim.cmd("startinsert!")
+			end,
 		})
 
 		vim.keymap.set("n", "<leader>fs", "<cmd>TermSelect<cr>", {
