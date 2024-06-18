@@ -26,6 +26,9 @@ in
       enable = true;
       userName = cfg.userName;
       userEmail = cfg.userEmail;
+      lfs = {
+        enable = true;
+      };
       ignores = [
         "Session.vim"
         ".direnv/"
