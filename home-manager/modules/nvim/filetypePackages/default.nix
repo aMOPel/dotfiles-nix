@@ -13,6 +13,17 @@ let
     meta.homepage = "https://github.com/PratikBhusal/vim-grip";
   };
 
+  cypher-vim-syntax = pkgs.vimUtils.buildVimPlugin {
+    pname = "cypher-vim-syntax";
+    version = "2024-06-17";
+    src = pkgs.fetchFromGitHub {
+      owner = "neo4j-contrib";
+      repo = "cypher-vim-syntax";
+      rev = "386abb72a5113dfd3aa88ab59bb1e99d3ff33c8e";
+      sha256 = "sha256-iJLl5BPM5KV+WcnmYV0HSfYyBePXkPYy2nWeqy2VU+o=";
+    };
+    meta.homepage = "https://github.com/neo4j-contrib/cypher-vim-syntax";
+  };
 
   pluginKeys = [
     "tsParsers"
@@ -62,7 +73,7 @@ let
     cypher = {
       # TODO:
       # lsps = [ cypher-language-server ];
-      # ftplugins = with vimPlugins; [ cypher-vim-syntax ];
+      ftplugins = with vimPlugins; [ cypher-vim-syntax ];
     };
 
     dockerfile = {
