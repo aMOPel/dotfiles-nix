@@ -46,17 +46,5 @@
         "type": "tarball",
         "url": "https://github.com/jchook/ranger-zoxide/archive/281828de060299f73fe0b02fcabf4f2f2bd78ab3.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "stylix": {
-        "branch": "master",
-        "description": "System-wide colorscheming and typography for NixOS",
-        "homepage": "https://danth.github.io/stylix/",
-        "owner": "danth",
-        "repo": "stylix",
-        "rev": "0fe277a3641a849478a94c7900c2d5a90609a306",
-        "sha256": "06rapjaijdw13ikdnyp0vk1vz8jrhrfav8cjk69wk1rm3psrqhgy",
-        "type": "tarball",
-        "url": "https://github.com/danth/stylix/archive/0fe277a3641a849478a94c7900c2d5a90609a306.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
