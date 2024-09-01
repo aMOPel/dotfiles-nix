@@ -11,7 +11,7 @@ start-test-vm:
 
 .PHONY: switch
 switch:
-	nix-shell --run "home-manager switch" ./hm-shell.nix
+	nix develop -f ./hm-shell.nix --command home-manager switch
 
 .PHONY: install
 install:
