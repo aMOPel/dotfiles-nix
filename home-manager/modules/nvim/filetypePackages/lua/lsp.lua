@@ -141,12 +141,6 @@ local setup_linters = function()
 			lint.try_lint()
 		end,
 	})
-
-	utils.addTable(g.formatter.filetype, {
-		["*"] = {
-			require("formatter.filetypes").any.remove_trailing_whitespace,
-		},
-	})
 end
 
 local setup_formatters = function()

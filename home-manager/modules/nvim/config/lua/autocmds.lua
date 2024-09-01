@@ -3,13 +3,6 @@ vim.api.nvim_create_augroup("MyFt", {})
 vim.api.nvim_create_augroup("CustomFileType", {})
 
 vim.filetype.add({
-	filename = {
-		[".env"] = "sh",
-		[".envrc"] = "sh",
-	},
-})
-
-vim.filetype.add({
 	pattern = {
 		["*kitty*.conf"] = "kitty",
 	},

@@ -11,9 +11,6 @@ pkgs.mkShell rec {
     (import sources.home-manager { inherit pkgs; }).home-manager
   ];
 
-  # nixpath for '<asdf>' syntax
-  shellHook = ''
-    export NIX_PATH="nixpkgs=${nixpkgs}:home-manager=${sources."home-manager"}"
-    export HOME_MANAGER_CONFIG="./home-manager/home.nix"
-  '';
+  NIX_PATH = "nixpkgs=${nixpkgs}:home-manager=${sources."home-manager"}";
+  HOME_MANAGER_CONFIG = "./home-manager/home.nix";
 }

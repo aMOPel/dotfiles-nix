@@ -44,6 +44,12 @@ let
       lsps = [ cmake-language-server ];
     };
 
+    make = {
+      tsParsers = with vimPlugins.nvim-treesitter-parsers; [ make ];
+      linters = [ checkmake ];
+    };
+
+
     cpp = {
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [ c cpp ];
       lsps = [ rocmPackages.llvm.clang-tools-extra ];
@@ -265,9 +271,12 @@ let
     sh = {
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [ bash ];
       lsps = [ nodePackages.bash-language-server ];
-      # TODO:
-      # linters = [shellcheck];
-      # formatters = [ shfmt ];
+      linters = [ shellcheck ];
+      formatters = [ shfmt ];
+    };
+
+    dotenv = {
+      linters = [ dotenv-linter ];
     };
 
     tex = { };
@@ -319,7 +328,6 @@ let
         http
         gpg
         ini
-        make
         rst
         csv
         ssh_config
@@ -331,11 +339,9 @@ let
       lsps = [
         docker-compose-language-service
       ];
-      # TODO:
-      # linters = [
-      #   editorconfig-checker
-      #   dotenv-linter
-      # ];
+      linters = [
+        editorconfig-checker
+      ];
       # TODO:
       # ftplugins = with vimPlugins; [
       #   vim-kitty

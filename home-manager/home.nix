@@ -34,21 +34,28 @@ in
   myModules.neovim = {
     enable = true;
     filetypes = [
-      "go"
+      "sh"
+      "dotenv"
       "nix"
-      "typescript"
-      "css"
+      "make"
       "dockerfile"
       "git"
-      "html"
-      "json"
-      "lua"
-      "vim"
       "markdown"
-      "python"
-      "sh"
+
+      "json"
       "toml"
       "yaml"
+
+      "typescript"
+      "css"
+      "html"
+
+      "lua"
+      "vim"
+
+      "go"
+      "python"
+
       "misc"
     ];
   };
