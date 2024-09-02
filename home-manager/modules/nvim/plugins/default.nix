@@ -73,6 +73,19 @@ let
     meta.homepage = "https://github.com/coderifous/textobj-word-column.vim";
   };
 
+  pre-commit-nvim = pkgs.vimUtils.buildVimPlugin {
+    pname = "pre-commit-nvim";
+    version = "2024-09-01";
+    src = pkgs.fetchFromGitHub {
+      owner = "aMOPel";
+      repo = "pre-commit.nvim";
+      rev = "2e693e97a283";
+      sha256 = "sha256-yap56Y9BxwddeE6v6ZdGd0kfXu4d9ov9CDm9jh6DMVQ=";
+    };
+    meta.homepage = "https://github.com/aMOPel/pre-commit.nvim";
+  };
+
+
 in
 {
   plugins = with pkgs.vimPlugins; [
@@ -169,6 +182,7 @@ in
     # undotree
     nvim-bqf
     qf-nvim
+    pre-commit-nvim
 
     # giveitashot
   ];
