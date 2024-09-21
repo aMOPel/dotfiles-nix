@@ -53,6 +53,7 @@ in
       "lua"
       "vim"
 
+      "rust"
       "go"
       "python"
 

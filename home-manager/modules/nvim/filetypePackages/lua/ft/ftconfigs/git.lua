@@ -5,7 +5,3 @@ utils.addTable(g.linter.filetype, {
 		"gitlint",
 	},
 })
-
-utils.addTable(g.linter.custom_linter, {
-	"",
-})

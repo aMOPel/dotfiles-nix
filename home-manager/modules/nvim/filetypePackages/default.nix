@@ -268,6 +268,18 @@ let
       # ];
     };
 
+    rust = {
+      tsParsers = with vimPlugins.nvim-treesitter-parsers; [
+        rust
+      ];
+      lsps = [ rust-analyzer ];
+      formatters = [ rustfmt ];
+      # TODO: 
+      # ftplugins = with vimPlugins; [
+      #   rustaceanvim
+      # ];
+    };
+
     sh = {
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [ bash ];
       lsps = [ nodePackages.bash-language-server ];

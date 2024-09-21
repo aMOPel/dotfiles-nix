@@ -133,7 +133,7 @@ end
 
 local setup_linters = function()
 	local lint = require("lint")
-	-- utils.addTable(lint.linters, g.linter.custom_linter)
+	utils.addTable(lint.linters, g.linter.custom_linter)
 	lint.linters_by_ft = g.linter.filetype
 	vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
 		group = "MyAutoCmd",
