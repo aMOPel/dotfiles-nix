@@ -11,6 +11,8 @@ in
     ./modules/kitty
     ./modules/bash
     ./modules/git
+    ./modules/pass
+    ./modules/himalaya
     ./modules/shelltools
     ./modules/ranger
     ./modules/task
@@ -18,6 +20,12 @@ in
 
   # uninstall = true;
   # targets.genericLinux.enable = true;
+
+  myModules.himalaya = {
+    enable = true;
+    address = personalInfo.email.address;
+  };
+
 
   myModules.task = {
     enable = true;

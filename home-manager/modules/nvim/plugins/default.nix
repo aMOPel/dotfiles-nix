@@ -1,6 +1,18 @@
 { lib, pkgs, ... }:
 let
 
+  himalaya-vim = pkgs.vimUtils.buildVimPlugin {
+    pname = "himalaya-vim";
+    version = "2024-10-01";
+    src = pkgs.fetchFromGitHub {
+      owner = "pimalaya";
+      repo = "himalaya-vim";
+      rev = "f25c003e8fe532348b4080bf8d738cfa1bbf1f5f";
+      sha256 = "sha256-oQtl3VmLpZf+cj1YGLKHbxmaE5GFLEeDi2Z7g3mvZjc=";
+    };
+    meta.homepage = "https://github.com/pimalaya/himalaya-vim";
+  };
+
   qf-nvim = pkgs.vimUtils.buildVimPlugin {
     pname = "qf-nvim";
     version = "2024-05-21";
@@ -181,6 +193,7 @@ in
     # TODO:
     # undotree
     nvim-bqf
+    himalaya-vim
     qf-nvim
     pre-commit-nvim
 

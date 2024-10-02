@@ -55,4 +55,6 @@ else
 fi
 }
 
+alias mail='nvim +Himalaya'
+
 # vim:ft=sh

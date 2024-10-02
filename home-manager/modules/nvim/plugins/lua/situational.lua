@@ -201,3 +201,29 @@ table.insert(plugins, {
 		require("dressing").setup()
 	end,
 })
+
+table.insert(plugins, {
+	name = "himalaya-vim",
+	setup = function()
+		vim.g.himalaya_folder_picker = "telescope"
+
+		vim.api.nvim_create_autocmd({ "FileType" }, {
+			group = "MyAutoCmd",
+			pattern = { "mail" },
+			callback = function(ev)
+				vim.keymap.set(
+					"n",
+					"gtt",
+					":let @z='<#part filename=><#/part>'<cr>Go<cr><esc>\"zp0f=a",
+					{
+						desc = "add email attachment",
+						buffer = true,
+						silent = true,
+					}
+				)
+			end,
+			desc = "add email attachment",
+		})
+	end,
+	config = function() end,
+})

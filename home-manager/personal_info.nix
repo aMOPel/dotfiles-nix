@@ -7,6 +7,9 @@ let
       userName = "";
       userEmail = "";
     };
+    email = {
+      address = "";
+    };
     task = {
       context = {
         # test.read = "pro:test";
