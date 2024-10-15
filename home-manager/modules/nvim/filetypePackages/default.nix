@@ -52,7 +52,9 @@ let
 
     cpp = {
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [ c cpp ];
-      lsps = [ rocmPackages.llvm.clang-tools-extra ];
+      lsps = [ clang-tools ];
+      linters = [ cppcheck cpplint ];
+      # TODO: clangd extensions
     };
 
     css = {
