@@ -14,7 +14,7 @@ in
     (import ./modules/bash       {inherit config pkgs pkgs_latest lib;})
     (import ./modules/git        {inherit config pkgs pkgs_latest lib;})
     (import ./modules/shelltools {inherit config pkgs pkgs_latest lib;})
-    (import ./modules/ranger     {inherit config pkgs pkgs_latest lib;})
+    (import ./modules/yazi       {inherit config pkgs pkgs_latest lib;})
     (import ./modules/task       {inherit config pkgs pkgs_latest lib;})
   ];
 
