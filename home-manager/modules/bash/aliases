@@ -37,7 +37,7 @@ if [ -f ./project.godot ] ; then
   if [[ "$(top -b -n 1 | grep godot)" ]] ; then
     echo ""
   else
-    godot -e &> /dev/null &
+    $godot -e &> /dev/null &
     # kitty @ launch --type tab --cwd current --keep-focus godot --editor
     echo "press enter"; read;
   fi

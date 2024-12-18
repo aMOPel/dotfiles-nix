@@ -57,6 +57,7 @@ in
       "rust"
       "go"
       "python"
+      "gdscript"
 
       "misc"
     ];

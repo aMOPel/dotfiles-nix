@@ -102,7 +102,7 @@ let
       linters = [ gdtoolkit ];
       ftplugins = with vimPlugins; [
         {
-          type = lua;
+          type = "lua";
           plugin = vim-godot;
           config = ''
             vim.filetype.add({
