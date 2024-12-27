@@ -15,6 +15,7 @@
     jq
     yq
     help2man
+    gdb
   ];
 
   home.sessionVariables = {
