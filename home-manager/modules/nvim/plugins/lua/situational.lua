@@ -128,6 +128,25 @@ table.insert(plugins, {
 			"<cmd>-tabnew %<cr><cmd>Gdiffsplit! <cr>",
 			{ desc = "open fugitive diff split" }
 		)
+
+		vim.api.nvim_create_autocmd({ "FileType" }, {
+			group = "MyAutoCmd",
+			pattern = { "fugitive" },
+			callback = function(ev)
+				vim.keymap.set(
+					"n",
+					"dt",
+					[["zyiw:<c-u>Git difftool -y <c-r>z^...<c-r>z<cr>]],
+					{
+						desc = "open tab for every file that changed in the commit under the cursor",
+						buffer = true,
+						silent = true,
+						noremap = true,
+					}
+				)
+			end,
+			desc = "set keymaps in fugitive window",
+		})
 	end,
 	config = function() end,
 })
