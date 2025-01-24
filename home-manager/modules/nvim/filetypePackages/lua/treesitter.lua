@@ -1,6 +1,5 @@
 local treesitter = function()
 	require("nvim-treesitter.configs").setup({
-		ensure_installed = g.treesitter.ensure_installed,
 		highlight = {
 			enable = true,
 			disable = g.treesitter.highlight.disable,

@@ -6,7 +6,6 @@ g = {
 		},
 	},
 	treesitter = {
-		ensure_installed = {},
 		highlight = {
 			disable = {},
 		},
@@ -18,17 +17,14 @@ g = {
 		},
 	},
 	linter = {
-		ensure_installed = {},
 		filetype = {},
 		custom_linter = {},
 	},
 	formatter = {
-		ensure_installed = {},
 		filetype = {},
 		on_save = {},
 	},
 	dap = {
-		ensure_installed = {},
 		filetype = {},
 	},
 	plugins = {},

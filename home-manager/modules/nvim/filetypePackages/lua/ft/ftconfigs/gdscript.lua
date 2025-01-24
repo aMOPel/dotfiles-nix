@@ -8,10 +8,6 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 	gdscript = "default",
 })
 
-utils.addTable(g.treesitter.indent.disable, {
-	ft,
-})
-
 utils.addTable(g.formatter.filetype, {
 	[ft] = {
 		function()
