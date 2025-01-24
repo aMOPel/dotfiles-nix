@@ -97,6 +97,7 @@ let
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [
         gdscript
         godot_resource
+        # gdshader
       ];
       formatter = [ gdtoolkit ];
       linters = [ gdtoolkit ];
@@ -140,6 +141,7 @@ let
         gowork
         gomod
         gosum
+        gotemplate
       ];
       lsps = [ gopls ];
       linters = [ golangci-lint ];
@@ -304,6 +306,7 @@ let
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [
         typescript
         javascript
+        tsx
         jsdoc
       ];
       lsps = [ nodePackages.typescript-language-server ];
@@ -342,14 +345,17 @@ let
         hurl
         http
         gpg
+        passwd
         ini
         rst
         csv
+        tsv
         ssh_config
         vimdoc
         sql
         regex
         comment
+        # editorconfig
       ];
       lsps = [
         docker-compose-language-service
