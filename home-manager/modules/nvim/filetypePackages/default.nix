@@ -37,7 +37,10 @@ let
     "extraTools"
   ];
   filetypePackages = with pkgs; {
-    angular = { };
+    angular = {
+      tsParsers = with vimPlugins.nvim-treesitter-parsers; [ angular ];
+      lsps = [ angular-language-server ];
+    };
 
     cmake = {
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [ cmake ];
