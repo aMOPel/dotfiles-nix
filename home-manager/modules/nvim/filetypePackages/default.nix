@@ -339,6 +339,7 @@ let
 
     misc = {
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [
+        hurl
         http
         gpg
         ini
