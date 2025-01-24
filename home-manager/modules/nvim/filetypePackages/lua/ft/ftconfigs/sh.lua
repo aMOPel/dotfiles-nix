@@ -15,7 +15,3 @@ utils.addTable(g.linter.filetype, {
 utils.addTable(g.formatter.filetype, {
 	[ft] = { require("formatter.filetypes")[ft].shfmt },
 })
-
-utils.addTable(g.formatter.on_save, {
-	"*." .. ft,
-})

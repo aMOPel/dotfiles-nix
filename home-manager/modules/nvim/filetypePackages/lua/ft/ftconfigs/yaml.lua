@@ -25,7 +25,3 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 utils.addTable(g.formatter.filetype, {
 	[ft] = { require("formatter.filetypes")[ft].prettierd },
 })
-
-utils.addTable(g.formatter.on_save, {
-	"*." .. ft,
-})

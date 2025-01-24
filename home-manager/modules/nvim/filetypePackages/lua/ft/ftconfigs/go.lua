@@ -16,10 +16,6 @@ utils.addTable(g.formatter.filetype, {
 	[ft] = { require("formatter.filetypes")[ft].gofumpt },
 })
 
-utils.addTable(g.formatter.on_save, {
-	"*." .. ft,
-})
-
 local configs = {}
 
 configs[ft] = function()

@@ -16,10 +16,6 @@ utils.addTable(g.formatter.filetype, {
 	[ft] = { require("formatter.filetypes")[ft].nixpkgs_fmt },
 })
 
-utils.addTable(g.formatter.on_save, {
-	"*." .. ft,
-})
-
 utils.addTable(g.linter.filetype, {
 	[ft] = { "nix", "deadnix" },
 })

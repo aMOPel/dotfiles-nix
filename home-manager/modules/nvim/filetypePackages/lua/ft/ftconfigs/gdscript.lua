@@ -25,10 +25,6 @@ utils.addTable(g.formatter.filetype, {
 	},
 })
 
-utils.addTable(g.formatter.on_save, {
-	"*.gd",
-})
-
 utils.addTable(g.linter.filetype, {
 	[ft] = { "gdlint" },
 })

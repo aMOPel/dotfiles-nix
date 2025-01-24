@@ -2,6 +2,7 @@ local ft = "typescript"
 
 utils.addTable(g.lsp.fts, {
 	ft,
+	"ts",
 	"tsx",
 	"typescriptreact",
 	"javascript",
@@ -15,6 +16,7 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 
 utils.addTable(g.linter.filetype, {
 	[ft] = { "eslint_d" },
+	ts = { "eslint_d" },
 	tsx = { "eslint_d" },
 	typescriptreact = { "eslint_d" },
 	javascript = { "eslint_d" },
@@ -25,6 +27,9 @@ utils.addTable(g.linter.filetype, {
 utils.addTable(g.formatter.filetype, {
 	[ft] = {
 		require("formatter.filetypes")[ft].prettierd,
+	},
+	ts = {
+		require("formatter.filetypes").typescriptreact.prettierd,
 	},
 	tsx = {
 		require("formatter.filetypes").typescriptreact.prettierd,
@@ -41,13 +46,6 @@ utils.addTable(g.formatter.filetype, {
 	javascriptreact = {
 		require("formatter.filetypes").javascriptreact.prettierd,
 	},
-})
-
-utils.addTable(g.formatter.on_save, {
-	"*." .. ft,
-	"*." .. "tsx",
-	"*." .. "js",
-	"*." .. "jsx",
 })
 
 utils.addTable(g.dap.filetype, {

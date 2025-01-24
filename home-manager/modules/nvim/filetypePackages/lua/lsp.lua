@@ -157,13 +157,13 @@ local setup_formatters = function()
 		{ desc = "format buffer" }
 	)
 	-- vim.cmd([[autocmd MyAutoCmd BufWritePost * FormatWrite]])
-	vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-		pattern = g.formatter.on_save,
-		group = "MyAutoCmd",
-		callback = function()
-			vim.cmd([[FormatWrite]])
-		end,
-	})
+	-- vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+	-- 	pattern = g.formatter.on_save,
+	-- 	group = "MyAutoCmd",
+	-- 	callback = function()
+	-- 		vim.cmd([[FormatWrite]])
+	-- 	end,
+	-- })
 end
 
 setup_lsps()

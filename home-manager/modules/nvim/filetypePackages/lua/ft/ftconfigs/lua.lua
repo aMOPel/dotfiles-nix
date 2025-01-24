@@ -65,7 +65,3 @@ utils.addTable(g.formatter.filetype, {
 		}
 	end,
 })
-
-utils.addTable(g.formatter.on_save, {
-	"*." .. ft,
-})

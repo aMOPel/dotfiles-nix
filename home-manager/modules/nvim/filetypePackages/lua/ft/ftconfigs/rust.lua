@@ -12,10 +12,6 @@ utils.addTable(g.formatter.filetype, {
 	[ft] = { require("formatter.filetypes")[ft].rustfmt },
 })
 
-utils.addTable(g.formatter.on_save, {
-	"*." .. ft,
-})
-
 -- utils.addTable(g.dap.filetype, {
 -- 	"",
 -- })

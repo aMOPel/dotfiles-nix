@@ -19,10 +19,6 @@ utils.addTable(g.formatter.filetype, {
 	},
 })
 
-utils.addTable(g.formatter.on_save, {
-	"*." .. ft,
-})
-
 local configs = {}
 
 configs[ft] = function()
