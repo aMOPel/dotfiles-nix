@@ -1,4 +1,4 @@
-{ filetypes ? [ ], lib, pkgs, ... }:
+{ filetypes ? [ ], lib, pkgs, pkgs_latest, ... }:
 let
 
   vim-grip = pkgs.vimUtils.buildVimPlugin {
@@ -355,7 +355,7 @@ let
         sql
         regex
         comment
-        # editorconfig
+        pkgs_latest.vimPlugins.nvim-treesitter-parsers.editorconfig
       ];
       lsps = [
         docker-compose-language-service

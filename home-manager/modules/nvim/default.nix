@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, pkgs_latest, ... }:
 let
   cfg = config.myModules.neovim;
 in
@@ -33,7 +33,7 @@ in
         plugins = import ./plugins { inherit lib pkgs; };
         lua = import ./config { inherit lib pkgs; };
         filetypePackages = import ./filetypePackages {
-          inherit lib pkgs;
+          inherit lib pkgs pkgs_latest;
           filetypes = cfg.filetypes;
         };
       in

@@ -1,13 +1,14 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, pkgs_latest, lib, ... }:
 let
   sources = import ../nix/sources.nix;
   pkgs = import sources.nixpkgs { };
+  pkgs_latest = import sources."nixpkgs_latest" { };
   lib = pkgs.lib;
   personalInfo = import ./personal_info.nix { inherit lib; };
 in
 {
   imports = [
-    ./modules/nvim
+    (import ./modules/nvim {inherit config pkgs pkgs_latest lib;})
     ./modules/kitty
     ./modules/bash
     ./modules/git
