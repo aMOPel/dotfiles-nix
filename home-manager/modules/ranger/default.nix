@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, pkgs_latest, ... }:
 let
   sources = import ../../../nix/sources.nix;
 in

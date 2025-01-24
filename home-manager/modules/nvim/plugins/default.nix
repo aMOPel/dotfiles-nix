@@ -1,15 +1,16 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, pkgs_latest, ... }:
 let
 
   qf-nvim = pkgs.vimUtils.buildVimPlugin {
     pname = "qf-nvim";
-    version = "2024-05-21";
+    version = "2024-01-24";
     src = pkgs.fetchFromGitHub {
       owner = "ten3roberts";
       repo = "qf.nvim";
-      rev = "e7db62a4ec814c12585c0c8262d3304000a1af2e";
-      sha256 = "sha256-Xk4mg1zKzJ7EEqZOTkYWa5N4QxJ/QH5C+L9sTjO9FsU=";
+      rev = "c16efebc2a4967251d34630c7f5beee25ca8a9ba";
+      sha256 = "sha256-FPKCOTR6iZtNGSZ7DAorNpveJ9EABgoG4+ITfxoQRhU=";
     };
+    doCheck = false;
     meta.homepage = "https://github.com/ten3roberts/qf.nvim";
   };
 

@@ -1,20 +1,21 @@
-{ config, pkgs, pkgs_latest, lib, ... }:
+{ config, pkgs, pkgs_latest, pkgs_for_nvim, lib, ... }:
 let
   sources = import ../nix/sources.nix;
   pkgs = import sources.nixpkgs { };
   pkgs_latest = import sources."nixpkgs_latest" { };
+  pkgs_for_nvim = import sources."nixpkgs_for_nvim" { };
   lib = pkgs.lib;
   personalInfo = import ./personal_info.nix { inherit lib; };
 in
 {
   imports = [
-    (import ./modules/nvim {inherit config pkgs pkgs_latest lib;})
-    ./modules/kitty
-    ./modules/bash
-    ./modules/git
-    ./modules/shelltools
-    ./modules/ranger
-    ./modules/task
+    (import ./modules/nvim       {inherit config pkgs_latest lib; pkgs = pkgs_for_nvim;})
+    (import ./modules/kitty      {inherit config pkgs pkgs_latest lib;})
+    (import ./modules/bash       {inherit config pkgs pkgs_latest lib;})
+    (import ./modules/git        {inherit config pkgs pkgs_latest lib;})
+    (import ./modules/shelltools {inherit config pkgs pkgs_latest lib;})
+    (import ./modules/ranger     {inherit config pkgs pkgs_latest lib;})
+    (import ./modules/task       {inherit config pkgs pkgs_latest lib;})
   ];
 
   # uninstall = true;

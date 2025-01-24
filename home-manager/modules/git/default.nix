@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, pkgs_latest, ... }:
 let
   cfg = config.myModules.git;
 in

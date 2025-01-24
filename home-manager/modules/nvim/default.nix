@@ -5,6 +5,7 @@ in
 {
   options.myModules.neovim = {
     enable = lib.mkEnableOption "neovim";
+    package = pkgs.neovim-unwrapped;
     filetypes = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
@@ -30,8 +31,10 @@ in
 
     programs.neovim =
       let
-        plugins = import ./plugins { inherit lib pkgs; };
-        lua = import ./config { inherit lib pkgs; };
+        plugins = import ./plugins {
+          inherit lib pkgs pkgs_latest;
+        };
+        lua = import ./config { inherit lib pkgs pkgs_latest; };
         filetypePackages = import ./filetypePackages {
           inherit lib pkgs pkgs_latest;
           filetypes = cfg.filetypes;

@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, pkgs_latest, ... }: {
 
   fonts.fontconfig = {
     enable = true;

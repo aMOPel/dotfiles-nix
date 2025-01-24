@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, pkgs_latest, ... }:
 let
   cfg = config.myModules.task;
   rootPath = "twarrior";

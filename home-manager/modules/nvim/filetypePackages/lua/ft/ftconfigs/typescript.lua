@@ -11,7 +11,7 @@ utils.addTable(g.lsp.fts, {
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
-	tsserver = "default",
+	ts_ls = "default",
 })
 
 utils.addTable(g.linter.filetype, {

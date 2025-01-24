@@ -99,8 +99,8 @@ let
         godot_resource
         # gdshader
       ];
-      formatter = [ gdtoolkit ];
-      linters = [ gdtoolkit ];
+      formatter = [ gdtoolkit_4 ];
+      linters = [ gdtoolkit_4 ];
       ftplugins = with vimPlugins; [
         {
           type = "lua";
@@ -355,7 +355,7 @@ let
         sql
         regex
         comment
-        pkgs_latest.vimPlugins.nvim-treesitter-parsers.editorconfig
+        editorconfig
       ];
       lsps = [
         docker-compose-language-service
