@@ -9,7 +9,7 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 })
 
 utils.addTable(g.formatter.filetype, {
-	[ft] = { require("formatter.filetypes")[ft].nixpkgs_fmt },
+	[ft] = { require("formatter.filetypes")[ft].nixfmt },
 })
 
 utils.addTable(g.linter.filetype, {

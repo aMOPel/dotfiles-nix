@@ -246,7 +246,7 @@ let
       linters = [
         deadnix
       ];
-      formatters = [ nixpkgs-fmt ];
+      formatters = [ nixfmt-rfc-style ];
     };
 
     python = {
