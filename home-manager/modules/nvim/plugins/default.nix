@@ -177,7 +177,7 @@ in
     vim-grepper
     vim-fugitive
     vim-rhubarb
-    rnvimr
+    yazi-nvim
     todo-comments-nvim
     # TODO:
     # undotree
