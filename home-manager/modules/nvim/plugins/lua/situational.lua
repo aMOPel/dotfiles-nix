@@ -151,30 +151,65 @@ table.insert(plugins, {
 	config = function() end,
 })
 
+-- table.insert(plugins, {
+-- 	name = "rnvimr",
+-- 	setup = function()
+-- 		vim.keymap.set(
+-- 			"n",
+-- 			"-",
+-- 			"<cmd>RnvimrToggle<CR>",
+-- 			{ desc = "toggle ranger floating window" }
+-- 		)
+-- 	end,
+-- 	config = function()
+-- 		vim.g.rnvimr_enable_ex = 1
+-- 		vim.g.rnvimr_enable_picker = 0
+-- 		vim.g.rnvimr_enable_bw = 1
+-- 		vim.g.rnvimr_draw_border = 0
+-- 		vim.g.rnvimr_layout = {
+-- 			relative = "editor",
+-- 			width = math.floor(0.9 * vim.o.columns),
+-- 			height = math.floor(0.9 * vim.o.lines),
+-- 			col = math.floor(0.05 * vim.o.columns),
+-- 			row = math.floor(0.05 * vim.o.lines),
+-- 			style = "minimal",
+-- 			border = "rounded",
+-- 		}
+-- 	end,
+-- })
+
 table.insert(plugins, {
-	name = "rnvimr",
+	name = "yazi.nvivm",
 	setup = function()
 		vim.keymap.set(
-			"n",
+			{ "n", "v" },
 			"-",
-			"<cmd>RnvimrToggle<CR>",
-			{ desc = "toggle ranger floating window" }
+			"<cmd>Yazi<cr>",
+			{ desc = "Open yazi at the current file" }
+		)
+		vim.keymap.set(
+			{ "n", "v" },
+			"+",
+			"<cmd>Yazi toggle<cr>",
+			{ desc = "Resume the last yazi session" }
 		)
 	end,
 	config = function()
-		vim.g.rnvimr_enable_ex = 1
-		vim.g.rnvimr_enable_picker = 0
-		vim.g.rnvimr_enable_bw = 1
-		vim.g.rnvimr_draw_border = 0
-		vim.g.rnvimr_layout = {
-			relative = "editor",
-			width = math.floor(0.9 * vim.o.columns),
-			height = math.floor(0.9 * vim.o.lines),
-			col = math.floor(0.05 * vim.o.columns),
-			row = math.floor(0.05 * vim.o.lines),
-			style = "minimal",
-			border = "rounded",
-		}
+		require("yazi").setup({
+			open_for_directories = true,
+			keymaps = {
+				open_file_in_vertical_split = "<c-v>",
+				open_file_in_horizontal_split = "<c-x>",
+				open_file_in_tab = "<c-t>o",
+        send_to_quickfix_list = "<c-q>",
+        show_help = false,
+				grep_in_directory = false,
+				replace_in_directory = false,
+				cycle_open_buffers = false,
+				copy_relative_path_to_selected_files = false,
+				change_working_directory = false,
+			},
+		})
 	end,
 })
 
