@@ -5,7 +5,7 @@ let
   pkgs_latest = import sources."nixpkgs_latest" { };
   pkgs_for_nvim = import sources."nixpkgs_for_nvim" { };
   lib = pkgs.lib;
-  personalInfo = import ./personal_info.nix { inherit lib; };
+  personalInfo = import ../personal_info.nix { inherit lib; };
 in
 {
   imports = [
