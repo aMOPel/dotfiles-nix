@@ -1,4 +1,4 @@
 Session.vim
 *.qcow2
 result
-home-manager/personal_info.nix
+personal_info.nix
