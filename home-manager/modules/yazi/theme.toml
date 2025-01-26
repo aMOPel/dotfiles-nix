@@ -200,30 +200,31 @@ icon_error = ""
 
 rules = [
 	# Images
-	{ mime = "image/*", fg = "yellow" },
+	# { mime = "image/*", fg = "yellow" },
 
 	# Media
-	{ mime = "{audio,video}/*", fg = "magenta" },
+	# { mime = "{audio,video}/*", fg = "magenta" },
 
 	# Archives
-	{ mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "red" },
+	# { mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "red" },
 
 	# Documents
-	{ mime = "application/{pdf,doc,rtf}", fg = "cyan" },
+	# { mime = "application/{pdf,doc,rtf}", fg = "gray" },
 
 	# Empty files
 	# { mime = "inode/empty", fg = "red" },
 
 	# Special files
-	{ name = "*", is = "orphan", bg = "red" },
+	{ name = "*", is = "orphan", fg = "cyan", crossed = true },
 	{ name = "*", is = "exec"  , fg = "green" },
+	{ name = "*", is = "link", fg = "cyan" },
 
 	# Dummy files
 	{ name = "*", is = "dummy", bg = "red" },
 	{ name = "*/", is = "dummy", bg = "red" },
 
 	# Fallback
-	# { name = "*", fg = "white" },
+	{ name = "*", fg = "white" },
 	{ name = "*/", fg = "blue" }
 ]
 
@@ -235,20 +236,20 @@ rules = [
 [icon]
 
 globs = []
-dirs  = [
-	{ name = ".config", text = "" },
-	{ name = ".git", text = "" },
-	{ name = "Desktop", text = "" },
-	{ name = "Development", text = "" },
-	{ name = "Documents", text = "" },
-	{ name = "Downloads", text = "" },
-	{ name = "Library", text = "" },
-	{ name = "Movies", text = "" },
-	{ name = "Music", text = "" },
-	{ name = "Pictures", text = "" },
-	{ name = "Public", text = "" },
-	{ name = "Videos", text = "" },
-]
+# dirs  = [
+# 	{ name = ".config", text = "" },
+# 	{ name = ".git", text = "" },
+# 	{ name = "Desktop", text = "" },
+# 	{ name = "Development", text = "" },
+# 	{ name = "Documents", text = "" },
+# 	{ name = "Downloads", text = "" },
+# 	{ name = "Library", text = "" },
+# 	{ name = "Movies", text = "" },
+# 	{ name = "Music", text = "" },
+# 	{ name = "Pictures", text = "" },
+# 	{ name = "Public", text = "" },
+# 	{ name = "Videos", text = "" },
+# ]
 files = [
 	{ name = ".babelrc", text = "", fg = "#cbcb41" },
 	{ name = ".bash_profile", text = "", fg = "#89e051" },
@@ -417,6 +418,7 @@ files = [
 	{ name = "xsettingsd.conf", text = "", fg = "#e54d18" },
 ]
 exts = [
+	{ name = "deb", text = "", fg = "#fd971f" },
 	{ name = "3gp", text = "", fg = "#fd971f" },
 	{ name = "3mf", text = "󰆧", fg = "#888888" },
 	{ name = "7z", text = "", fg = "#eca517" },
@@ -585,11 +587,11 @@ exts = [
 	{ name = "hurl", text = "", fg = "#ff0288" },
 	{ name = "hx", text = "", fg = "#ea8220" },
 	{ name = "hxx", text = "", fg = "#a074c4" },
-	{ name = "ical", text = "", fg = "#2b2e83" },
-	{ name = "icalendar", text = "", fg = "#2b2e83" },
+	{ name = "ical", text = "", fg = "#057aff" },
+	{ name = "icalendar", text = "", fg = "#057aff" },
 	{ name = "ico", text = "", fg = "#cbcb41" },
-	{ name = "ics", text = "", fg = "#2b2e83" },
-	{ name = "ifb", text = "", fg = "#2b2e83" },
+	{ name = "ics", text = "", fg = "#057aff" },
+	{ name = "ifb", text = "", fg = "#057aff" },
 	{ name = "ifc", text = "󰻫", fg = "#839463" },
 	{ name = "ige", text = "󰻫", fg = "#839463" },
 	{ name = "iges", text = "󰻫", fg = "#839463" },
@@ -704,6 +706,7 @@ exts = [
 	{ name = "pot", text = "", fg = "#2596be" },
 	{ name = "pp", text = "", fg = "#ffa61a" },
 	{ name = "ppt", text = "󰈧", fg = "#cb4a32" },
+	{ name = "odp", text = "󰈧", fg = "#cb4a32" },
 	{ name = "prisma", text = "", fg = "#5a67d8" },
 	{ name = "pro", text = "", fg = "#e4b854" },
 	{ name = "ps1", text = "󰨊", fg = "#4273ca" },
@@ -842,6 +845,7 @@ exts = [
 	{ name = "xcstrings", text = "", fg = "#2596be" },
 	{ name = "xls", text = "󰈛", fg = "#207245" },
 	{ name = "xlsx", text = "󰈛", fg = "#207245" },
+	{ name = "ods", text = "󰈛", fg = "#207245" },
 	{ name = "xm", text = "", fg = "#519aba" },
 	{ name = "xml", text = "󰗀", fg = "#e37933" },
 	{ name = "xpi", text = "", fg = "#ff1b01" },
@@ -853,12 +857,14 @@ exts = [
 	{ name = "zip", text = "", fg = "#eca517" },
 	{ name = "zsh", text = "", fg = "#89e051" },
 	{ name = "zst", text = "", fg = "#eca517" },
-	{ name = "🔥", text = "", fg = "#ff4c1f" },
+	{ name = "excalidraw", text = "󰽉", fg = "#5b57d1" },
+	{ name = "gpg", text = "󱕵", fg = "#057aff" },
+	{ name = "pgp", text = "󰌾", fg = "#057aff" },
 ]
 conds = [
 	# Special files
-	{ if = "orphan", text = "" },
-	{ if = "link", text = "" },
+	# { if = "orphan", text = "" },
+	# { if = "link", text = "" },
 	{ if = "block", text = "" },
 	{ if = "char", text = "" },
 	{ if = "fifo", text = "" },

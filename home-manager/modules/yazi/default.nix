@@ -1,15 +1,66 @@
 { pkgs, pkgs_latest, ... }:
+# TODO:
+# find a way to make xdg-open work with home manager on ubuntu
+# bulk rename in neovim broken, since <c-v> seems to equal <enter>
+# mount.yazi needs newer yazi version
+# extract doesn't work
+# need to add sudo mappings
+let
+  official-plugins = pkgs.fetchFromGitHub {
+    owner = "yazi-rs";
+    repo = "plugins";
+    rev = "8ed253716c60f3279518ce34c74ca053530039d8";
+    sha256 = "sha256-xY2yVCLLcXRyFfnmyP6h5Fw+4kwOZhEOCWVZrRwXnTA=";
+  };
+
+  patched-official-plugins = pkgs.stdenv.mkDerivation (finalAttrs: {
+    pname = "yazi-rs-plugins-patched";
+    version = "2025-01-26";
+
+    src = official-plugins;
+
+    installPhase = ''
+      rm ./sudo-demo.yazi/init.lua
+      cp ${./sudo.lua} ./sudo-demo.yazi/init.lua
+      cp -r . $out
+    '';
+  });
+
+  relative-motions = pkgs.fetchFromGitHub {
+    owner = "dedukun";
+    repo = "relative-motions.yazi";
+    rev = "df97039a04595a40a11024f321a865b3e9af5092";
+    sha256 = "sha256-csX8T2a5f7k6g2mlR+08rm0qBeWdI4ABuja+klIvwqw=";
+  };
+  compress = pkgs.fetchFromGitHub {
+    owner = "KKV9";
+    repo = "compress.yazi";
+    rev = "60b24af23d1050f1700953a367dd4a2990ee51aa";
+    sha256 = "sha256-Yf5R3H8t6cJBMan8FSpK3BDSG5UnGlypKSMOi0ZFqzE=";
+  };
+  copy-file-contents = pkgs.fetchFromGitHub {
+    owner = "AnirudhG07";
+    repo = "plugins-yazi";
+    rev = "52ee2bacc344ab835ab279d036980ff9b9fe4b21";
+    sha256 = "sha256-djE0of7Y+IYP6/euAG4uxvZ/ch5aU/PsYBX6MN/km5s=";
+  };
+  # sudo = pkgs.fetchFromGitHub {
+  #   owner = "TD-sky";
+  #   repo = "sudo.yazi";
+  #   rev = "f4030083a8a4d1de66f88a8add27ec47b43b01c6";
+  #   sha256 = "sha256-IKdDhLzQCWT8mGNnAbjguoIqxQKUO7N5NsHx51erjLk=";
+  # };
+in
 {
   home.packages = with pkgs; [
     ffmpegthumbnailer
     p7zip
-    poppler_utils
+    poppler
     imagemagick
     mediainfo
-    mpv
   ];
 
-  home.sessionVariables = { };
+  home.sessionVariables = { YAZI_LOG="debug"; };
 
   # programs.bash = {
   #   bashrcExtra = ''
@@ -30,9 +81,21 @@
     enable = true;
     package = pkgs_latest.yazi;
 
+    plugins = {
+      "smart-enter.yazi" = "${official-plugins}/smart-enter.yazi";
+      # "mount.yazi" = "${official-plugins}/mount.yazi";
+      "git.yazi" = "${official-plugins}/git.yazi";
+      "chmod.yazi" = "${official-plugins}/chmod.yazi";
+      # "sudo-demo.yazi" = "${patched-official-plugins}/sudo-demo.yazi";
+      "relative-motions.yazi" = relative-motions;
+      "compress.yazi" = compress;
+      "copy-file-contents.yazi" = "${copy-file-contents}/copy-file-contents.yazi";
+    };
+    initLua = ./init.lua;
+
     enableBashIntegration = true;
     settings = builtins.fromTOML (builtins.readFile ./settings.toml);
-    keymap = builtins.fromTOML (builtins.readFile ./keymaps.toml);
+    keymap = builtins.fromTOML (builtins.readFile ./keymap.toml);
     theme = builtins.fromTOML (builtins.readFile ./theme.toml);
   };
 }

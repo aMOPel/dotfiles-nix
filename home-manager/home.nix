@@ -86,5 +86,14 @@ in
     vim
   ];
 
+  xdg = {
+    enable = true;
+    mimeApps = {
+      defaultApplications = {
+        "application/pdf" = ["zathura"];
+      };
+    };
+  };
+
   home.stateVersion = "23.11";
 }
