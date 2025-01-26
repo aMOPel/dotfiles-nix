@@ -199,15 +199,15 @@ table.insert(plugins, {
 			open_for_directories = true,
 			keymaps = {
 				open_file_in_vertical_split = "<c-v>",
-				open_file_in_horizontal_split = "<c-x>",
-				open_file_in_tab = "<c-t>o",
+				open_file_in_horizontal_split = false,
+				open_file_in_tab = "<c-t>",
         send_to_quickfix_list = "<c-q>",
         show_help = false,
 				grep_in_directory = false,
 				replace_in_directory = false,
 				cycle_open_buffers = false,
 				copy_relative_path_to_selected_files = false,
-				change_working_directory = false,
+				change_working_directory = "<c-g>",
 			},
 		})
 	end,

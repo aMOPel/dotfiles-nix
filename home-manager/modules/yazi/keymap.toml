@@ -18,15 +18,15 @@ keymap = [
 	{ on = "<Up>",    run = "arrow -1", desc = "Move cursor up" },
 	{ on = "<Down>",  run = "arrow 1",  desc = "Move cursor down" },
 
-	# { on = "<C-u>", run = "arrow -50%",  desc = "Move cursor up half page" },
-	# { on = "<C-d>", run = "arrow 50%",   desc = "Move cursor down half page" },
+	{ on = "<C-u>", run = "arrow -50%",  desc = "Move cursor up half page" },
+	{ on = "<C-d>", run = "arrow 50%",   desc = "Move cursor down half page" },
 
 	{ on = [ "g", "g" ], run = "arrow -99999999", desc = "Move cursor to the top" },
 	{ on = "G",          run = "arrow 99999999",  desc = "Move cursor to the bottom" },
 
 	# Navigation
 	{ on = "h", run = "leave", desc = "Go back to the parent directory" },
-	{ on = "l", run = "enter", desc = "Enter the child directory" },
+	# { on = "l", run = "enter", desc = "Enter the child directory" },
 
 	{ on = "H", run = "back",    desc = "Go back to the previous directory" },
 	{ on = "L", run = "forward", desc = "Go forward to the next directory" },
@@ -41,39 +41,36 @@ keymap = [
 	{ on = "V", run = "visual_mode --unset", desc = "Enter visual mode (unset mode)" },
 
 	# Seeking
-	{ on = "<C-u>", run = "seek -5", desc = "Seek up 5 units in the preview" },
-	{ on = "<C-d>", run = "seek 5",  desc = "Seek down 5 units in the preview" },
+	{ on = "<PageUp>", run = "seek -5", desc = "Seek up 5 units in the preview" },
+	{ on = "<PageDown>", run = "seek 5",  desc = "Seek down 5 units in the preview" },
 
 	# Spotting
-	{ on = [",", "i"], run = "spot", desc = "Spot hovered file" },
+	{ on = "K", run = "spot", desc = "Spot hovered file" },
 
 	# Operation
-	{ on = "l",         run = "open",                        desc = "Open selected files" },
-	{ on = "o",         run = "open",                        desc = "Open selected files" },
-	{ on = "O",         run = "open --interactive",          desc = "Open selected files interactively" },
-	{ on = "<Enter>",   run = "open",                        desc = "Open selected files" },
-	{ on = "<S-Enter>", run = "open --interactive",          desc = "Open selected files interactively" },
-	{ on = ["y", "y"],         run = "yank",                        desc = "Yank selected files (copy)" },
-	{ on = ["m", "y"],         run = "yank --cut",                  desc = "Yank selected files (cut)" },
+  { on = "l",                run = "plugin smart-enter",          desc = "Enter the child directory, or open the file" },
+	{ on = "o",                run = "open --interactive",          desc = "Open selected files interactively" },
+	{ on = "<Enter>",          run = "open",                        desc = "Open selected files" },
+	{ on = ["m", "m"],         run = "yank --cut",                  desc = "Yank selected files (cut)" },
 	{ on = ["p", "p"],         run = "paste",                       desc = "Paste yanked files" },
 	{ on = ["p", "o"],         run = "paste --force",               desc = "Paste yanked files (overwrite if the destination exists)" },
 	{ on = ["p", "l"],         run = "link",                        desc = "Symlink the absolute path of yanked files" },
-	# { on = "_",         run = "link --relative",             desc = "Symlink the relative path of yanked files" },
+	{ on = ["p", "L"],         run = "link --relative",             desc = "Symlink the relative path of yanked files" },
 	# { on = "<C-->",     run = "hardlink",                    desc = "Hardlink yanked files" },
 	{ on = ["u", "y"],         run = "unyank",                      desc = "Cancel the yank status" },
 	{ on = ["d", "t"],         run = "remove",                      desc = "Trash selected files" },
 	{ on = ["d", "d"],         run = "remove --permanently",        desc = "Permanently delete selected files" },
-	{ on = [",", "m"],         run = "create",                      desc = "Create a file (ends with / for directories)" },
+	{ on = "t",         run = "create",                      desc = "Create a file (ends with / for directories)" },
 	{ on = "i",         run = "rename --cursor=start",  desc = "Rename selected file(s), cursor at start" },
 	{ on = "a",         run = "rename --cursor=before_ext",  desc = "Rename selected file(s), cursor before extension" },
 	{ on = ";",         run = "shell --interactive",         desc = "Run a shell command" },
 	{ on = ":",         run = "shell --block --interactive", desc = "Run a shell command (block until finishes)" },
-	{ on = ".",         run = "hidden toggle",               desc = "Toggle the visibility of hidden files" },
+	# { on = ".",         run = "hidden toggle",               desc = "Toggle the visibility of hidden files" },
 	{ on = [",", "f", "d"],         run = "search --via=fd",             desc = "Search files by name via fd" },
 	{ on = [",", "r"],         run = "search --via=rg",             desc = "Search files by content via ripgrep" },
-	{ on = "<C-c>",     run = "escape --search",             desc = "Cancel the ongoing search" },
 	{ on = [",", "z", "i"],         run = "plugin zoxide",               desc = "Jump to a directory via zoxide" },
 	{ on = [",", "f", "f"],         run = "plugin fzf",                  desc = "Jump to a file/directory via fzf" },
+  { on = "<C-c>",     run = "escape --search",             desc = "Cancel the ongoing search" },
 
 	# Linemode
 	# { on = [ "m", "s" ], run = "linemode size",        desc = "Linemode: size" },
@@ -84,10 +81,12 @@ keymap = [
 	# { on = [ "m", "n" ], run = "linemode none",        desc = "Linemode: none" },
 
 	# Copy
+	{ on = ["y", "y"],         run = "yank",                        desc = "Yank selected files (copy)" },
 	{ on = [ "y", "p" ], run = "copy path",             desc = "Copy the file path" },
 	{ on = [ "y", "d" ], run = "copy dirname",          desc = "Copy the directory path" },
 	{ on = [ "y", "f" ], run = "copy filename",         desc = "Copy the filename" },
 	{ on = [ "y", "n" ], run = "copy name_without_ext", desc = "Copy the filename without extension" },
+  { on = ["y", "c"], run = ["plugin copy-file-contents"], desc = "Copy contents of file" },
 
 	# Filter
 	{ on = "f", run = "filter --smart", desc = "Filter files" },
@@ -121,15 +120,15 @@ keymap = [
 	# Tabs
 	{ on = ["<C-t>", "n"], run = "tab_create --current", desc = "Create a new tab with CWD" },
 
-	{ on = "1", run = "tab_switch 0", desc = "Switch to the first tab" },
-	{ on = "2", run = "tab_switch 1", desc = "Switch to the second tab" },
-	{ on = "3", run = "tab_switch 2", desc = "Switch to the third tab" },
-	{ on = "4", run = "tab_switch 3", desc = "Switch to the fourth tab" },
-	{ on = "5", run = "tab_switch 4", desc = "Switch to the fifth tab" },
-	{ on = "6", run = "tab_switch 5", desc = "Switch to the sixth tab" },
-	{ on = "7", run = "tab_switch 6", desc = "Switch to the seventh tab" },
-	{ on = "8", run = "tab_switch 7", desc = "Switch to the eighth tab" },
-	{ on = "9", run = "tab_switch 8", desc = "Switch to the ninth tab" },
+	{ on = ["<C-t>", "1"], run = "tab_switch 0", desc = "Switch to the first tab" },
+	{ on = ["<C-t>", "2"], run = "tab_switch 1", desc = "Switch to the second tab" },
+	{ on = ["<C-t>", "3"], run = "tab_switch 2", desc = "Switch to the third tab" },
+	{ on = ["<C-t>", "4"], run = "tab_switch 3", desc = "Switch to the fourth tab" },
+	{ on = ["<C-t>", "5"], run = "tab_switch 4", desc = "Switch to the fifth tab" },
+	{ on = ["<C-t>", "6"], run = "tab_switch 5", desc = "Switch to the sixth tab" },
+	{ on = ["<C-t>", "7"], run = "tab_switch 6", desc = "Switch to the seventh tab" },
+	{ on = ["<C-t>", "8"], run = "tab_switch 7", desc = "Switch to the eighth tab" },
+	{ on = ["<C-t>", "9"], run = "tab_switch 8", desc = "Switch to the ninth tab" },
 
 	{ on = ["g", "T"], run = "tab_switch -1 --relative", desc = "Switch to the previous tab" },
 	{ on = ["g", "t"], run = "tab_switch 1 --relative",  desc = "Switch to the next tab" },
@@ -138,15 +137,48 @@ keymap = [
 	{ on = ["<C-t>", "L"], run = "tab_swap 1",  desc = "Swap current tab with next tab" },
 
 	# Tasks
-	{ on = "t", run = "tasks_show", desc = "Show task manager" },
+	{ on = [",", "t"], run = "tasks_show", desc = "Show task manager" },
 
 	# Help
 	{ on = "?",    run = "help", desc = "Open help" },
+
+  # plugins
+  # { on  = "M", run = "plugin mount", desc = "mount plugin"},
+
+  { on   = [ "c", "m" ], run  = "plugin chmod", desc = "Chmod on selected files" },
+
+  { on   = [ "c", "a" ], run  = "plugin compress", desc = "Archive selected files" },
+
+  { on = ["u", "d"], run = "plugin restore", desc = "Restore/undelete last deleted files/folders from trash" },
+
+
+  # sudo
+  { on = ["S", "p", "p"], run = "plugin sudo-demo --args='paste'", desc = "sudo-demo paste" },
+  { on = ["S", "p", "o"], run = "plugin sudo-demo --args='paste --force'", desc = "sudo-demo paste force" },
+  { on = ["S", "p", "l"], run = "plugin sudo-demo --args='link'", desc = "sudo-demo link" },
+  { on = ["S", "p", "L"], run = "plugin sudo-demo --args='link --relative'", desc = "sudo-demo link relative path" },
+  { on = ["S", "i"], run = "plugin sudo-demo --args='rename'", desc = "sudo-demo rename" },
+  { on = ["S", "a"], run = "plugin sudo-demo --args='rename'", desc = "sudo-demo rename" },
+  { on = ["S", "t"], run = "plugin sudo-demo --args='create'", desc = "sudo-demo create" },
+  { on = ["S", "d", "t"], run = "plugin sudo-demo --args='remove'", desc = "sudo-demo trash" },
+  { on = ["S", "d", "d"], run = "plugin sudo-demo --args='remove --permanently'", desc = "sudo-demo delete" },
+
+  # relative-motions
+  {on = [ "1" ], run = "plugin relative-motions --args=1", desc = "Move in relative steps"},
+  {on = [ "2" ], run = "plugin relative-motions --args=2", desc = "Move in relative steps"},
+  {on = [ "3" ], run = "plugin relative-motions --args=3", desc = "Move in relative steps"},
+  {on = [ "4" ], run = "plugin relative-motions --args=4", desc = "Move in relative steps"},
+  {on = [ "5" ], run = "plugin relative-motions --args=5", desc = "Move in relative steps"},
+  {on = [ "6" ], run = "plugin relative-motions --args=6", desc = "Move in relative steps"},
+  {on = [ "7" ], run = "plugin relative-motions --args=7", desc = "Move in relative steps"},
+  {on = [ "8" ], run = "plugin relative-motions --args=8", desc = "Move in relative steps"},
+  {on = [ "9" ], run = "plugin relative-motions --args=9", desc = "Move in relative steps"},
 ]
 
 [tasks]
 
 keymap = [
+	{ on = "q", run = "close", desc = "Close task manager" },
 	{ on = "<Esc>", run = "close", desc = "Close task manager" },
 	{ on = ["<C-w>", "c"], run = "close", desc = "Close task manager" },
 
@@ -167,6 +199,7 @@ keymap = [
 [spot]
 
 keymap = [
+	{ on = "q", run = "close", desc = "Close the spot" },
 	{ on = "<Esc>", run = "close", desc = "Close the spot" },
 
 	{ on = "k", run = "arrow -1", desc = "Move cursor up" },
