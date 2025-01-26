@@ -17,6 +17,7 @@
     yq
     help2man
     gdb
+    trash-cli
   ];
 
   home.sessionVariables = {
