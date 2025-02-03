@@ -268,6 +268,8 @@ keymap = [
 	{ on = "M", run = [ "delete --cut", "move 999" ],              desc = "Cut until the EOL" },
 	{ on = "d", run = "delete",                              desc = "Cut the selected characters" },
 	{ on = "D", run = [ "delete", "move 999" ],              desc = "Cut until the EOL" },
+	{ on = "s", run = [ "delete", "move 1 --in-operating", "move -1", "insert --append"], desc = "Cut the selected characters, and enter insert mode" },
+	{ on = "S", run = [ "move -999", "delete", "move 999", "insert"], desc = "Cut until the EOL, and enter insert mode" },
 	{ on = "c", run = "delete --insert",                     desc = "Cut the selected characters, and enter insert mode" },
 	{ on = "C", run = [ "delete --insert", "move 999" ],     desc = "Cut until the EOL, and enter insert mode" },
 	{ on = "x", run = [ "delete", "move 1 --in-operating" ], desc = "Cut the current character" },
