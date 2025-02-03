@@ -162,6 +162,10 @@ keymap = [
   { on = ["S", "t"], run = "plugin sudo-demo --args='create'", desc = "sudo-demo create" },
   { on = ["S", "d", "t"], run = "plugin sudo-demo --args='remove'", desc = "sudo-demo trash" },
   { on = ["S", "d", "d"], run = "plugin sudo-demo --args='remove --permanently'", desc = "sudo-demo delete" },
+  { on = ["S", "c", "m"], run  = "plugin sudo-demo --args='chmod'", desc = "sudo-demo chmod on selected files" },
+  { on = ["S", "l"], run  = "plugin sudo-demo --args='open'", desc = "sudo-demo open selected files in VI" },
+  { on = ["S", "o"], run  = "plugin sudo-demo --args='open'", desc = "sudo-demo open selected files in VI" },
+  { on = ["S", "<Enter>"], run  = "plugin sudo-demo --args='open'", desc = "sudo-demo open selected files in VI" },
 
   # relative-motions
   {on = [ "1" ], run = "plugin relative-motions --args=1", desc = "Move in relative steps"},
