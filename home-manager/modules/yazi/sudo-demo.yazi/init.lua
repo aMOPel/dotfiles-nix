@@ -3,12 +3,22 @@ local function notify(level, ...)
 	if type(...) == "table" then
 		content = table.concat(..., " | ")
 	end
-	ya.notify({
+	ya.notify {
 		title = "sudo",
 		content = content,
 		timeout = 10,
 		level = level,
-	})
+	}
+end
+
+local function tableAppend(t1, t2)
+	if type(t1) ~= "table" then
+		return
+	end
+	if type(t2) ~= "table" then
+		return
+	end
+	return table.insert(t1, table.unpack(t2))
 end
 
 --- Verify if `sudo` is already authenticated
@@ -24,8 +34,6 @@ end
 --- @param program string
 --- @param args table
 --- @return Output|string output
----  nil: no error
----  1: sudo failed
 local run_with_sudo = function(program, args, cwd)
 	local cmd =
 		Command("sudo"):args({ "--", program, table.unpack(args) }):cwd(cwd)
@@ -43,7 +51,7 @@ local run_with_sudo = function(program, args, cwd)
 	return output
 end
 
-local selected_or_hovered = ya.sync(function(state)
+local get_selected_or_hovered = ya.sync(function(state)
 	local tab, paths = cx.active, {}
 	for _, u in pairs(tab.selected) do
 		paths[#paths + 1] = tostring(u)
@@ -54,7 +62,7 @@ local selected_or_hovered = ya.sync(function(state)
 	return paths
 end)
 
-local yanked = ya.sync(function(state)
+local get_yanked = ya.sync(function(state)
 	local yanked, paths = cx.yanked, {}
 	for _, u in pairs(yanked) do
 		paths[#paths + 1] = tostring(u)
@@ -62,82 +70,64 @@ local yanked = ya.sync(function(state)
 	return paths
 end)
 
-local cwd = ya.sync(function(state)
-	return tostring(cx.active.current.cwd)
-end)
+local get_cwd = ya.sync(
+	function(state) return tostring(cx.active.current.cwd) end
+)
 
-local is_cut = ya.sync(function(state)
-	return cx.yanked.is_cut
-end)
+local get_is_cut = ya.sync(function(state) return cx.yanked.is_cut end)
 
-local entry = function(state, job)
-	if not job.args then
-		notify("error", "plugin needs arguments")
-		return
-	end
-	local verb = job.args[1]
-
-	selected_or_hovered()
-	yanked()
-	is_cut()
-	cwd()
-
-	local files = selected_or_hovered()
-	local yanked = yanked()
-	local is_cut = is_cut()
-	local cwd = cwd()
-
-	local command = ""
+local function buildArgs(verb, jobArgs, files, yanked, is_cut, cwd)
 	local args = {}
+	local command = ""
 
 	if verb == "remove" then
 		if files then
-			if job.args.permanently then
+			if jobArgs.permanently then
 				command = "rm"
 				args = { "-r", "--", table.unpack(files) }
 			else
-				command = "trash-cli"
-				args = { "--", table.unpack(files) }
+				notify("error", "sudo remove needs flag '--permanently'")
+				return
 			end
 		end
 	elseif verb == "paste" then
 		if yanked then
 			if is_cut then
 				command = "mv"
-				local force = ""
-				if job.args.force then
-					force = "-f"
+				if jobArgs.force then
+					table.insert(args, "-f")
 				end
-				args = { force, "-t", cwd, "--", table.unpack(yanked) }
+				tableAppend(args, { "-t", cwd, "--" })
+				tableAppend(args, yanked)
 			else
 				command = "cp"
-				local force = ""
-				if job.args.force then
-					force = "-f"
+				table.insert(args, "-r")
+				if jobArgs.force then
+					table.insert(args, "-f")
 				end
-				args = { "-r", force, "-t", cwd, "--", table.unpack(yanked) }
+				tableAppend(args, { "-t", cwd, "--" })
+				tableAppend(args, yanked)
 			end
 		end
 	elseif verb == "link" then
 		if yanked then
 			command = "ln"
-			local force = ""
-			if job.args.force then
-				force = "-f"
+			table.insert(args, "-s")
+			if jobArgs.force then
+				table.insert(args, "-f")
 			end
-			local relative = ""
-			if job.args.relative then
-				relative = "-r"
+			if jobArgs.relative then
+				table.insert(args, "-r")
 			end
-			args =
-				{ "-s", force, relative, "-t", cwd, "--", table.unpack(yanked) }
+			tableAppend(args, { "-t", cwd, "--" })
+			tableAppend(args, yanked)
 		end
 	elseif verb == "create" then
-		local value, event = ya.input({
+		local value, event = ya.input {
 			title = "sudo create:",
 			position = { "top-center", y = 3, w = 40 },
-		})
-		if not value or event ~= 1 then
+		}
+		if value == nil or event ~= 1 then
 			return
 		end
 		if string.sub(value, -1, -1) == "/" then
@@ -149,56 +139,108 @@ local entry = function(state, job)
 		end
 	elseif verb == "rename" then
 		if #files ~= 1 then
-			notify("error", "can only sudo rename one file")
+			notify("error", "can only sudo rename one file at a time")
 			return
 		end
-		local value, event = ya.input({
+		local value, event = ya.input {
 			title = "sudo rename:",
 			value = Url(files[1]):name(),
 			position = { "hovered", y = 1, w = 40 },
-		})
+		}
 		if not value or event ~= 1 then
 			return
 		end
 		command = "mv"
-		args = { "--", table.unpack(files), cwd .. "/" .. value }
+		table.insert(args, "--")
+		tableAppend(args, files)
+		table.insert(args, cwd .. "/" .. value)
 	elseif verb == "chmod" then
-		local value, event = ya.input({
+		local value, event = ya.input {
 			title = "sudo chmod (recursive):",
 			position = { "top-center", w = 40 },
-		})
+		}
 		if not value or event ~= 1 then
 			return
 		end
 		command = "chmod"
-		args = { "-R", "--", value, table.unpack(files) }
-	-- elseif verb == "open" then
-	-- 	if files then
-	-- 		command = "vi"
-	-- 		args = {
-	-- 			"-u",
-	-- 			"$HOME/.config/nvim/init.lua",
-	-- 			"--",
-	-- 			table.unpack(files),
-	-- 		}
-	-- 	end
+		tableAppend(args, { "-R", "--", value })
+		tableAppend(args, files)
+	elseif verb == "chown" then
+		local value, event = ya.input {
+			title = "sudo chown (recursive):",
+			position = { "top-center", w = 40 },
+		}
+		if not value or event ~= 1 then
+			return
+		end
+		command = "chown"
+		tableAppend(args, { "-R", "--", value })
+		tableAppend(args, files)
+	elseif verb == "open" then
+		if files then
+			command = "vi"
+			args = {
+				"--",
+				table.unpack(files),
+			}
+		end
 	else
-		notify("error", "plugin needs arguments")
+		notify("error", "plugin needs one of the supported verbs as argument")
 		return
 	end
 
-	ya.err("HERE", command, args, cwd)
-	local output = run_with_sudo(command, args, cwd)
+	return command, args, cwd
+end
 
-	ya.err("stdout", output.stdout)
-	ya.err("stderr", output.stderr)
-	ya.err("status.code", output.status.code)
+local testBuildArgs = function(args) end
+
+local entry = function(state, job)
+	if not ya.target_os() == "linux" then
+		notify("error", "plugin only works on linux")
+		return
+	end
+	if not job.args then
+		notify("error", "plugin needs arguments")
+		return
+	end
+	local verb = job.args[1]
+
+	local files = get_selected_or_hovered()
+	local yanked = get_yanked()
+	local is_cut = get_is_cut()
+	local cwd = get_cwd()
+
+	local command = ""
+	local args = {}
+
+	if verb == "test" then
+		notify("info", "ran test", testBuildArgs(job))
+		return
+	end
+
+	ya.dbg("command", command, args, cwd)
+	local program, args, cwd =
+		buildArgs(verb, job.args, files, yanked, is_cut, cwd)
+	if type(program) ~= "string" then
+		return
+	end
+	if type(args) ~= "table" then
+		return
+	end
+	if type(cwd) ~= "string" then
+		return
+	end
+	local output = run_with_sudo(program, args, cwd)
+
+	ya.dbg("stdout", output.stdout)
+	ya.dbg("stderr", output.stderr)
+	ya.dbg("status.code", output.status.code)
 
 	if output.stdout ~= "" then
-		notify("info", {"Ran command:", output.stdout})
+		notify("info", { "ran command", output.stdout })
 	end
 	if not output.status.success then
-		notify("error", {"Command failed:", output.stderr})
+		notify("error", { "command failed", output.stderr })
 		return
 	end
 end
