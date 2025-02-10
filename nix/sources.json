@@ -1,14 +1,14 @@
 {
     "home-manager": {
-        "branch": "master",
+        "branch": "release-24.11",
         "description": "Manage a user environment using Nix  [maintainer=@rycee] ",
         "homepage": "https://nix-community.github.io/home-manager/",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "2cacdd6a27477f1fa46b7026dd806de30f164d3b",
-        "sha256": "0wxsjsqb7qmay2vs1g9rq8p1shvpss7z5n7rdgv2p6zg9mifigsy",
+        "rev": "bd65bc3cde04c16755955630b344bc9e35272c56",
+        "sha256": "15k41il0mvmwyv6jns4z8k6khhmb22jk5gpcqs1paym3l01g6abn",
         "type": "tarball",
-        "url": "https://github.com/nix-community/home-manager/archive/2cacdd6a27477f1fa46b7026dd806de30f164d3b.tar.gz",
+        "url": "https://github.com/nix-community/home-manager/archive/bd65bc3cde04c16755955630b344bc9e35272c56.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs": {
@@ -23,7 +23,19 @@
         "url": "https://github.com/NixOS/nixpkgs/archive/57610d2f8f0937f39dbd72251e9614b1561942d8.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "nixpkgs_latest": {
+    "nixpkgs_for_kitty": {
+        "branch": "nixos-24.11",
+        "description": "Nix Packages collection",
+        "homepage": null,
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "a45fa362d887f4d4a7157d95c28ca9ce2899b70e",
+        "sha256": "1l7bk54x6fiznj5d2b0j7lq2qdn8ak9r2bqdsj4aplqx33c45j6q",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/a45fa362d887f4d4a7157d95c28ca9ce2899b70e.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs_for_nvim": {
         "branch": "nixos-unstable",
         "description": "Nix Packages collection",
         "homepage": null,
@@ -35,7 +47,7 @@
         "url": "https://github.com/NixOS/nixpkgs/archive/0aa475546ed21629c4f5bbf90e38c846a99ec9e9.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "nixpkgs_for_nvim": {
+    "nixpkgs_latest": {
         "branch": "nixos-unstable",
         "description": "Nix Packages collection",
         "homepage": null,

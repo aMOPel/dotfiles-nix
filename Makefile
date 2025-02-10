@@ -11,7 +11,7 @@ start-test-vm:
 
 .PHONY: switch
 switch:
-	nix develop -f ./hm-shell.nix --command home-manager switch
+	nix develop --extra-experimental-features nix-command -f ./hm-shell.nix --command home-manager switch
 
 .PHONY: install
 install:
