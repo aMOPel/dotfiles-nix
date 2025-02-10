@@ -5,7 +5,6 @@ in
 {
   options.myModules.neovim = {
     enable = lib.mkEnableOption "neovim";
-    package = pkgs.neovim-unwrapped;
     filetypes = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
@@ -41,6 +40,7 @@ in
         };
       in
       {
+        package = pkgs.neovim-unwrapped;
         enable = true;
         defaultEditor = true;
         viAlias = true;

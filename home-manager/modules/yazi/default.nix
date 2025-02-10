@@ -58,6 +58,8 @@ in
     poppler
     imagemagick
     mediainfo
+    vlc
+    mpv-unwrapped
   ];
 
   home.sessionVariables = { YAZI_LOG="debug"; };
@@ -82,18 +84,19 @@ in
     package = pkgs_latest.yazi;
 
     plugins = {
-      "smart-enter.yazi" = "${official-plugins}/smart-enter.yazi";
-      # "mount.yazi" = "${official-plugins}/mount.yazi";
-      "git.yazi" = "${official-plugins}/git.yazi";
-      "chmod.yazi" = "${official-plugins}/chmod.yazi";
-      # "sudo-demo.yazi" = "${patched-official-plugins}/sudo-demo.yazi";
-      "relative-motions.yazi" = relative-motions;
-      "compress.yazi" = compress;
-      "copy-file-contents.yazi" = "${copy-file-contents}/copy-file-contents.yazi";
+      "smart-enter" = "${official-plugins}/smart-enter.yazi";
+      # "mount" = "${official-plugins}/mount.yazi";
+      "git" = "${official-plugins}/git.yazi";
+      "chmod" = "${official-plugins}/chmod.yazi";
+      # "sudo-demo" = "${patched-official-plugins}/sudo-demo.yazi";
+      "relative-motions" = relative-motions;
+      "compress" = compress;
+      "copy-file-contents" = "${copy-file-contents}/copy-file-contents.yazi";
     };
     initLua = ./init.lua;
 
     enableBashIntegration = true;
+    shellWrapperName = "y";
     settings = builtins.fromTOML (builtins.readFile ./settings.toml);
     keymap = builtins.fromTOML (builtins.readFile ./keymap.toml);
     theme = builtins.fromTOML (builtins.readFile ./theme.toml);
