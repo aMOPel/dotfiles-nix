@@ -1,14 +1,14 @@
-{ config, pkgs, pkgs_latest, pkgs_for_nvim, lib, ... }:
+{ config, pkgs, lib, ... }:
 let
   sources = import ../nix/sources.nix;
   # for things that don't need regular updates
-  pkgs = import sources.nixpkgs { };
+  pkgs = import sources."nixpkgs_nixos" { };
   # for things that need regular updates
   pkgs_latest = import sources."nixpkgs_latest" { };
   # just for neovim, to keep bumping it independent
   pkgs_for_nvim = import sources."nixpkgs_for_nvim" { };
   # just for gui apps, like terminal and browser, to keep in sync with nixos version
-  pkgs_for_gui = import sources."nixpkgs_for_gui" { };
+  nixpkgs_nixos = import sources."nixpkgs_nixos" { };
   hmlib = import "${sources.home-manager}/modules/lib" { inherit ( pkgs ) lib; };
   lib = pkgs.lib;
   # check that every leaf is differ from emtpy string
@@ -23,7 +23,7 @@ in
 {
   imports = [
     (import ./modules/nvim       {inherit config pkgs_latest lib; pkgs = pkgs_for_nvim;})
-    (import ./modules/kitty      {inherit config pkgs_latest lib; pkgs = pkgs_for_gui;})
+    (import ./modules/kitty      {inherit config pkgs_latest lib; pkgs = nixpkgs_nixos;})
     (import ./modules/bash       {inherit config pkgs pkgs_latest lib;})
     (import ./modules/git        {inherit config pkgs pkgs_latest lib;})
     (import ./modules/shelltools {inherit config pkgs pkgs_latest lib;})
@@ -59,7 +59,7 @@ in
   };
 
   home.packages = with pkgs; [
-    pkgs_for_gui.brave
+    nixpkgs_nixos.brave
     niv
     vim
   ];
