@@ -5,14 +5,16 @@ let
   pkgs = import sources."nixpkgs_nixos" { };
   hm = import sources.home-manager { inherit pkgs; };
   yubikey-disc-encryption = import ../../yubikey-disc-encryption.nix { inherit device; };
-  udev-rule = import ../../../keyboard-layout/udev.nix { inherit pkgs; };
+  yubikey-support = import ../../yubikey-support.nix { inherit pkgs; };
+  # udev-rule = import ../../../keyboard-layout/udev.nix { inherit pkgs; };
 in
 {
   imports = [
     ./hardware-configuration.nix
     ../../common.nix
     hm.nixos
-    udev-rule
+    # udev-rule
+    yubikey-support
     yubikey-disc-encryption
   ];
 
