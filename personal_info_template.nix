@@ -1,25 +1,68 @@
-{ lib, ... }:
-let
-  personalInfo = rec{
-    username = "";
-    homeDirectory = "/home/${username}";
-    git = {
-      userName = "";
-      userEmail = "";
-    };
-    task = {
-      context = {
-        # test.read = "pro:test";
-        # test.write = "pro:test";
-      };
+rec {
+  username = "";
+  homeDirectory = "/home/${username}";
+  git = {
+    userName = "";
+    userEmail = "";
+  };
+  task = {
+    context = {
+      # test.read = "pro:test";
+      # test.write = "pro:test";
     };
   };
-in
-# check that every leaf is differ from emtpy string
-lib.attrsets.mapAttrsRecursive
-  (name: value:
-  assert
-  lib.asserts.assertMsg (value != "")
-    "you have to provide a value for the key '${lib.strings.concatStringsSep "." name}'";
-  value)
-  personalInfo
+  myModules = {
+
+    task = {
+      enable = true;
+      context = task.context;
+    };
+
+    git = {
+      enable = true;
+      enableLazygit = true;
+      userName = git.userName;
+      userEmail = git.userEmail;
+    };
+
+    gnome = {
+      enable = true;
+    };
+
+    mime-applications = {
+      enable = true;
+    };
+
+    neovim = {
+      enable = true;
+      filetypes = [
+        "angular"
+        # "cmake"
+        "make"
+        # "cpp"
+        "css"
+        # "cypher"
+        "dockerfile"
+        # "gdscript"
+        "git"
+        "go"
+        "html"
+        "json"
+        "lua"
+        "markdown"
+        # "nim"
+        "nix"
+        "python"
+        "rust"
+        "sh"
+        "dotenv"
+        # "tex"
+        "toml"
+        "typescript"
+        "vim"
+        "yaml"
+        "misc"
+      ];
+    };
+  };
+}
