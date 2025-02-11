@@ -30,6 +30,7 @@ in
     (import ./modules/yazi       {inherit config pkgs pkgs_latest lib;})
     (import ./modules/task       {inherit config pkgs pkgs_latest lib;})
     (import ./modules/gnome      {inherit config pkgs pkgs_latest lib hmlib;})
+    (import ./modules/gpg        {inherit config pkgs pkgs_latest lib;})
     (import ./modules/mime-applications {inherit config pkgs pkgs_latest lib;})
   ];
 
