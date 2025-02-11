@@ -58,8 +58,6 @@ in
     poppler
     imagemagick
     mediainfo
-    vlc
-    mpv-unwrapped
   ];
 
   home.sessionVariables = { YAZI_LOG="debug"; };

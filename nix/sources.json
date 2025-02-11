@@ -23,7 +23,7 @@
         "url": "https://github.com/NixOS/nixpkgs/archive/57610d2f8f0937f39dbd72251e9614b1561942d8.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "nixpkgs_for_kitty": {
+    "nixpkgs_for_gui": {
         "branch": "nixos-24.11",
         "description": "Nix Packages collection",
         "homepage": null,

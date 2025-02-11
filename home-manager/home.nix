@@ -1,74 +1,44 @@
 { config, pkgs, pkgs_latest, pkgs_for_nvim, lib, ... }:
 let
   sources = import ../nix/sources.nix;
+  # for things that don't need regular updates
   pkgs = import sources.nixpkgs { };
+  # for things that need regular updates
   pkgs_latest = import sources."nixpkgs_latest" { };
+  # just for neovim, to keep bumping it independent
   pkgs_for_nvim = import sources."nixpkgs_for_nvim" { };
-  pkgs_for_kitty = import sources."nixpkgs_for_kitty" { };
+  # just for gui apps, like terminal and browser, to keep in sync with nixos version
+  pkgs_for_gui = import sources."nixpkgs_for_gui" { };
   hmlib = import "${sources.home-manager}/modules/lib" { inherit ( pkgs ) lib; };
   lib = pkgs.lib;
-  personalInfo = import ../personal_info.nix { inherit lib; };
+  # check that every leaf is differ from emtpy string
+  personalInfo = lib.attrsets.mapAttrsRecursive
+    (name: value:
+    assert
+    lib.asserts.assertMsg (value != "")
+      "you have to provide a value for the key '${lib.strings.concatStringsSep "." name}'";
+    value)
+    (import ../personal_info.nix);
 in
 {
   imports = [
     (import ./modules/nvim       {inherit config pkgs_latest lib; pkgs = pkgs_for_nvim;})
-    (import ./modules/kitty      {inherit config pkgs_latest lib; pkgs = pkgs_for_kitty;})
+    (import ./modules/kitty      {inherit config pkgs_latest lib; pkgs = pkgs_for_gui;})
     (import ./modules/bash       {inherit config pkgs pkgs_latest lib;})
     (import ./modules/git        {inherit config pkgs pkgs_latest lib;})
     (import ./modules/shelltools {inherit config pkgs pkgs_latest lib;})
     (import ./modules/yazi       {inherit config pkgs pkgs_latest lib;})
     (import ./modules/task       {inherit config pkgs pkgs_latest lib;})
     (import ./modules/gnome      {inherit config pkgs pkgs_latest lib hmlib;})
+    (import ./modules/mime-applications {inherit config pkgs pkgs_latest lib;})
   ];
 
   # uninstall = true;
   # targets.genericLinux.enable = true;
 
-  myModules.task = {
-    enable = true;
-    context = personalInfo.task.context;
-  };
+  myModules = personalInfo.myModules;
 
-  myModules.git = {
-    enable = true;
-    enableLazygit = true;
-    userName = personalInfo.git.userName;
-    userEmail = personalInfo.git.userEmail;
-  };
-
-  myModules.neovim = {
-    enable = true;
-    filetypes = [
-      "sh"
-      "dotenv"
-      "nix"
-      "make"
-      "dockerfile"
-      "git"
-      "markdown"
-
-      "json"
-      "toml"
-      "yaml"
-
-      "typescript"
-      "css"
-      "html"
-
-      "lua"
-      "vim"
-
-      "cpp"
-      "rust"
-      "go"
-      "python"
-      "gdscript"
-
-      "misc"
-    ];
-  };
-
-  programs.home-manager.enable = true;
+  programs.home-manager.enable = false;
 
   home.username = personalInfo.username;
   home.homeDirectory = personalInfo.homeDirectory;
@@ -89,24 +59,10 @@ in
   };
 
   home.packages = with pkgs; [
-    pkgs_for_kitty.brave
+    pkgs_for_gui.brave
     niv
     vim
   ];
-
-  xdg = {
-    enable = true;
-    mimeApps = {
-      enable = true;
-      defaultApplications = {
-        "application/pdf" = ["zathura.desktop"];
-        "text/html" = ["brave.desktop"];
-        "video/*" = ["vlc.desktop"];
-        "image/*" = ["feh.desktop"];
-        "audio/*" = ["mpv.desktop"];
-      };
-    };
-  };
 
   home.stateVersion = "23.11";
 }

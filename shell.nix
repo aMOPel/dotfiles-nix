@@ -5,5 +5,6 @@ in
 pkgs.mkShell {
   packages = with pkgs; [
     niv
+    gnumake
   ];
 }

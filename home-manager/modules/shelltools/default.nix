@@ -5,8 +5,6 @@
     ripgrep
     gh
     glab
-    zathura
-    feh
     hyperfine # benchmarking
     license-cli # generate license
     gibo # generate gitignore
