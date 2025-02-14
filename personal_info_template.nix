@@ -1,10 +1,6 @@
 rec {
   username = "";
   homeDirectory = "/home/${username}";
-  git = {
-    userName = "";
-    userEmail = "";
-  };
   task = {
     context = {
       # test.read = "pro:test";
@@ -28,8 +24,23 @@ rec {
     git = {
       enable = true;
       enableLazygit = true;
-      userName = git.userName;
-      userEmail = git.userEmail;
+      # globalUserName = git.userName;
+      # globalUserEmail = git.userEmail;
+      conditionalUser = [
+        {
+          ifRemoteIsHost = "github.com";
+          contents = {
+            user = {
+              email = "";
+              name = "";
+              signingKey = "<key fingerprint>";
+            };
+            commit = {
+              gpgSign = true;
+            };
+          };
+        }
+      ];
     };
 
     gnome = {
