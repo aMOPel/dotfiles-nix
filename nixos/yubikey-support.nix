@@ -3,6 +3,9 @@
   ...
 }:
 {
+  # TODO: seems to be broken
+  # programs.yubikey-touch-detector.enable = true;
+
   services.pcscd.enable = true;
   services.udev.packages = [ pkgs.yubikey-personalization ];
 
@@ -22,3 +25,4 @@
 # NOTE: reference
 # https://ludovicrousseau.blogspot.com/2019/06/gnupg-and-pcsc-conflicts.html
 # https://nixos.wiki/wiki/Yubikey
+# https://github.com/drduh/YubiKey-Guide

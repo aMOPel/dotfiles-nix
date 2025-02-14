@@ -21,10 +21,14 @@ in
   home-manager = {
     useGlobalPkgs = false;
     useUserPackages = false;
+    backupFileExtension = "backup";
     users."${personal-info.username}" = import ../../../home-manager/home.nix;
   };
 
+  services.gnome.gnome-keyring.enable = pkgs.lib.mkForce false;
   networking.hostName = personal-info.nixos.hostname;
+
+  programs.ssh.knownHosts = personal-info.nixos.knownHosts;
 
   users.users."${personal-info.username}" = {
     isNormalUser = true;

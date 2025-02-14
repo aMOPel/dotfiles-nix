@@ -7,6 +7,7 @@
 }:
 let
   cfg = config.myModules.gpg;
+  gpgPkg = config.programs.gpg.package;
 in
 {
   options.myModules.gpg = {
@@ -17,6 +18,10 @@ in
     home.packages = with pkgs; [
       gcr
     ];
+
+    home.sessionVariables = {
+      SSH_AUTH_SOCK = "$(${gpgPkg}/bin/gpgconf --list-dirs agent-ssh-socket)";
+    };
 
     programs.gpg = {
       enable = true;
@@ -32,7 +37,11 @@ in
     services.gpg-agent = {
       enable = true;
       enableBashIntegration = true;
+      enableScDaemon = true;
       enableSshSupport = true;
+      sshKeys = [
+        "D8D21C00002B50535AC339A7DACB46B749B06047"
+      ];
       pinentryPackage = pkgs.pinentry-gnome3;
     };
   };

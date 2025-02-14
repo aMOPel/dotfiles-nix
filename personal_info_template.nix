@@ -11,6 +11,13 @@ rec {
       # test.write = "pro:test";
     };
   };
+  nixos = {
+    hostname = "";
+    knownHosts = {
+      "<host>".publicKey =
+        "ssh-rsa <key>";
+    };
+  };
   myModules = {
 
     task = {
