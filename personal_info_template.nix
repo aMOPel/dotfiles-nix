@@ -24,8 +24,8 @@ rec {
     git = {
       enable = true;
       enableLazygit = true;
-      # globalUserName = git.userName;
-      # globalUserEmail = git.userEmail;
+      globalUserName = "";
+      # globalUserEmail = "";
       conditionalUser = [
         {
           ifRemoteIsHost = "github.com";
@@ -41,6 +41,10 @@ rec {
           };
         }
       ];
+    };
+
+    pass = {
+      enable = true;
     };
 
     gnome = {

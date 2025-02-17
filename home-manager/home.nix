@@ -1,3 +1,4 @@
+{ personal-info-path ? ../personal_info.nix }:
 { config, pkgs, lib, ... }:
 let
   sources = import ../nix/sources.nix;
@@ -12,13 +13,13 @@ let
   hmlib = import "${sources.home-manager}/modules/lib" { inherit ( pkgs ) lib; };
   lib = pkgs.lib;
   # check that every leaf is differ from emtpy string
-  personalInfo = lib.attrsets.mapAttrsRecursive
+  personal-info = lib.attrsets.mapAttrsRecursive
     (name: value:
     assert
     lib.asserts.assertMsg (value != "")
       "you have to provide a value for the key '${lib.strings.concatStringsSep "." name}'";
     value)
-    (import ../personal_info.nix);
+    (import personal-info-path);
 in
 {
   imports = [
@@ -38,12 +39,12 @@ in
   # uninstall = true;
   # targets.genericLinux.enable = true;
 
-  myModules = personalInfo.myModules;
+  myModules = personal-info.myModules;
 
   programs.home-manager.enable = false;
 
-  home.username = personalInfo.username;
-  home.homeDirectory = personalInfo.homeDirectory;
+  home.username = personal-info.username;
+  home.homeDirectory = personal-info.homeDirectory;
   home.language.base = "en_US.UTF-8";
   home.keyboard.layout = "us";
   home.preferXdgDirectories = true;
