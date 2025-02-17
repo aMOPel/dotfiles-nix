@@ -29,7 +29,7 @@ in
 
     home.file = {
       "${rootPath}/task/hooks/on-modify.timewarrior" = {
-        text = builtins.readFile ./on-modify.timewarrior;
+        source = builtins.toPath "${pkgs.timewarrior}/share/doc/timew/ext/on-modify.timewarrior";
         executable = true;
       };
 
@@ -41,6 +41,7 @@ in
     home.packages = with pkgs;[
       taskwarrior-tui
       timewarrior
+      python314
     ];
 
     programs.taskwarrior = {
