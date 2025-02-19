@@ -258,3 +258,11 @@ vim.keymap.set(
 	[[<cmd>bdelete<CR>]],
 	{ desc = "delete buffer" }
 )
+
+vim.keymap.set({ "n" }, "yoD", function()
+	if vim.o.diff then
+		vim.cmd([[diffoff]])
+		return
+	end
+	vim.cmd([[diffthis]])
+end, { desc = "toggle diff" })

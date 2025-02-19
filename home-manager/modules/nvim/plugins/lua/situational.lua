@@ -128,6 +128,12 @@ table.insert(plugins, {
 			"<cmd>-tabnew %<cr><cmd>Gdiffsplit! <cr>",
 			{ desc = "open fugitive diff split" }
 		)
+		vim.keymap.set(
+			"n",
+			"<leader>go",
+			"<cmd>Gedit :(top)%",
+			{ desc = "open current file (which is somewhere in git history) in worktree" }
+		)
 
 		vim.api.nvim_create_autocmd({ "FileType" }, {
 			group = "MyAutoCmd",
