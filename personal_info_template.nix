@@ -81,6 +81,7 @@ rec {
         # "tex"
         "toml"
         "typescript"
+        # "deno"
         "vim"
         "yaml"
         "misc"

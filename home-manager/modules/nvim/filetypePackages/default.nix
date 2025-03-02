@@ -326,6 +326,10 @@ let
       ];
     };
 
+    deno = {
+      lsps = [ deno ];
+    };
+
     vim = {
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [ vim vimdoc ];
     };

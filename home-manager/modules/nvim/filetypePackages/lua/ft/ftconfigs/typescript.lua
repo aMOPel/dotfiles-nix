@@ -11,7 +11,36 @@ utils.addTable(g.lsp.fts, {
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
-	ts_ls = "default",
+	denols = function(on_attach, capabilities)
+		local lspconfig = require("lspconfig")
+		return {
+			capabilities = capabilities,
+			on_attach = on_attach,
+			root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
+		}
+	end,
+	ts_ls = function(on_attach, capabilities)
+		local lspconfig = require("lspconfig")
+		return {
+			capabilities = capabilities,
+			on_attach = on_attach,
+			root_dir = function(filename, bufnr)
+				local denoRootDir = lspconfig.util.root_pattern(
+					"deno.json",
+					"deno.jsonc"
+				)(filename)
+				if denoRootDir then
+					-- print('this seems to be a deno project; returning nil so that tsserver does not attach');
+					return nil
+					-- else
+					-- print('this seems to be a ts project; return root dir based on package.json')
+				end
+
+				return lspconfig.util.root_pattern("package.json")(filename)
+			end,
+			single_file_support = false,
+		}
+	end,
 })
 
 utils.addTable(g.linter.filetype, {
