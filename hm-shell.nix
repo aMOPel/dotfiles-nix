@@ -1,6 +1,6 @@
 let
   sources = import ./nix/sources.nix;
-  nixpkgs = sources."nixpkgs";
+  nixpkgs = sources."nixpkgs_nixos";
   pkgs = import nixpkgs { };
 in
 pkgs.mkShell rec {
@@ -12,5 +12,5 @@ pkgs.mkShell rec {
   ];
 
   NIX_PATH = "nixpkgs=${nixpkgs}:home-manager=${sources."home-manager"}";
-  HOME_MANAGER_CONFIG = "./home-manager/home.nix";
+  HOME_MANAGER_CONFIG = "./home-manager/wrapper-for-non-nixos.nix";
 }

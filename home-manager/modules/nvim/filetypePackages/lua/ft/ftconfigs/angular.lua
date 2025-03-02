@@ -5,6 +5,7 @@ utils.addTable(g.lsp.fts, {
 	"html",
 })
 
+-- BUG: if npx is not in path this crashes the config loading
 utils.addTable(g.lsp.servers.lsp_installer, {
 	angularls = function(on_attach, capabilities)
 		local lsputil = require("lspconfig.util")

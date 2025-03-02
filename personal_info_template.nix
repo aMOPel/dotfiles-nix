@@ -26,7 +26,7 @@ rec {
       enableLazygit = true;
       globalUserName = "";
       # globalUserEmail = "";
-      conditionalUser = [
+      conditionalConfig = [
         {
           ifRemoteIsHost = "github.com";
           contents = {
