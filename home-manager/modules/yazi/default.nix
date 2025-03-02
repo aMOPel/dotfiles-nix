@@ -26,6 +26,16 @@ let
     '';
   });
 
+  my-sudo-demo = pkgs.stdenv.mkDerivation (finalAttrs: {
+    pname = "my-sudo-demo";
+    version = "2025-03-02";
+    src = ./sudo-demo.yazi;
+
+    installPhase = ''
+      cp -r . $out
+    '';
+  });
+
   relative-motions = pkgs.fetchFromGitHub {
     owner = "dedukun";
     repo = "relative-motions.yazi";
@@ -44,13 +54,13 @@ let
     rev = "52ee2bacc344ab835ab279d036980ff9b9fe4b21";
     sha256 = "sha256-djE0of7Y+IYP6/euAG4uxvZ/ch5aU/PsYBX6MN/km5s=";
   };
-  # sudo = pkgs.fetchFromGitHub {
-  #   owner = "TD-sky";
-  #   repo = "sudo.yazi";
-  #   rev = "f4030083a8a4d1de66f88a8add27ec47b43b01c6";
-  #   sha256 = "sha256-IKdDhLzQCWT8mGNnAbjguoIqxQKUO7N5NsHx51erjLk=";
-  # };
 in
+# sudo = pkgs.fetchFromGitHub {
+#   owner = "TD-sky";
+#   repo = "sudo.yazi";
+#   rev = "f4030083a8a4d1de66f88a8add27ec47b43b01c6";
+#   sha256 = "sha256-IKdDhLzQCWT8mGNnAbjguoIqxQKUO7N5NsHx51erjLk=";
+# };
 {
   home.packages = with pkgs; [
     ffmpegthumbnailer
@@ -60,7 +70,9 @@ in
     mediainfo
   ];
 
-  home.sessionVariables = { YAZI_LOG="debug"; };
+  home.sessionVariables = {
+    YAZI_LOG = "debug";
+  };
 
   # programs.bash = {
   #   bashrcExtra = ''
@@ -86,7 +98,7 @@ in
       # "mount" = "${official-plugins}/mount.yazi";
       "git" = "${official-plugins}/git.yazi";
       "chmod" = "${official-plugins}/chmod.yazi";
-      # "sudo-demo" = "${patched-official-plugins}/sudo-demo.yazi";
+      "sudo-demo" = my-sudo-demo;
       "relative-motions" = relative-motions;
       "compress" = compress;
       "copy-file-contents" = "${copy-file-contents}/copy-file-contents.yazi";

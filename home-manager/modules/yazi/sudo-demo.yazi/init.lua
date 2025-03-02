@@ -18,7 +18,13 @@ local function tableAppend(t1, t2)
 	if type(t2) ~= "table" then
 		return
 	end
-	return table.insert(t1, table.unpack(t2))
+	for k, v in pairs(t2) do
+		if type(k) == "number" then
+			table.insert(t1, v)
+		else
+			t1[k] = v
+		end
+	end
 end
 
 --- Verify if `sudo` is already authenticated
@@ -176,14 +182,14 @@ local function buildArgs(verb, jobArgs, files, yanked, is_cut, cwd)
 		command = "chown"
 		tableAppend(args, { "-R", "--", value })
 		tableAppend(args, files)
-	elseif verb == "open" then
-		if files then
-			command = "vi"
-			args = {
-				"--",
-				table.unpack(files),
-			}
-		end
+	-- elseif verb == "open" then
+	-- 	if files then
+	-- 		command = "vi"
+	-- 		args = {
+	-- 			"--",
+	-- 			table.unpack(files),
+	-- 		}
+	-- 	end
 	else
 		notify("error", "plugin needs one of the supported verbs as argument")
 		return
