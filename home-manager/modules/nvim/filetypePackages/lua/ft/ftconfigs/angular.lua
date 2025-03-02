@@ -46,45 +46,48 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 
 			return angular_core_version
 		end
-		local default_probe_dir = get_probe_dir(vim.fn.getcwd())
-		local default_angular_core_version =
-			get_angular_core_version(vim.fn.getcwd())
-		local cmd = {
-			vim.fn.exepath("npx"),
-			"ngserver",
-			"--stdio",
-			"--tsProbeLocations",
-			default_probe_dir,
-			"--ngProbeLocations",
-			default_probe_dir,
-			"--angularCoreVersion",
-			default_angular_core_version,
-		}
 
-		return {
+		local function checkCmdAvailable()
+			return vim.fn.executable("npx") == 1 or vim.fn.executable("ngserver") == 1
+		end
+
+		local function buildCmd(rootDir)
+			local cmd = {}
+
+			if vim.fn.executable("npx") == 1 then
+				cmd = { "npx", "ngserver" }
+			elseif vim.fn.executable("ngserver") == 1 then
+				cmd = { "ngserver" }
+			else
+				return nil
+			end
+			local probe_dir = get_probe_dir(rootDir)
+			local angular_core_version = get_angular_core_version(rootDir)
+			utils.addTable(cmd, {
+				"--stdio",
+				"--tsProbeLocations",
+				probe_dir,
+				"--ngProbeLocations",
+				probe_dir,
+				"--angularCoreVersion",
+				angular_core_version,
+			})
+			return cmd
+		end
+
+		local result = {
 			capabilities = capabilities,
 			on_attach = on_attach,
-			cmd = cmd,
-			on_new_config = function(new_config, new_root_dir)
-				local new_probe_dir = get_probe_dir(new_root_dir)
-				local angular_core_version =
-					get_angular_core_version(new_root_dir)
-
-				-- We need to check our probe directories because they may have changed.
-				new_config.cmd = {
-					vim.fn.exepath("npx"),
-					"ngserver",
-					"--stdio",
-					"--tsProbeLocations",
-					new_probe_dir,
-					"--ngProbeLocations",
-					new_probe_dir,
-					"--angularCoreVersion",
-					angular_core_version,
-				}
-			end,
 			root_dir = root_pattern,
 		}
+		if checkCmdAvailable() then
+			utils.addTable(result, {
+				cmd = buildCmd(vim.fn.getcwd()),
+				on_new_config = function(new_config, new_root_dir)
+					new_config.cmd = buildCmd(new_root_dir)
+				end,
+			})
+		end
+		return result
 	end,
 })
-
