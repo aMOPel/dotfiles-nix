@@ -2,6 +2,7 @@ local ft = "css"
 
 utils.addTable(g.lsp.fts, {
 	ft,
+  "scss",
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
@@ -13,7 +14,7 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 		end
 
 		return {
-			filetypes = { "html", "vue", "css" },
+			filetypes = { "javascript", "typescript", "jsx", "tsx", "html" },
 			capabilities = capabilities,
 			on_attach = add_on_attach,
 		}
@@ -26,9 +27,13 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 		end
 
 		return {
-			filetypes = { "css" },
+			filetypes = {  "scss", ft },
 			capabilities = capabilities,
 			on_attach = add_on_attach,
 		}
 	end,
+})
+
+utils.addTable(g.formatter.filetype, {
+	[ft] = { require("formatter.filetypes")[ft].prettierd },
 })

@@ -1,4 +1,10 @@
-{ filetypes ? [ ], lib, pkgs, pkgs_latest, ... }:
+{
+  filetypes ? [ ],
+  lib,
+  pkgs,
+  pkgs_latest,
+  ...
+}:
 let
 
   vim-grip = pkgs.vimUtils.buildVimPlugin {
@@ -52,23 +58,31 @@ let
       linters = [ checkmake ];
     };
 
-
     cpp = {
-      tsParsers = with vimPlugins.nvim-treesitter-parsers; [ c cpp ];
+      tsParsers = with vimPlugins.nvim-treesitter-parsers; [
+        c
+        cpp
+      ];
       lsps = [ clang-tools ];
-      linters = [ cppcheck cpplint ];
+      linters = [
+        cppcheck
+        cpplint
+      ];
       # TODO: clangd extensions
     };
 
     css = {
-      tsParsers = with vimPlugins.nvim-treesitter-parsers; [ css scss ];
+      tsParsers = with vimPlugins.nvim-treesitter-parsers; [
+        css
+        scss
+      ];
       lsps = [
         tailwindcss-language-server
         vscode-langservers-extracted
       ];
       # TODO:
       # linters = [ stylelint ];
-      # formatters = [ prettierd ];
+      formatters = [ prettierd nodejs_22];
       ftplugins = with vimPlugins; [
         {
           type = "lua";
@@ -175,9 +189,15 @@ let
     };
 
     html = {
-      tsParsers = with vimPlugins.nvim-treesitter-parsers; [ html xml ];
+      tsParsers = with vimPlugins.nvim-treesitter-parsers; [
+        html
+        xml
+      ];
       lsps = [ vscode-langservers-extracted ];
-      formatters = [ prettierd ];
+      formatters = [
+        prettierd
+        nodejs_22
+      ];
       ftplugins = with vimPlugins; [
         {
           type = "lua";
@@ -226,7 +246,10 @@ let
         nodePackages.alex
         markdownlint-cli
       ];
-      formatters = [ prettierd ];
+      formatters = [
+        prettierd
+        nodejs_22
+      ];
       extraTools = [ python312Packages.grip ];
       ftplugins = with vimPlugins; [
         vim-grip
@@ -281,7 +304,7 @@ let
       ];
       lsps = [ rust-analyzer ];
       formatters = [ rustfmt ];
-      # TODO: 
+      # TODO:
       # ftplugins = with vimPlugins; [
       #   rustaceanvim
       # ];
@@ -314,7 +337,10 @@ let
       ];
       lsps = [ nodePackages.typescript-language-server ];
       linters = [ eslint_d ];
-      formatters = [ prettierd ];
+      formatters = [
+        prettierd
+        nodejs_22
+      ];
       # TODO:
       # debuggers = [ ];
       ftplugins = with vimPlugins; [
@@ -331,7 +357,10 @@ let
     };
 
     vim = {
-      tsParsers = with vimPlugins.nvim-treesitter-parsers; [ vim vimdoc ];
+      tsParsers = with vimPlugins.nvim-treesitter-parsers; [
+        vim
+        vimdoc
+      ];
     };
 
     vue = {
@@ -344,7 +373,10 @@ let
     yaml = {
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [ yaml ];
       lsps = [ yaml-language-server ];
-      formatters = [ prettierd ];
+      formatters = [
+        prettierd
+        nodejs_22
+      ];
     };
 
     misc = {
@@ -417,29 +449,29 @@ let
   ];
 
   # if list is empty, use all filetypes
-  allFiletypes = if builtins.length filetypes == 0 then builtins.attrNames filetypePackages else filetypes;
+  allFiletypes =
+    if builtins.length filetypes == 0 then builtins.attrNames filetypePackages else filetypes;
   # pick only chosen filetypePackages
-  enabledFiletypePackages = lib.attrsets.filterAttrs (name: value: builtins.elem name allFiletypes) filetypePackages;
+  enabledFiletypePackages = lib.attrsets.filterAttrs (
+    name: value: builtins.elem name allFiletypes
+  ) filetypePackages;
   # pick only chosen lua files from ftconfigs/
-  enabledFtconfigPaths = builtins.filter
-    (e: builtins.elem
-      (lib.strings.removeSuffix ".lua" (builtins.baseNameOf e))
-      allFiletypes)
-    (lib.filesystem.listFilesRecursive ./lua/ft/ftconfigs);
+  enabledFtconfigPaths = builtins.filter (
+    e: builtins.elem (lib.strings.removeSuffix ".lua" (builtins.baseNameOf e)) allFiletypes
+  ) (lib.filesystem.listFilesRecursive ./lua/ft/ftconfigs);
 
 in
 {
   plugins =
-    extraPlugins ++
-    lib.lists.flatten
-      (builtins.map
-        (name: builtins.catAttrs name (builtins.attrValues enabledFiletypePackages))
-        pluginKeys);
-  packages =
-    lib.lists.flatten
-      (builtins.map
-        (name: builtins.catAttrs name (builtins.attrValues enabledFiletypePackages))
-        packageKeys);
+    extraPlugins
+    ++ lib.lists.flatten (
+      builtins.map (name: builtins.catAttrs name (builtins.attrValues enabledFiletypePackages)) pluginKeys
+    );
+  packages = lib.lists.flatten (
+    builtins.map (
+      name: builtins.catAttrs name (builtins.attrValues enabledFiletypePackages)
+    ) packageKeys
+  );
   extraConfig =
     "\n\n"
     + builtins.readFile ./lua/globals.lua
@@ -447,6 +479,5 @@ in
     + builtins.concatStringsSep "\n\n" (lib.lists.forEach enabledFtconfigPaths builtins.readFile)
     + builtins.readFile ./lua/lsp.lua
     + builtins.readFile ./lua/debug.lua
-    + builtins.readFile ./lua/treesitter.lua
-  ;
+    + builtins.readFile ./lua/treesitter.lua;
 }
