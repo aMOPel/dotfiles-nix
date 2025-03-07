@@ -204,16 +204,16 @@ table.insert(plugins, {
 		require("yazi").setup({
 			open_for_directories = true,
 			keymaps = {
-				open_file_in_vertical_split = "<c-v>",
+				open_file_in_vertical_split = "<c-y><c-v>",
 				open_file_in_horizontal_split = false,
-				open_file_in_tab = "<c-t>",
-        send_to_quickfix_list = "<c-q>",
+				open_file_in_tab = "<c-y><c-t>",
+        send_to_quickfix_list = "<c-y><c-q>",
         show_help = false,
 				grep_in_directory = false,
 				replace_in_directory = false,
 				cycle_open_buffers = false,
 				copy_relative_path_to_selected_files = false,
-				change_working_directory = "<c-g>",
+				change_working_directory = "<c-y><c-g>",
 			},
 		})
 	end,
