@@ -17,6 +17,14 @@ cd $dotfiles_config/kitty; v
 dfrc () {
 cd $dotfiles_repo; v
 }
+git-rebase-after-merge-squash () {
+if [ "$FEATURE_A_BRANCH" == "" ]; then echo 'you have to define $FEATURE_A_BRANCH'; return 1; fi
+if [ "$FEATURE_B_OFF_A_BRANCH" == "" ]; then echo 'you have to define $FEATURE_B_OFF_A_BRANCH'; return 1; fi
+_main_branch="main"
+if [ "$MAIN_BRANCH" == "" ]; then echo '$MAIN_BRANCH undefined, assuming "main"'; else _main_branch="$MAIN_BRANCH"; fi
+
+git rebase --onto "$_main_branch" $(git merge-base "$FEATURE_B_OFF_A_BRANCH" "$FEATURE_A_BRANCH") "$FEATURE_B_OFF_A_BRANCH"
+}
 
 # vim
 v () {
