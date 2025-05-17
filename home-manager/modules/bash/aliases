@@ -8,9 +8,6 @@ cd $dotfiles_config/bash; v
 vrc () {
 cd $dotfiles_config/nvim; v
 }
-rrc () {
-cd $dotfiles_config/ranger; v
-}
 krc () {
 cd $dotfiles_config/kitty; v
 }

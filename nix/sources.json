@@ -58,29 +58,5 @@
         "type": "tarball",
         "url": "https://github.com/NixOS/nixpkgs/archive/ba8b70ee098bc5654c459d6a95dfc498b91ff858.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "ranger-devicons2": {
-        "branch": "master",
-        "description": null,
-        "homepage": null,
-        "owner": "cdump",
-        "repo": "ranger-devicons2",
-        "rev": "f7877aa0dd8caa1d498d935f6f49e57a4fc591e2",
-        "sha256": "0j6iwrzlqpv80zxk9zr9b069l9gwzczlqd9fj8k9zw57z5di1hrq",
-        "type": "tarball",
-        "url": "https://github.com/cdump/ranger-devicons2/archive/f7877aa0dd8caa1d498d935f6f49e57a4fc591e2.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "ranger-zoxide": {
-        "branch": "master",
-        "description": "Easily jump between common directories in ranger",
-        "homepage": "",
-        "owner": "jchook",
-        "repo": "ranger-zoxide",
-        "rev": "281828de060299f73fe0b02fcabf4f2f2bd78ab3",
-        "sha256": "0gjmz8qx52qhm3hvazrk1jbpskgyf51cqppvd6vx9m2s4mhv4jr4",
-        "type": "tarball",
-        "url": "https://github.com/jchook/ranger-zoxide/archive/281828de060299f73fe0b02fcabf4f2f2bd78ab3.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
