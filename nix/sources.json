@@ -23,18 +23,6 @@
         "url": "https://github.com/NixOS/nixpkgs/archive/57610d2f8f0937f39dbd72251e9614b1561942d8.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "nixpkgs_nixos": {
-        "branch": "nixos-24.11",
-        "description": "Nix Packages collection",
-        "homepage": null,
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "ba8b70ee098bc5654c459d6a95dfc498b91ff858",
-        "sha256": "193n40zcj2zg8aw7lzp7nf015gx1a7z6m2jgnjacj94q6ifqi8i0",
-        "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/ba8b70ee098bc5654c459d6a95dfc498b91ff858.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
     "nixpkgs_for_nvim": {
         "branch": "nixos-unstable",
         "description": "Nix Packages collection",
@@ -57,6 +45,18 @@
         "sha256": "0vqzingl03yz185112lw0hf8idggkwxc6bjswgvyhjc6yx0pvhnz",
         "type": "tarball",
         "url": "https://github.com/NixOS/nixpkgs/archive/0aa475546ed21629c4f5bbf90e38c846a99ec9e9.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs_nixos": {
+        "branch": "nixos-24.11",
+        "description": "Nix Packages collection",
+        "homepage": null,
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "ba8b70ee098bc5654c459d6a95dfc498b91ff858",
+        "sha256": "193n40zcj2zg8aw7lzp7nf015gx1a7z6m2jgnjacj94q6ifqi8i0",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/ba8b70ee098bc5654c459d6a95dfc498b91ff858.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "ranger-devicons2": {
