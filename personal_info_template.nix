@@ -47,6 +47,10 @@ rec {
       enable = true;
     };
 
+    gpg = {
+      enable = true;
+    };
+
     gnome = {
       enable = true;
     };
