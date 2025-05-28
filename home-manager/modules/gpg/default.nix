@@ -43,6 +43,10 @@ in
         "D8D21C00002B50535AC339A7DACB46B749B06047"
       ];
       pinentryPackage = pkgs.pinentry-gnome3;
+      # pinentryPackage = pkgs.pinentry-tty;
+      # extraConfig = ''
+      #   allow-loopback-pinentry
+      # '';
     };
   };
 }

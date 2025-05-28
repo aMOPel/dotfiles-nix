@@ -80,6 +80,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     vim
+    cntr
   ];
 
   environment.variables = {
