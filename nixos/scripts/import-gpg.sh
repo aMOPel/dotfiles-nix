@@ -2,7 +2,7 @@
 
 getUserInfo() {
   ls -lsa .
-  default_value="./gpg-key-backup"
+  default_value="./backup"
   read -e -p "enter path to backup directory [${default_value}]: " BACKUP_DIR
   export BACKUP_DIR=${BACKUP_DIR:-"$default_value"}
 }
