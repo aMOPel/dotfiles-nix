@@ -13,7 +13,7 @@ My dotfiles managed by the nix home manager.
 make home-install
 ```
 
-3. Fill in `home-manager/personal_info.nix`
+3. Fill in `home-manager/config_values.nix`
 
 ### Usage
 

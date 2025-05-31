@@ -81,8 +81,8 @@
     };
 
     keybindings = {
-      "kitty_mod+z>plus" = "change_font_size all +2.0";
-      "kitty_mod+z>minus" = "change_font_size all -2.0";
+      "kitty_mod+z>plus" = "change_font_size all +1.0";
+      "kitty_mod+z>minus" = "change_font_size all -1.0";
       "kitty_mod+z>equal" = "change_font_size all 0";
 
       "kitty_mod+c" = "copy_to_clipboard";

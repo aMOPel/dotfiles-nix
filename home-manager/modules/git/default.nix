@@ -87,6 +87,11 @@ in
     programs.lazygit = lib.mkIf cfg.enableLazygit {
       enable = true;
     };
+
+    home.packages = with pkgs; [
+      git-crypt
+      git-bug
+    ];
   };
 
 }
