@@ -1,17 +1,15 @@
-{ config-values-path ? ../config_values.nix }:
 {
+  config-values-path ? ../config_values.nix,
   config,
-  pkgs,
   pkgs_latest,
-  pkgs_nvim,
-  nixpkgs_nixos,
-  hmlib,
+  pkgs_for_nvim,
+  pkgs,
   lib,
+  home-manager,
+  hmlib,
   ...
 }:
 let
-  hmlib = import "${sources.home-manager}/modules/lib" { inherit ( pkgs ) lib; };
-  lib = pkgs.lib;
   # check that every leaf is differ from emtpy string
   config-values = lib.attrsets.mapAttrsRecursive
     (name: value:
@@ -24,7 +22,7 @@ in
 {
   imports = [
     (import ./modules/nvim       {inherit config pkgs_latest lib; pkgs = pkgs_for_nvim;})
-    (import ./modules/kitty      {inherit config pkgs_latest lib; pkgs = nixpkgs_nixos;})
+    (import ./modules/kitty      {inherit config pkgs_latest lib; pkgs = pkgs;})
     (import ./modules/bash       {inherit config pkgs pkgs_latest lib;})
     (import ./modules/git        {inherit config pkgs pkgs_latest lib;})
     (import ./modules/shelltools {inherit config pkgs pkgs_latest lib;})
@@ -62,7 +60,7 @@ in
   };
 
   home.packages = with pkgs; [
-    nixpkgs_nixos.brave
+    pkgs.brave
     niv
     vim
   ];

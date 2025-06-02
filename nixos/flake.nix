@@ -7,15 +7,7 @@
     rev = "1eec32f0efe3b830927989767a9e6ece0d82d608";
   };
 
-  inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs_nixos";
-
-  inputs."nixpkgs" = {
-    "ref" = "nixos-unstable";
-    "owner" = "NixOS";
-    "repo" = "nixpkgs";
-    "rev" = "57610d2f8f0937f39dbd72251e9614b1561942d8";
-    "type" = "github";
-  };
+  inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
   inputs."nixpkgs_for_nvim" = {
     "ref" = "nixos-unstable";
@@ -33,7 +25,7 @@
     "type" = "github";
   };
 
-  inputs."nixpkgs_nixos" = {
+  inputs."nixpkgs" = {
     "ref" = "nixos-24.11";
     "owner" = "NixOS";
     "repo" = "nixpkgs";
@@ -42,7 +34,14 @@
   };
 
   outputs =
-    { self, nixpkgs, home-manager, ... }@attrs:
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      nixpkgs_latest,
+      nixpkgs_for_nvim,
+      ...
+    }@inputs:
     let
       configs = {
         t460s = {
@@ -51,20 +50,35 @@
         };
         x1-carbon = {
           hostname = "x1-carbon";
-          path = ./machines/x1_carbon_gen3/configuration.nix;
+          path = ./machines/x1_carbon_gen3;
         };
       };
     in
     {
       nixosConfigurations."${configs.t460s.hostname}" = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = attrs;
+        specialArgs = inputs;
         modules = [ configs.t460s.path ];
       };
-      nixosConfigurations."${configs.x1-carbon.hostname}" = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = attrs;
-        modules = [ configs.x1-carbon.path home-manager.nixosModules.home-manager  ];
-      };
+
+      nixosConfigurations."${configs.x1-carbon.hostname}" = nixpkgs.lib.nixosSystem (
+        let
+          system = "x86_64-linux";
+          inputs' = inputs // rec {
+            pkgs = import nixpkgs { inherit system; };
+            pkgs_latest = import nixpkgs_latest { inherit system; };
+            pkgs_for_nvim = import nixpkgs_for_nvim { inherit system; };
+            lib = nixpkgs.lib;
+            hmlib = import "${home-manager}/modules/lib" { inherit lib; };
+          };
+        in
+        {
+          inherit system;
+          specialArgs = inputs';
+          modules = [
+            (configs.x1-carbon.path + "/configuration.nix")
+          ];
+        }
+      );
     };
 }

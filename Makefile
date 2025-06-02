@@ -12,4 +12,4 @@ nixos-switch:
 
 .PHONY: nixos-switch-flake
 nixos-switch-flake:
-	nixos-rebuild switch --flake '.#'"$(cat /etc/hostname)"
+	nixos-rebuild switch --use-remote-sudo --fast --flake './nixos#'"$(cat /etc/hostname)"

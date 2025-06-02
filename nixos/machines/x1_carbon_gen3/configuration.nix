@@ -1,9 +1,9 @@
 {
-  nixpkgs,
-  home-manager,
   pkgs_latest,
-  pkgs_nvim,
-  nixpkgs_nixos,
+  pkgs_for_nvim,
+  pkgs,
+  lib,
+  home-manager,
   hmlib,
   ...
 }:
@@ -11,28 +11,30 @@ let
   device = "/dev/disk/by-uuid/b7406ebd-2255-4d70-acf2-5a537ea7e82a";
   config-values = import ./config_values.nix;
   yubikey-disc-encryption = import ../../yubikey-disc-encryption.nix { inherit device; };
-  yubikey-support = import ../../yubikey-support.nix { pkgs = nixpkgs_nixos; };
 in
-# udev-rule = import ../../../keyboard-layout/udev.nix { pkgs = nixpkgs_nixos; };
+# udev-rule = import ../../../keyboard-layout/udev.nix { inherit pkgs; };
 {
   imports = [
     ./hardware-configuration.nix
     ../../common.nix
+    ../../yubikey-support.nix
+    home-manager.nixosModules.home-manager
     # udev-rule
-    yubikey-support
     yubikey-disc-encryption
   ];
 
-  # home-manager = {
-  #   useGlobalPkgs = false;
-  #   useUserPackages = false;
-  #   backupFileExtension = "backup";
-  #   users."${config-values.username}" = import ../../../home-manager/home.nix {
-  #     config-values-path = ./config_values.nix;
-  #   };
-  # };
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = false;
+    backupFileExtension = "backup";
+    users."${config-values.username}" = ../../../home-manager/home.nix;
+    extraSpecialArgs = {
+      inherit pkgs_for_nvim pkgs_latest hmlib;
+      config-values-path = ./config_values.nix;
+    };
+  };
 
-  services.gnome.gnome-keyring.enable = nixpkgs_nixos.lib.mkForce false;
+  services.gnome.gnome-keyring.enable = lib.mkForce false;
   networking.hostName = config-values.nixos.hostname;
 
   programs.ssh.knownHosts = config-values.nixos.knownHosts;

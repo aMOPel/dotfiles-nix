@@ -7,7 +7,9 @@
   # programs.yubikey-touch-detector.enable = true;
 
   services.pcscd.enable = true;
-  services.udev.packages = [ pkgs.yubikey-personalization ];
+  services.udev.packages = with pkgs; [
+    yubikey-personalization
+  ];
 
   environment.systemPackages = with pkgs; [
     yubikey-manager
