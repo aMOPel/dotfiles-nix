@@ -1,15 +1,15 @@
 { config-values-path ? ../config_values.nix }:
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  pkgs_latest,
+  pkgs_nvim,
+  nixpkgs_nixos,
+  hmlib,
+  lib,
+  ...
+}:
 let
-  sources = import ../nix/sources.nix;
-  # for things that don't need regular updates
-  pkgs = import sources."nixpkgs_nixos" { };
-  # for things that need regular updates
-  pkgs_latest = import sources."nixpkgs_latest" { };
-  # just for neovim, to keep bumping it independent
-  pkgs_for_nvim = import sources."nixpkgs_for_nvim" { };
-  # just for gui apps, like terminal and browser, to keep in sync with nixos version
-  nixpkgs_nixos = import sources."nixpkgs_nixos" { };
   hmlib = import "${sources.home-manager}/modules/lib" { inherit ( pkgs ) lib; };
   lib = pkgs.lib;
   # check that every leaf is differ from emtpy string

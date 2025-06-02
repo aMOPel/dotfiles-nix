@@ -9,3 +9,7 @@ home-install:
 .PHONY: nixos-switch
 nixos-switch:
 	nixos-rebuild switch --use-remote-sudo --no-flake --fast -I nixos-config=./nixos/default.nix
+
+.PHONY: nixos-switch-flake
+nixos-switch-flake:
+	nixos-rebuild switch --flake '.#'"$(cat /etc/hostname)"
