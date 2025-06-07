@@ -21,17 +21,17 @@ let
 in
 {
   imports = [
-    (import ./modules/nvim       {inherit config pkgs_latest lib; pkgs = pkgs_for_nvim;})
-    (import ./modules/kitty      {inherit config pkgs_latest lib; pkgs = pkgs;})
-    (import ./modules/bash       {inherit config pkgs pkgs_latest lib;})
-    (import ./modules/git        {inherit config pkgs pkgs_latest lib;})
-    (import ./modules/shelltools {inherit config pkgs pkgs_latest lib;})
-    (import ./modules/yazi       {inherit config pkgs pkgs_latest lib;})
-    (import ./modules/task       {inherit config pkgs pkgs_latest lib;})
-    (import ./modules/gnome      {inherit config pkgs pkgs_latest lib hmlib;})
-    (import ./modules/gpg        {inherit config pkgs pkgs_latest lib;})
-    (import ./modules/pass       {inherit config pkgs pkgs_latest lib;})
-    (import ./modules/mime-applications {inherit config pkgs pkgs_latest lib;})
+    (import ./modules/nvim              {inherit config pkgs_latest lib; pkgs = pkgs_for_nvim;})
+    (import ./modules/kitty             {inherit config pkgs_latest lib; pkgs = pkgs;})
+    (import ./modules/bash              {inherit config pkgs_latest pkgs lib;})
+    (import ./modules/git               {inherit config pkgs_latest pkgs lib;})
+    (import ./modules/shelltools        {inherit config pkgs_latest pkgs lib;})
+    (import ./modules/yazi              {inherit config pkgs_latest pkgs lib;})
+    (import ./modules/task              {inherit config pkgs_latest pkgs lib;})
+    (import ./modules/gnome             {inherit config pkgs_latest pkgs lib hmlib;})
+    (import ./modules/gpg               {inherit config pkgs_latest pkgs lib;})
+    (import ./modules/pass              {inherit config pkgs_latest pkgs lib;})
+    (import ./modules/mime-applications {inherit config pkgs_latest pkgs lib;})
   ];
 
   # uninstall = true;

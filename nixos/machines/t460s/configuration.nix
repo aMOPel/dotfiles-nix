@@ -1,28 +1,34 @@
+{
+  pkgs_latest,
+  pkgs_for_nvim,
+  pkgs,
+  home-manager,
+  lib,
+  hmlib,
+  ...
+}:
 let
   device = "/dev/disk/by-uuid/d3895f9e-d91a-4f79-a994-89c2e6ce54a4";
   config-values = import ./config_values.nix;
-  sources = import ../../../nix/sources.nix;
-  pkgs = import sources."nixpkgs_nixos" { };
-  hm = import sources.home-manager { inherit pkgs; };
-  yubikey-disc-encryption = import ../../yubikey-disc-encryption.nix { inherit device; };
-  yubikey-support = import ../../yubikey-support.nix { inherit pkgs; };
 in
 # udev-rule = import ../../../keyboard-layout/udev.nix { inherit pkgs; };
 {
   imports = [
     ./hardware-configuration.nix
     ../../common.nix
-    hm.nixos
+    ../../yubikey-support.nix
+    home-manager.nixosModules.home-manager
     # udev-rule
-    yubikey-support
-    yubikey-disc-encryption
+    ../../yubikey-disc-encryption.nix
   ];
 
   home-manager = {
-    useGlobalPkgs = false;
+    useGlobalPkgs = true;
     useUserPackages = false;
     backupFileExtension = "backup";
-    users."${config-values.username}" = import ../../../home-manager/home.nix {
+    users."${config-values.username}" = ../../../home-manager/home.nix;
+    extraSpecialArgs = {
+      inherit pkgs_for_nvim pkgs_latest hmlib;
       config-values-path = ./config_values.nix;
     };
   };
