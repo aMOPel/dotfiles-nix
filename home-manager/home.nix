@@ -5,12 +5,11 @@
   pkgs_for_nvim,
   pkgs,
   lib,
-  home-manager,
   hmlib,
   ...
 }:
 let
-  # check that every leaf is differ from emtpy string
+  # check that every leaf is different from emtpy string
   config-values = lib.attrsets.mapAttrsRecursive
     (name: value:
     assert

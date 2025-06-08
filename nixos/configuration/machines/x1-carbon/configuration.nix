@@ -10,7 +10,7 @@
 let
   config-values = import ./config_values.nix;
   yubikey-disc-encryption = import ../../common/yubikey-disc-encryption.nix {
-    device = config-values.luksDiskPath;
+    device = config-values.nixos.luksDiskPath;
   };
 in
 # udev-rule = import ../../../keyboard-layout/udev.nix { inherit pkgs; };
@@ -30,7 +30,7 @@ in
     backupFileExtension = "backup";
     users."${config-values.username}" = ../../../../home-manager/home.nix;
     extraSpecialArgs = {
-      inherit pkgs pkgs_for_nvim pkgs_latest hmlib lib;
+      inherit pkgs_for_nvim pkgs_latest hmlib;
       config-values-path = ./config_values.nix;
     };
   };

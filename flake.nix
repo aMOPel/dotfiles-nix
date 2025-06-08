@@ -38,17 +38,19 @@
       ...
     }@inputs:
     let
-      configs = {
-        t460s = {
+      machineConfigs = {
+        t460s = rec {
           system = "x86_64-linux";
           hostname = "t460s";
-          path = ./machines/t460s;
+          path = ./nixos/configuration/machines + "/${hostname}/configuration.nix";
         };
-        x1-carbon = {
+        x1-carbon = rec {
           system = "x86_64-linux";
           hostname = "x1-carbon";
-          path = ./machines/x1_carbon_gen3;
+          path = ./nixos/configuration/machines + "/${hostname}/configuration.nix";
         };
+        #### TEMPLATE
+        #### INJECT HERE
       };
       makeInputsForSystem =
         prev_inputs: system:
@@ -62,32 +64,35 @@
             hmlib = import "${prev_inputs.home-manager}/modules/lib" { inherit lib; };
           }
         );
+      makeNixosConfigurations = (
+        with nixpkgs.lib.attrsets;
+        configs:
+        mapAttrs' (
+          _: machineConfig:
+          nameValuePair machineConfig.hostname (
+            nixpkgs.lib.nixosSystem {
+              system = machineConfig.system;
+              specialArgs = makeInputsForSystem inputs machineConfig.system;
+              modules = [ machineConfig.path ];
+            }
+          )
+        ) configs
+      );
     in
     {
-      nixosConfigurations."${configs.t460s.hostname}" = nixpkgs.lib.nixosSystem rec {
-        system = configs.t460.system;
-        specialArgs = makeInputsForSystem inputs system;
-        modules = [ (configs.t460s.path + "/configuration.nix") ];
-      };
-
-      nixosConfigurations."${configs.x1-carbon.hostname}" = nixpkgs.lib.nixosSystem rec {
-        system = configs.x1-carbon.system;
-        specialArgs = makeInputsForSystem inputs system;
-        modules = [ (configs.x1-carbon.path + "/configuration.nix") ];
-      };
+      nixosConfigurations = makeNixosConfigurations machineConfigs;
     }
-    // (
-    # flake-utils.lib.eachDefaultSystem (
-    #   system:
+    // (flake-utils.lib.eachDefaultSystem (
+      system:
       let
-        pkgs = import nixpkgs { system = "x86_64-linux"; };
+        pkgs = import nixpkgs { inherit system; };
       in
       {
-        devShells."x86_64-linux".default = pkgs.mkShellNoCC {
+        devShells.default = pkgs.mkShellNoCC {
           packages = with pkgs; [
             gnumake
           ];
         };
       }
-    );
+    ));
 }
