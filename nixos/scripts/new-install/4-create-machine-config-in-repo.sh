@@ -33,7 +33,7 @@ config_values_file="$target_dir"/config_values.nix
 mkdir -p "$target_dir"
 cp /etc/nixos/hardware-configuration.nix "$target_dir"/hardware-configuration.nix
 cp "$templates_dir"/configuration.nix "$target_dir"/configuration.nix
-cp "$templates_dir"/config_values.nix "$config_values_file"
+cp "$templates_dir"/config_values_.nix "$config_values_file"
 sed -i 's?username *= *".*"?username = "'"$username"'"?' "$config_values_file"
 sed -i 's?hostname *= *".*"?hostname = "'"$hostname"'"?' "$config_values_file"
 sed -i 's?system *= *".*"?system = "'"$system"'"?' "$config_values_file"
