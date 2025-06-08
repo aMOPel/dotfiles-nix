@@ -21,7 +21,7 @@ in
 {
   imports = [
     (import ./modules/nvim              {inherit config pkgs_latest lib; pkgs = pkgs_for_nvim;})
-    (import ./modules/kitty             {inherit config pkgs_latest lib; pkgs = pkgs;})
+    (import ./modules/kitty             {inherit config pkgs_latest pkgs lib;})
     (import ./modules/bash              {inherit config pkgs_latest pkgs lib;})
     (import ./modules/git               {inherit config pkgs_latest pkgs lib;})
     (import ./modules/shelltools        {inherit config pkgs_latest pkgs lib;})
@@ -36,7 +36,7 @@ in
   # uninstall = true;
   # targets.genericLinux.enable = true;
 
-  myModules = config-values.myModules;
+  myModules = config-values.homeManagerModules;
 
   programs.home-manager.enable = false;
 

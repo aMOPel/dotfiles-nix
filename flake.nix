@@ -38,20 +38,17 @@
       ...
     }@inputs:
     let
-      machineConfigs = {
-        t460s = rec {
-          system = "x86_64-linux";
-          hostname = "t460s";
+      machinesPath = ./nixos/configuration/machines;
+      machineConfigs = builtins.mapAttrs (
+        key: value:
+        let
+          config_values = import (machinesPath + "/${key}/config_values.nix");
+        in
+        rec {
+          inherit (config_values.nixos) system hostname;
           path = ./nixos/configuration/machines + "/${hostname}/configuration.nix";
-        };
-        x1-carbon = rec {
-          system = "x86_64-linux";
-          hostname = "x1-carbon";
-          path = ./nixos/configuration/machines + "/${hostname}/configuration.nix";
-        };
-        #### TEMPLATE
-        #### INJECT HERE
-      };
+        }
+      ) (builtins.readDir machinesPath);
       makeInputsForSystem =
         prev_inputs: system:
         (
@@ -86,7 +83,7 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
-        scripts = (pkgs.callPackage ./nixos/scripts {}).scripts;
+        scripts = (pkgs.callPackage ./nixos/scripts { }).scripts;
       in
       {
         packages = {
