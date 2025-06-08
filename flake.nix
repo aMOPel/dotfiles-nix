@@ -39,16 +39,27 @@
     }@inputs:
     let
       machinesPath = ./nixos/configuration/machines;
-      machineConfigs = builtins.mapAttrs (
-        key: value:
-        let
-          config_values = import (machinesPath + "/${key}/config_values.nix");
-        in
-        rec {
-          inherit (config_values.nixos) system hostname;
-          path = ./nixos/configuration/machines + "/${hostname}/configuration.nix";
-        }
+      nixosConfigurations = builtins.mapAttrs (
+        key: _: makeNixosConfiguration key
       ) (builtins.readDir machinesPath);
+      # makeMachineConfig =
+      #   hostname:
+      #   rec {
+      #     inherit (config_values.nixos) system hostname;
+      #     path = ./nixos/configuration/machines + "/${hostname}/configuration.nix";
+      #   };
+      makeNixosConfiguration =
+        hostname:
+        let
+          config_values = import (machinesPath + "/${hostname}/config_values.nix");
+          path = ./nixos/configuration/machines + "/${hostname}/configuration.nix";
+          system = config_values.nixos.system;
+        in
+        (nixpkgs.lib.nixosSystem {
+          system = system;
+          specialArgs = makeInputsForSystem inputs system;
+          modules = [ path ];
+        });
       makeInputsForSystem =
         prev_inputs: system:
         (
@@ -61,23 +72,26 @@
             hmlib = import "${prev_inputs.home-manager}/modules/lib" { inherit lib; };
           }
         );
-      makeNixosConfigurations = (
-        with nixpkgs.lib.attrsets;
-        configs:
-        mapAttrs' (
-          _: machineConfig:
-          nameValuePair machineConfig.hostname (
-            nixpkgs.lib.nixosSystem {
-              system = machineConfig.system;
-              specialArgs = makeInputsForSystem inputs machineConfig.system;
-              modules = [ machineConfig.path ];
-            }
-          )
-        ) configs
-      );
+      # makeNixosConfigurations = (
+      #   with nixpkgs.lib.attrsets;
+      #   configs:
+      #   mapAttrs' (
+      #     _: machineConfig:
+      #     nameValuePair machineConfig.hostname (
+      #       nixpkgs.lib.nixosSystem {
+      #         system = machineConfig.system;
+      #         specialArgs = makeInputsForSystem inputs machineConfig.system;
+      #         modules = [ machineConfig.path ];
+      #       }
+      #     )
+      #   ) configs
+      # );
     in
+    # {
+    #   nixosConfigurations = makeNixosConfigurations machineConfigs;
+    # }
     {
-      nixosConfigurations = makeNixosConfigurations machineConfigs;
+      inherit nixosConfigurations;
     }
     // (flake-utils.lib.eachDefaultSystem (
       system:
