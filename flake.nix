@@ -1,12 +1,9 @@
-let
-  nixos-version = builtins.readFile ./nixos-version;
-in
 {
   inputs.home-manager = {
     type = "github";
     owner = "nix-community";
     repo = "home-manager";
-    ref = "release-${nixos-version}";
+    ref = "release-24.11";
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
@@ -25,7 +22,7 @@ in
   };
 
   inputs."nixpkgs" = {
-    ref = "nixos-${nixos-version}";
+    ref = "nixos-24.11";
     owner = "NixOS";
     repo = "nixpkgs";
     type = "github";
