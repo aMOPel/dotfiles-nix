@@ -26,3 +26,11 @@ cp "$templates_dir"/config_values.nix "$config_values_file"
 sed -i 's?username *= *".*"?username = "'"$username"'"?' "$config_values_file"
 sed -i 's?hostname *= *".*"?hostname = "'"$hostname"'"?' "$config_values_file"
 sed -i 's?luksDiskPath *= *".*"?luksDiskPath = "/dev/disk/by-uuid/'"$uuid"'"?' "$config_values_file"
+
+echo ""
+echo "configuration files have been copied to '$target_dir'"
+echo "now you can adapt them as you please and run:"
+echo ""
+echo "    \$ cd $root"
+echo "    \$ make nixos-switch-flake"
+
