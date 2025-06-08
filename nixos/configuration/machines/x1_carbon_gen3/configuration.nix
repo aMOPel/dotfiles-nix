@@ -9,7 +9,7 @@
 }:
 let
   config-values = import ./config_values.nix;
-  yubikey-disc-encryption = import ../../yubikey-disc-encryption.nix {
+  yubikey-disc-encryption = import ../../common/yubikey-disc-encryption.nix {
     device = config-values.luksDiskPath;
   };
 in
@@ -17,8 +17,8 @@ in
 {
   imports = [
     ./hardware-configuration.nix
-    ../../common.nix
-    ../../yubikey-support.nix
+    ../../common/common.nix
+    ../../common/yubikey-support.nix
     home-manager.nixosModules.home-manager
     # udev-rule
     yubikey-disc-encryption
@@ -28,9 +28,9 @@ in
     useGlobalPkgs = true;
     useUserPackages = false;
     backupFileExtension = "backup";
-    users."${config-values.username}" = ../../../home-manager/home.nix;
+    users."${config-values.username}" = ../../../../home-manager/home.nix;
     extraSpecialArgs = {
-      inherit pkgs_for_nvim pkgs_latest hmlib;
+      inherit pkgs pkgs_for_nvim pkgs_latest hmlib lib;
       config-values-path = ./config_values.nix;
     };
   };
