@@ -28,10 +28,13 @@
     type = "github";
   };
 
+  inputs.flake-utils.url = "github:numtide/flake-utils";
+
   outputs =
     {
       self,
       nixpkgs,
+      flake-utils,
       ...
     }@inputs:
     let
@@ -47,7 +50,7 @@
           path = ./machines/x1_carbon_gen3;
         };
       };
-      makeInputs =
+      makeInputsForSystem =
         prev_inputs: system:
         (
           prev_inputs
@@ -63,14 +66,29 @@
     {
       nixosConfigurations."${configs.t460s.hostname}" = nixpkgs.lib.nixosSystem rec {
         system = configs.t460.system;
-        specialArgs = makeInputs inputs system;
+        specialArgs = makeInputsForSystem inputs system;
         modules = [ (configs.t460s.path + "/configuration.nix") ];
       };
 
       nixosConfigurations."${configs.x1-carbon.hostname}" = nixpkgs.lib.nixosSystem rec {
         system = configs.x1-carbon.system;
-        specialArgs = makeInputs inputs system;
+        specialArgs = makeInputsForSystem inputs system;
         modules = [ (configs.x1-carbon.path + "/configuration.nix") ];
       };
-    };
+    }
+    // (
+    # flake-utils.lib.eachDefaultSystem (
+    #   system:
+      let
+        pkgs = import nixpkgs { system = "x86_64-linux"; };
+      in
+      {
+        devShells."x86_64-linux".default = pkgs.mkShellNoCC {
+          packages = with pkgs; [
+            niv
+            gnumake
+          ];
+        };
+      }
+    );
 }
