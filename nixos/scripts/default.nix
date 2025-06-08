@@ -1,7 +1,5 @@
+{ pkgs, ... }:
 let
-  sources = import ../../nix/sources.nix;
-  nixpkgs = sources."nixpkgs_nixos";
-  pkgs = import nixpkgs { };
   drduhRepo = pkgs.fetchFromGitHub {
     owner = "drduh";
     repo = "YubiKey-Guide";
