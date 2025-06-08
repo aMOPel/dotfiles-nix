@@ -27,9 +27,9 @@ in
         (createPreset "setup-gpg-and-yubikey")
         // {
           text =
-            builtins.readFile (./. + "/common.sh")
-            + builtins.readFile (./. + "/setup-gpg.sh")
-            + builtins.readFile (./. + "/setup-yubikey.sh");
+            builtins.readFile (./gpg-setup + "/common.sh")
+            + builtins.readFile (./gpg-setup + "/setup-gpg.sh")
+            + builtins.readFile (./gpg-setup + "/setup-yubikey.sh");
           derivationArgs = { inherit drduhRepo; };
         }
       )
@@ -39,7 +39,7 @@ in
       writeTextFile (
         (createPreset "setup-gpg")
         // {
-          text = builtins.readFile (./. + "/common.sh") + builtins.readFile (./. + "/setup-gpg.sh");
+          text = builtins.readFile (./gpg-setup + "/common.sh") + builtins.readFile (./gpg-setup + "/setup-gpg.sh");
           derivationArgs = { inherit drduhRepo; };
         }
       )
@@ -49,7 +49,7 @@ in
       writeTextFile (
         (createPreset "setup-yubikey")
         // {
-          text = builtins.readFile (./. + "/common.sh") + builtins.readFile (./. + "/setup-yubikey.sh");
+          text = builtins.readFile (./gpg-setup + "/common.sh") + builtins.readFile (./gpg-setup + "/setup-yubikey.sh");
           derivationArgs = { inherit drduhRepo; };
         }
       )

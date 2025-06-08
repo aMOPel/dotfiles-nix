@@ -86,8 +86,11 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
+        scripts = (pkgs.callPackage ./nixos/scripts {}).scripts;
       in
       {
+        packages = {
+        } // scripts;
         devShells.default = pkgs.mkShellNoCC {
           packages = with pkgs; [
             gnumake
