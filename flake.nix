@@ -35,19 +35,14 @@
       self,
       nixpkgs,
       flake-utils,
+      home-manager,
       ...
     }@inputs:
     let
       machinesPath = ./nixos/configuration/machines;
-      nixosConfigurations = builtins.mapAttrs (
-        key: _: makeNixosConfiguration key
-      ) (builtins.readDir machinesPath);
-      # makeMachineConfig =
-      #   hostname:
-      #   rec {
-      #     inherit (config_values.nixos) system hostname;
-      #     path = ./nixos/configuration/machines + "/${hostname}/configuration.nix";
-      #   };
+      nixosConfigurations = builtins.mapAttrs (key: _: makeNixosConfiguration key) (
+        builtins.readDir machinesPath
+      );
       makeNixosConfiguration =
         hostname:
         let
@@ -60,6 +55,33 @@
           specialArgs = makeInputsForSystem inputs system;
           modules = [ path ];
         });
+
+      nonNixosMachinesPath = ./home-manager/non-nixos-machines;
+      nonNixosHmConfigurations =
+        let
+          hostnames = (builtins.attrNames (builtins.readDir nonNixosMachinesPath));
+        in
+        builtins.listToAttrs (builtins.map (hostname: makeNonNixosHmConfiguration hostname) hostnames);
+      makeNonNixosHmConfiguration = (
+        hostname:
+        let
+          inputs' = makeInputsForSystem inputs system;
+          config_values = import (nonNixosMachinesPath + "/${hostname}/config_values.nix");
+          system = config_values.nixos.system;
+        in
+        {
+          name = config_values.username;
+          value = home-manager.lib.homeManagerConfiguration {
+            inherit (inputs') pkgs;
+            modules = [ ./home-manager/home.nix ];
+            extraSpecialArgs = {
+              inherit (inputs') pkgs_latest pkgs_for_nvim hmlib;
+              config-values-path = nonNixosMachinesPath + "/${hostname}/config_values.nix";
+            };
+          };
+        }
+      );
+
       makeInputsForSystem =
         prev_inputs: system:
         (
@@ -72,26 +94,11 @@
             hmlib = import "${prev_inputs.home-manager}/modules/lib" { inherit lib; };
           }
         );
-      # makeNixosConfigurations = (
-      #   with nixpkgs.lib.attrsets;
-      #   configs:
-      #   mapAttrs' (
-      #     _: machineConfig:
-      #     nameValuePair machineConfig.hostname (
-      #       nixpkgs.lib.nixosSystem {
-      #         system = machineConfig.system;
-      #         specialArgs = makeInputsForSystem inputs machineConfig.system;
-      #         modules = [ machineConfig.path ];
-      #       }
-      #     )
-      #   ) configs
-      # );
     in
-    # {
-    #   nixosConfigurations = makeNixosConfigurations machineConfigs;
-    # }
     {
       inherit nixosConfigurations;
+      # for non nixos systems
+      homeConfigurations = nonNixosHmConfigurations;
     }
     // (flake-utils.lib.eachDefaultSystem (
       system:
@@ -102,10 +109,17 @@
       {
         packages = {
         } // scripts;
-        devShells.default = pkgs.mkShellNoCC {
-          packages = with pkgs; [
-            gnumake
-          ];
+        devShells = {
+          default = pkgs.mkShellNoCC {
+            packages = with pkgs; [
+              gnumake
+            ];
+          };
+          hmShell = pkgs.mkShellNoCC {
+            packages = [
+              home-manager.packages."${system}".home-manager
+            ];
+          };
         };
       }
     ));
