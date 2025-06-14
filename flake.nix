@@ -113,6 +113,7 @@
           default = pkgs.mkShellNoCC {
             packages = with pkgs; [
               gnumake
+              git-crypt
             ];
           };
           hmShell = pkgs.mkShellNoCC {
