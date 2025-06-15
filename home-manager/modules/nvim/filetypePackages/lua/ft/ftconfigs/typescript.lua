@@ -44,38 +44,157 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 })
 
 utils.addTable(g.linter.filetype, {
-	[ft] = { "eslint_d" },
-	ts = { "eslint_d" },
-	tsx = { "eslint_d" },
-	typescriptreact = { "eslint_d" },
-	javascript = { "eslint_d" },
-	jsx = { "eslint_d" },
-	javascriptreact = { "eslint_d" },
+	[ft] = { "biomejs" },
+	ts = { "biomejs" },
+	tsx = { "biomejs" },
+	typescriptreact = { "biomejs" },
+	javascript = { "biomejs" },
+	jsx = { "biomejs" },
+	javascriptreact = { "biomejs" },
 })
 
 utils.addTable(g.formatter.filetype, {
 	[ft] = {
-		require("formatter.filetypes")[ft].prettierd,
+		require("formatter.filetypes")[ft].biome,
 	},
 	ts = {
-		require("formatter.filetypes").typescriptreact.prettierd,
+		require("formatter.filetypes").typescript.biome,
 	},
 	tsx = {
-		require("formatter.filetypes").typescriptreact.prettierd,
+		require("formatter.filetypes").typescriptreact.biome,
 	},
 	typescriptreact = {
-		require("formatter.filetypes").typescriptreact.prettierd,
+		require("formatter.filetypes").typescriptreact.biome,
 	},
 	javascript = {
-		require("formatter.filetypes").javascript.prettierd,
+		require("formatter.filetypes").javascript.biome,
 	},
 	jsx = {
-		require("formatter.filetypes").javascriptreact.prettierd,
+		require("formatter.filetypes").javascriptreact.biome,
 	},
 	javascriptreact = {
-		require("formatter.filetypes").javascriptreact.prettierd,
+		require("formatter.filetypes").javascriptreact.biome,
 	},
 })
+
+local replaceFormatter = function(
+	exeOverride,
+	formatterName,
+	formatterFiletypes
+)
+	if #formatterFiletypes < 1 then
+		vim.notify(
+			"formatterFiletypes has to be list of strings, with len >= 1",
+			vim.log.levels.ERROR
+		)
+		return
+	end
+	local formattersByFiletype =
+		require("formatter.filetypes")[formatterFiletypes[1]]
+	if formattersByFiletype == nil then
+		vim.notify(
+			"could not resolve first element of formatterFiletypes '"
+				.. formatterFiletypes[1],
+			vim.log.levels.ERROR
+		)
+		return
+	end
+	local formatterConfig = formattersByFiletype[formatterName]
+	if formatterConfig == nil then
+		vim.notify(
+			"could not resolve formatterName '" .. formatterName .. "'",
+			vim.log.levels.ERROR
+		)
+		return
+	end
+
+	local formatterConfigFunction = function()
+		local formatterConfigTbl = formatterConfig()
+		formatterConfigTbl.exe = exeOverride
+		return formatterConfigTbl
+	end
+
+	local t = {}
+	for _, value in ipairs(formatterFiletypes) do
+		t[value] = { formatterConfigFunction }
+	end
+	utils.addTable(g.formatter.filetype, t)
+
+	-- need to call the setup again since this will be called from an exrc file,
+	-- which is evaluated after the main init.lua
+	require("formatter").setup({
+		logging = true,
+		log_level = vim.log.levels.WARN,
+		filetype = g.formatter.filetype,
+	})
+end
+
+local replaceLinter = function(cmdOverride, linterName, linterFiletypes)
+	if #linterFiletypes < 1 then
+		vim.notify(
+			"linterFiletypes has to be list of strings, with len >= 1",
+			vim.log.levels.ERROR
+		)
+		return
+	end
+	local lint = require("lint")
+
+	local linterConfig = lint.linters[linterName]
+	if linterConfig == nil then
+		vim.notify(
+			"could not resolve linterName '" .. linterName .. "'",
+			vim.log.levels.ERROR
+		)
+		return
+	end
+
+	local customLinterName = linterName .. "Custom"
+
+	lint.linters[linterName .. "Custom"] = linterConfig
+	lint.linters[linterName .. "Custom"].cmd = cmdOverride
+
+	local t = {}
+	for _, value in ipairs(linterFiletypes) do
+		t[value] = { customLinterName }
+	end
+
+	utils.addTable(g.linter.filetype, t)
+end
+
+g.helpers.typescript = {
+	useLocalNodeModulesFormatter = function(binaryName, formatterName)
+		local rootDir = vim.fs.root(0, "node_modules")
+		replaceFormatter(
+			rootDir .. "/node_modules/.bin/" .. binaryName,
+			formatterName,
+			{
+				"typescript",
+				"ts",
+				"tsx",
+				"typescriptreact",
+				"javascript",
+				"jsx",
+				"javascriptreact",
+			}
+		)
+	end,
+	useLocalNodeModulesLinter = function(binaryName, linterName)
+		local rootDir = vim.fs.root(0, "node_modules")
+		replaceLinter(
+			rootDir .. "/node_modules/.bin/" .. binaryName,
+			linterName,
+			{
+				"typescript",
+				"ts",
+				"tsx",
+				"typescriptreact",
+				"javascript",
+				"jsx",
+				"javascriptreact",
+			}
+		)
+	end,
+}
 
 utils.addTable(g.dap.filetype, {
 	[ft] = function()
@@ -101,12 +220,17 @@ utils.addTable(g.dap.filetype, {
 	end,
 })
 
-local configs = {}
+-- local configs = {}
 
-configs[ft] = function()
+-- vim.api.nvim_create_autocmd({ "Filetype" }, {
+-- 	group = "MyFt",
+-- 	pattern = { ft },
+-- 	callback = configs[ft],
+-- })
+
+local configurePackageInfo = function()
 	local optl = vim.opt_local
 	require("package-info").setup()
-
 	vim.keymap.set(
 		"n",
 		"<leader>js",
@@ -151,8 +275,8 @@ configs[ft] = function()
 	)
 end
 
-vim.api.nvim_create_autocmd({ "Filetype" }, {
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+	pattern = { "package.json" },
 	group = "MyFt",
-	pattern = { ft },
-	callback = configs[ft],
+	callback = configurePackageInfo,
 })

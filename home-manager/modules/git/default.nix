@@ -73,6 +73,7 @@ in
         enable = true;
       };
       ignores = [
+        ".nvim.lua"
         "Session.vim"
         ".direnv/"
       ];

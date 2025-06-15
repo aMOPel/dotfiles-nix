@@ -336,10 +336,11 @@ let
         jsdoc
       ];
       lsps = [ nodePackages.typescript-language-server ];
-      linters = [ eslint_d ];
+      linters = [
+        biome
+      ];
       formatters = [
-        prettierd
-        nodejs_22
+        biome
       ];
       # TODO:
       # debuggers = [ ];

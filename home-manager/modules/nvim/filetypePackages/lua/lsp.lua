@@ -1,4 +1,5 @@
-local setup_lsps = function()
+local lsp = {}
+lsp.setup_lsps = function()
 	-- Global mappings.
 	-- See `:help vim.diagnostic.*` for documentation on any of the below functions
 	vim.keymap.set(
@@ -131,19 +132,20 @@ local setup_lsps = function()
 	end
 end
 
-local setup_linters = function()
+lsp.setup_linters = function()
 	local lint = require("lint")
 	utils.addTable(lint.linters, g.linter.custom_linter)
-	lint.linters_by_ft = g.linter.filetype
 	vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost" }, {
 		group = "MyAutoCmd",
 		callback = function()
+			lint.linters_by_ft = g.linter.filetype
 			lint.try_lint()
 		end,
+		desc = "nvim_lint",
 	})
 end
 
-local setup_formatters = function()
+lsp.setup_formatters = function()
 	require("formatter").setup({
 		logging = true,
 		log_level = vim.log.levels.WARN,
@@ -166,6 +168,6 @@ local setup_formatters = function()
 	-- })
 end
 
-setup_lsps()
-setup_linters()
-setup_formatters()
+lsp.setup_lsps()
+lsp.setup_linters()
+lsp.setup_formatters()
