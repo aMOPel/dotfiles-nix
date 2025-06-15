@@ -25,7 +25,7 @@ in
     (import ./modules/bash              {inherit config pkgs_latest pkgs lib;})
     (import ./modules/git               {inherit config pkgs_latest pkgs lib;})
     (import ./modules/shelltools        {inherit config pkgs_latest pkgs lib;})
-    (import ./modules/yazi              {inherit config pkgs_latest pkgs lib;})
+    (import ./modules/yazi              {inherit config pkgs_latest pkgs lib pkgs_for_nvim;})
     (import ./modules/task              {inherit config pkgs_latest pkgs lib;})
     (import ./modules/gnome             {inherit config pkgs_latest pkgs lib hmlib;})
     (import ./modules/gpg               {inherit config pkgs_latest pkgs lib;})
