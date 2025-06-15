@@ -80,9 +80,8 @@ let
         tailwindcss-language-server
         vscode-langservers-extracted
       ];
-      # TODO:
-      # linters = [ stylelint ];
-      formatters = [ prettierd nodejs_22];
+      linters = [ biome ];
+      formatters = [ biome ];
       ftplugins = with vimPlugins; [
         {
           type = "lua";
@@ -217,9 +216,8 @@ let
         jsonc
       ];
       lsps = [ vscode-langservers-extracted ];
-      formatters = [ jq ];
-      # TODO:
-      # linters = [ nodePackages.jsonlint ];
+      formatters = [ jq biome ];
+      linters = [ biome ];
     };
 
     lua = {

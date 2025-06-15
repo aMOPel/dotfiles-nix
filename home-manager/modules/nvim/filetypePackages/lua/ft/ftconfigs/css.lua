@@ -34,6 +34,10 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 	end,
 })
 
+utils.addTable(g.linter.filetype, {
+	[ft] = { "biomejs" },
+})
+
 utils.addTable(g.formatter.filetype, {
-	[ft] = { require("formatter.filetypes")[ft].prettierd },
+	[ft] = { require("formatter.filetypes")[ft].biome },
 })
