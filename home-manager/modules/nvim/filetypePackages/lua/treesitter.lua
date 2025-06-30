@@ -43,8 +43,12 @@ local treesitter_context = function()
 		-- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
 		separator = nil,
 		zindex = 10000, -- The Z-index of the context window
-		on_attach = function()
+		on_attach = function(buf)
 			vim.cmd([[hi TreesitterContextBottom gui=underline guisp=Grey]])
+
+      if vim.list_contains(g.treesitter.context.disable, vim.bo.filetype) then
+        return false
+      end
 		end,
 	})
 end

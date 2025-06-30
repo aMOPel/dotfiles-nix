@@ -15,3 +15,7 @@ utils.addTable(g.formatter.filetype, {
 utils.addTable(g.linter.filetype, {
 	[ft] = { "nix", "deadnix" },
 })
+
+utils.addTable(g.treesitter.context.disable, {
+  ft,
+})

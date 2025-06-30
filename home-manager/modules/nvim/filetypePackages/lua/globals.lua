@@ -15,6 +15,9 @@ g = {
 		indent = {
 			disable = {},
 		},
+    context = {
+			disable = {},
+    },
 	},
 	linter = {
 		filetype = {},
