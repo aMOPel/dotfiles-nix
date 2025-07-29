@@ -28,6 +28,13 @@
     type = "github";
   };
 
+  inputs."treefmt-nix" = {
+    ref = "6b9214fffbcf3f1e608efa15044431651635ca83";
+    owner = "numtide";
+    repo = "treefmt-nix";
+    type = "github";
+  };
+
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
   outputs =
@@ -36,6 +43,7 @@
       nixpkgs,
       flake-utils,
       home-manager,
+      treefmt-nix,
       ...
     }@inputs:
     let
@@ -82,14 +90,20 @@
         }
       );
 
+      overlays = [
+        (self: super: {
+          inherit treefmt-nix;
+        })
+      ];
+
       makeInputsForSystem =
         prev_inputs: system:
         (
           prev_inputs
           // rec {
-            pkgs = import prev_inputs.nixpkgs { inherit system; };
-            pkgs_latest = import prev_inputs.nixpkgs_latest { inherit system; };
-            pkgs_for_nvim = import prev_inputs.nixpkgs_for_nvim { inherit system; };
+            pkgs = import prev_inputs.nixpkgs { inherit system overlays; };
+            pkgs_latest = import prev_inputs.nixpkgs_latest { inherit system overlays; };
+            pkgs_for_nvim = import prev_inputs.nixpkgs_for_nvim { inherit system overlays; };
             lib = prev_inputs.nixpkgs.lib;
             hmlib = import "${prev_inputs.home-manager}/modules/lib" { inherit lib; };
           }
