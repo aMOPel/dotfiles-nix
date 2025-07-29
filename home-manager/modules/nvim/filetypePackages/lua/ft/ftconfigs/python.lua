@@ -8,13 +8,6 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 	pylsp = "default",
 })
 
-utils.addTable(g.formatter.filetype, {
-	[ft] = {
-		require("formatter.filetypes")[ft].black,
-		require("formatter.filetypes")[ft].isort,
-	},
-})
-
 local configs = {}
 
 configs[ft] = function()

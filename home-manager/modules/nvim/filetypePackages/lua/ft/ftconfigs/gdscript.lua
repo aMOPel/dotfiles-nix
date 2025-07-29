@@ -8,19 +8,6 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 	gdscript = "default",
 })
 
-utils.addTable(g.formatter.filetype, {
-	[ft] = {
-		function()
-			return {
-				exe = "gdformat",
-				args = {
-					"--line-length=80",
-				},
-			}
-		end,
-	},
-})
-
 utils.addTable(g.linter.filetype, {
 	[ft] = { "gdlint" },
 })

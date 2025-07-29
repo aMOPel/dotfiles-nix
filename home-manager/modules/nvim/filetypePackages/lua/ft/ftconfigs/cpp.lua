@@ -13,10 +13,6 @@ utils.addTable(g.linter.filetype, {
 	[ft] = { "cppcheck", "cpplint" },
 })
 
-utils.addTable(g.formatter.filetype, {
-	[ft] = { require("formatter.filetypes")[ft].clangformat },
-})
-
 utils.addTable(g.dap.filetype, {
 	[ft] = function()
 		local dap = require("dap")

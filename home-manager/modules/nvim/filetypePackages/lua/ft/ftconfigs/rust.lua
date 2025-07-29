@@ -8,10 +8,6 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 	rust_analyzer = "default",
 })
 
-utils.addTable(g.formatter.filetype, {
-	[ft] = { require("formatter.filetypes")[ft].rustfmt },
-})
-
 -- utils.addTable(g.dap.filetype, {
 -- 	"",
 -- })

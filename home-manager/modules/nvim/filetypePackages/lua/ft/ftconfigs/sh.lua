@@ -11,7 +11,3 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 utils.addTable(g.linter.filetype, {
 	[ft] = { "shellcheck" },
 })
-
-utils.addTable(g.formatter.filetype, {
-	[ft] = { require("formatter.filetypes")[ft].shfmt },
-})

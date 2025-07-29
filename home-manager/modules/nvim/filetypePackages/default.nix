@@ -82,7 +82,6 @@ let
       ];
       # TODO:
       # linters = [ stylelint ];
-      formatters = [ prettierd nodejs_22];
       ftplugins = with vimPlugins; [
         {
           type = "lua";
@@ -106,7 +105,6 @@ let
       lsps = [ dockerfile-language-server-nodejs ];
       # TODO:
       # linters = [ hadolint ];
-      # formatters = [ dockfmt ];
       # ftplugins = with vimPlugins; [ Dockerfile.vim ];
     };
 
@@ -116,7 +114,6 @@ let
         godot_resource
         # gdshader
       ];
-      formatter = [ gdtoolkit_4 ];
       linters = [ gdtoolkit_4 ];
       ftplugins = with vimPlugins; [
         {
@@ -162,7 +159,6 @@ let
       ];
       lsps = [ gopls ];
       linters = [ golangci-lint ];
-      formatters = [ gofumpt ];
       debuggers = [ delve ];
       ftplugins = with vimPlugins; [
         {
@@ -194,10 +190,6 @@ let
         xml
       ];
       lsps = [ vscode-langservers-extracted ];
-      formatters = [
-        prettierd
-        nodejs_22
-      ];
       ftplugins = with vimPlugins; [
         {
           type = "lua";
@@ -217,7 +209,6 @@ let
         jsonc
       ];
       lsps = [ vscode-langservers-extracted ];
-      formatters = [ jq ];
       # TODO:
       # linters = [ nodePackages.jsonlint ];
     };
@@ -231,7 +222,6 @@ let
       lsps = [ lua-language-server ];
       # TODO:
       # linters = [luajitPackages];
-      formatters = [ stylua ];
     };
 
     markdown = {
@@ -245,10 +235,6 @@ let
         write-good
         nodePackages.alex
         markdownlint-cli
-      ];
-      formatters = [
-        prettierd
-        nodejs_22
       ];
       extraTools = [ python312Packages.grip ];
       ftplugins = with vimPlugins; [
@@ -272,7 +258,6 @@ let
       linters = [
         deadnix
       ];
-      formatters = [ nixfmt-rfc-style ];
     };
 
     python = {
@@ -287,10 +272,6 @@ let
       #   python312Packages.pydocstyle
       #   python312Packages.pycodestyle
       # ];
-      formatters = [
-        black
-        isort
-      ];
       # TODO:
       # ftplugins = with vimPlugins; [
       #   vim-compiler-python
@@ -302,8 +283,7 @@ let
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [
         rust
       ];
-      lsps = [ rust-analyzer ];
-      formatters = [ rustfmt ];
+      # lsps = [ rust-analyzer ];
       # TODO:
       # ftplugins = with vimPlugins; [
       #   rustaceanvim
@@ -314,7 +294,6 @@ let
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [ bash ];
       lsps = [ nodePackages.bash-language-server ];
       linters = [ shellcheck ];
-      formatters = [ shfmt ];
     };
 
     dotenv = {
@@ -337,10 +316,6 @@ let
       ];
       lsps = [ nodePackages.typescript-language-server ];
       linters = [ eslint_d ];
-      formatters = [
-        prettierd
-        nodejs_22
-      ];
       # TODO:
       # debuggers = [ ];
       ftplugins = with vimPlugins; [
@@ -373,10 +348,6 @@ let
     yaml = {
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [ yaml ];
       lsps = [ yaml-language-server ];
-      formatters = [
-        prettierd
-        nodejs_22
-      ];
     };
 
     misc = {

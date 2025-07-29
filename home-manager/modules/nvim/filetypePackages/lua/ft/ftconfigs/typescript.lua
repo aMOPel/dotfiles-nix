@@ -53,30 +53,6 @@ utils.addTable(g.linter.filetype, {
 	javascriptreact = { "eslint_d" },
 })
 
-utils.addTable(g.formatter.filetype, {
-	[ft] = {
-		require("formatter.filetypes")[ft].prettierd,
-	},
-	ts = {
-		require("formatter.filetypes").typescriptreact.prettierd,
-	},
-	tsx = {
-		require("formatter.filetypes").typescriptreact.prettierd,
-	},
-	typescriptreact = {
-		require("formatter.filetypes").typescriptreact.prettierd,
-	},
-	javascript = {
-		require("formatter.filetypes").javascript.prettierd,
-	},
-	jsx = {
-		require("formatter.filetypes").javascriptreact.prettierd,
-	},
-	javascriptreact = {
-		require("formatter.filetypes").javascriptreact.prettierd,
-	},
-})
-
 utils.addTable(g.dap.filetype, {
 	[ft] = function()
 		local dap = require("dap")

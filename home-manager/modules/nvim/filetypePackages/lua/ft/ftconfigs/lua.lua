@@ -47,21 +47,3 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 		}
 	end,
 })
-
-utils.addTable(g.formatter.filetype, {
-	[ft] = function()
-		return {
-			exe = "stylua",
-			args = {
-				"--search-parent-directories",
-				"--column-width",
-				"80",
-				"--stdin-filepath",
-				vim.fn.fnameescape(vim.api.nvim_buf_get_name(0)),
-				"--",
-				"-",
-			},
-			stdin = true,
-		}
-	end,
-})

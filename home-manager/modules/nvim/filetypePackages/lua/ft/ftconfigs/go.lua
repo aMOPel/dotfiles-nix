@@ -12,10 +12,6 @@ utils.addTable(g.linter.filetype, {
 	[ft] = { "golangcilint" },
 })
 
-utils.addTable(g.formatter.filetype, {
-	[ft] = { require("formatter.filetypes")[ft].gofumpt },
-})
-
 local configs = {}
 
 configs[ft] = function()
