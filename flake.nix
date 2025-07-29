@@ -33,6 +33,7 @@
     owner = "numtide";
     repo = "treefmt-nix";
     type = "github";
+    inputs.nixpkgs.follows = "nixpkgs";
   };
 
   inputs.flake-utils.url = "github:numtide/flake-utils";

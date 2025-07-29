@@ -31,6 +31,7 @@ in
     (import ./modules/gpg               {inherit config pkgs_latest pkgs lib;})
     (import ./modules/pass              {inherit config pkgs_latest pkgs lib;})
     (import ./modules/mime-applications {inherit config pkgs_latest pkgs lib;})
+    (import ./modules/treefmt           {inherit config pkgs_latest pkgs lib;})
   ];
 
   # uninstall = true;
