@@ -17,6 +17,7 @@ in
 {
   imports = [
     ./hardware-configuration.nix
+    ./steam.nix
     ../../common/common.nix
     ../../common/yubikey-support.nix
     home-manager.nixosModules.home-manager

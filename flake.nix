@@ -102,7 +102,10 @@
         (
           prev_inputs
           // rec {
-            pkgs = import prev_inputs.nixpkgs { inherit system overlays; };
+            pkgs = import prev_inputs.nixpkgs {
+              inherit system overlays;
+              config.allowUnfree = true;
+            };
             pkgs_latest = import prev_inputs.nixpkgs_latest { inherit system overlays; };
             pkgs_for_nvim = import prev_inputs.nixpkgs_for_nvim { inherit system overlays; };
             lib = prev_inputs.nixpkgs.lib;
