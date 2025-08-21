@@ -23,6 +23,10 @@ rec {
       context = task.context;
     };
 
+    treefmt = {
+      enable = true;
+    };
+
     git = rec {
       enable = true;
       enableLazygit = true;
@@ -64,6 +68,7 @@ rec {
     neovim = {
       enable = true;
       filetypes = [
+        "all"
         "angular"
         # "cmake"
         "make"
