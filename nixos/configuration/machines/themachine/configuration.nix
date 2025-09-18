@@ -35,6 +35,8 @@ in
     };
   };
 
+  boot.loader.timeout = 15;
+
   services.gnome.gnome-keyring.enable = lib.mkForce false;
   networking.hostName = config-values.nixos.hostname;
 
