@@ -328,7 +328,8 @@ let
     };
 
     deno = {
-      lsps = [ deno ];
+      # use the deno binary from path
+      # lsps = [ deno ];
     };
 
     vim = {

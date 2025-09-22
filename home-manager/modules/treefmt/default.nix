@@ -15,7 +15,7 @@ let
     programs = {
       deno.enable = true;
       clang-format.enable = true;
-      nixfmt-rfc-style.enable = true;
+      nixfmt.enable = true;
       gdformat.enable = true;
       gofumpt.enable = true;
       stylua.enable = true;
@@ -68,7 +68,7 @@ let
         ".frag"
         ".comp"
       ];
-      nixfmt-rfc-style.includes = [ "*.nix" ];
+      nixfmt.includes = [ "*.nix" ];
       gdformat.includes = [ "*.gd" ];
       gofumpt.includes = [ "*.go" ];
       stylua.includes = [ "*.lua" ];
