@@ -38,8 +38,15 @@ in
 
   services.gnome.gnome-keyring.enable = lib.mkForce false;
   networking.hostName = config-values.nixos.hostname;
+  # networking.wireless = {
+  #   enable = true;
+  # };
 
   programs.ssh.knownHosts = config-values.nixos.knownHosts;
+
+  environment.systemPackages = with pkgs; [
+    cacert
+  ];
 
   users.users."${config-values.username}" = {
     isNormalUser = true;
