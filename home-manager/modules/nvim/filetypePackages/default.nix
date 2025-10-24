@@ -300,7 +300,10 @@ let
       linters = [ dotenv-linter ];
     };
 
-    tex = { };
+    tex = {
+      lsps = [ ltex-ls ];
+      tsParsers = with vimPlugins.nvim-treesitter-parsers; [ bibtex latex ];
+    };
 
     toml = {
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [ toml ];
