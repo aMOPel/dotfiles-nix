@@ -10,7 +10,7 @@
 
     font = {
       size = 13;
-      package = pkgs.nerd-fonts.fira-code;
+      package = null;
       name = "FiraCode Nerd Font";
     };
 
