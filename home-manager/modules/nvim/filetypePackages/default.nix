@@ -102,7 +102,7 @@ let
 
     dockerfile = {
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [ dockerfile ];
-      lsps = [ dockerfile-language-server-nodejs ];
+      lsps = [ dockerfile-language-server ];
       # TODO:
       # linters = [ hadolint ];
       # ftplugins = with vimPlugins; [ Dockerfile.vim ];

@@ -97,17 +97,20 @@
         })
       ];
 
+      config = {
+        allowUnfree = true;
+      };
+
       makeInputsForSystem =
         prev_inputs: system:
         (
           prev_inputs
           // rec {
             pkgs = import prev_inputs.nixpkgs {
-              inherit system overlays;
-              config.allowUnfree = true;
+              inherit system overlays config;
             };
-            pkgs_latest = import prev_inputs.nixpkgs_latest { inherit system overlays; };
-            pkgs_for_nvim = import prev_inputs.nixpkgs_for_nvim { inherit system overlays; };
+            pkgs_latest = import prev_inputs.nixpkgs_latest { inherit system overlays config; };
+            pkgs_for_nvim = import prev_inputs.nixpkgs_for_nvim { inherit system overlays config; };
             lib = prev_inputs.nixpkgs.lib;
             hmlib = import "${prev_inputs.home-manager}/modules/lib" { inherit lib; };
           }
