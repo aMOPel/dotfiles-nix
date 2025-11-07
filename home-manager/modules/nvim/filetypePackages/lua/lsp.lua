@@ -108,8 +108,6 @@ local setup_lsps = function()
 	-- Servers managed by Mason
 	local servers = g.lsp.servers.lsp_installer
 
-	local lspconfig = require("lspconfig")
-
 	local function setup_server(server_name, server_config)
 		local config = {
 			capabilities = require("cmp_nvim_lsp").default_capabilities(),
@@ -123,7 +121,7 @@ local setup_lsps = function()
 			print("error with " .. server_name)
 		end
 
-		lspconfig[server_name].setup(config)
+		vim.lsp.config(server_name, config)
 	end
 
 	for server_name, server_config in pairs(servers) do
