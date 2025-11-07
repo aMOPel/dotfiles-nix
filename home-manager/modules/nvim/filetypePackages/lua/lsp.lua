@@ -122,6 +122,7 @@ local setup_lsps = function()
 		end
 
 		vim.lsp.config(server_name, config)
+		vim.lsp.enable(server_name)
 	end
 
 	for server_name, server_config in pairs(servers) do
