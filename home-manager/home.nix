@@ -65,5 +65,7 @@ in
     vim
   ];
 
+  programs.brave.nativeMessagingHosts = with pkgs; [ gnome-browser-connector jabref ];
+
   home.stateVersion = "23.11";
 }

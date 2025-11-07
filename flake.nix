@@ -3,7 +3,7 @@
     type = "github";
     owner = "nix-community";
     repo = "home-manager";
-    ref = "release-24.11";
+    ref = "release-25.05";
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
@@ -22,7 +22,7 @@
   };
 
   inputs."nixpkgs" = {
-    ref = "nixos-24.11";
+    ref = "nixos-25.05";
     owner = "NixOS";
     repo = "nixpkgs";
     type = "github";

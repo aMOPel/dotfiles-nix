@@ -5,3 +5,10 @@ hm-switch:
 .PHONY: nixos-switch
 nixos-switch:
 	nixos-rebuild switch --use-remote-sudo --fast --flake '.#'$$(cat /etc/hostname)
+
+
+.PHONY: nixos-upgrade
+nixos-upgrade:
+	nix flake update
+	nixos-rebuild boot --use-remote-sudo --fast --flake '.#'$$(cat /etc/hostname)
+	sudo reboot
