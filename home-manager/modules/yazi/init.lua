@@ -1,17 +1,17 @@
-THEME.git = THEME.git or {}
-THEME.git.modified = ui.Style():fg("blue")
-THEME.git.added = ui.Style():fg("green")
-THEME.git.untracked = ui.Style():fg("gray")
-THEME.git.ignored = ui.Style():fg("darkgray")
-THEME.git.deleted = ui.Style():fg("red"):bold()
-THEME.git.updated = ui.Style():fg("cyan")
+th.git = th.git or {}
+th.git.modified = ui.Style():fg("blue")
+th.git.added = ui.Style():fg("green")
+th.git.untracked = ui.Style():fg("gray")
+th.git.ignored = ui.Style():fg("darkgray")
+th.git.deleted = ui.Style():fg("red"):bold()
+th.git.updated = ui.Style():fg("cyan")
 
-THEME.git.modified_sign = "M"
-THEME.git.added_sign = "A"
-THEME.git.untracked_sign = "?"
-THEME.git.ignored_sign = "."
-THEME.git.deleted_sign = "D"
-THEME.git.updated_sign = "U"
+th.git.modified_sign = "M"
+th.git.added_sign = "A"
+th.git.untracked_sign = "?"
+th.git.ignored_sign = "."
+th.git.deleted_sign = "D"
+th.git.updated_sign = "U"
 
 require("git"):setup()
 
