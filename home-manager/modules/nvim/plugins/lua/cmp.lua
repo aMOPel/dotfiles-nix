@@ -26,6 +26,7 @@ table.insert(plugins, {
 			sources = cmp.config.sources({
 				{ name = "vsnip", max_item_count = 5 },
 				{ name = "nvim_lsp", max_item_count = 20 },
+				{ name = "vimtex", max_item_count = 5 },
 			}, {
 				{
 					name = "rg",
@@ -65,6 +66,7 @@ table.insert(plugins, {
 						calc = "[CLC]",
 						git = "[GIT]",
 						emoji = "[EMJ]",
+						vimtex = "[TEX]",
 					},
 				}),
 			},

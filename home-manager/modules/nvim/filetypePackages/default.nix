@@ -302,7 +302,13 @@ let
 
     tex = {
       lsps = [ ltex-ls ];
-      tsParsers = with vimPlugins.nvim-treesitter-parsers; [ bibtex latex ];
+      tsParsers = with vimPlugins.nvim-treesitter-parsers; [
+        bibtex
+        latex
+      ];
+      ftplugins = with vimPlugins; [
+        vimtex
+      ];
     };
 
     toml = {

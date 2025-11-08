@@ -152,6 +152,7 @@ in
     cmp-dap
     cmp-fuzzy-path
     cmp-nvim-lsp
+    cmp-vimtex
 
     # visuals
     nvim-web-devicons
