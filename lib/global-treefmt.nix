@@ -1,13 +1,17 @@
 {
   treefmt-nix,
+  treefmt,
   pkgs,
+  system,
 }:
 let
 
-  enable = { enable = true; };
+  enable = {
+    enable = true;
+  };
 
-  global-treefmt = treefmt-nix.mkWrapper pkgs {
-    package = pkgs.treefmt;
+  global-treefmt = treefmt-nix.lib.evalModule pkgs {
+    package = treefmt;
     projectRootFile = ".git/config";
     programs = {
       deno = enable;
@@ -91,4 +95,4 @@ let
   };
 
 in
-global-treefmt
+global-treefmt.config.build.wrapper

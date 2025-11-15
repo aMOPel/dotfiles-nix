@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  global-treefmt,
+  pkgs,
   ...
 }:
 let
@@ -13,7 +13,7 @@ in
   };
   config = lib.mkIf cfg.enable {
     home.packages = [
-      global-treefmt
+      pkgs.global-treefmt
     ];
   };
 }

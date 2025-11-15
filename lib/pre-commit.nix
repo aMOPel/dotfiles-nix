@@ -1,7 +1,9 @@
-{ pkgs
-, git-hooks
-, gitignore
-, global-treefmt
+{
+  pkgs,
+  git-hooks-nix,
+  gitignore-nix,
+  global-treefmt,
+  system,
 }:
 let
   dotenv_linter = {
@@ -12,7 +14,7 @@ let
       "--quiet"
       "--no-color"
     ];
-    extraPackages = with pkgs;[
+    extraPackages = with pkgs; [
       dotenv-linter
     ];
     files = "^\\.env$|^\\.env\\..+$";
@@ -21,16 +23,19 @@ let
     stages = [ "pre-commit" ];
   };
 
-  enable = { enable = true; };
+  enable = {
+    enable = true;
+  };
 in
 {
-  pre-commit-check = git-hooks.run {
-    src = gitignore.gitignoreSource ../.;
+  pre-commit-check = git-hooks-nix.lib.${system}.run {
+    src = gitignore-nix.gitignoreSource ../.;
     # If your hooks are intrusive, avoid running on each commit with a default_states like this:
     # default_stages = ["manual" "push"];
     hooks = {
       inherit
-        dotenv_linter;
+        dotenv_linter
+        ;
 
       check-added-large-files = enable;
       check-case-conflicts = enable;

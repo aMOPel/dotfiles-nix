@@ -37,6 +37,7 @@
   };
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.gitignore-nix.url = "github:hercules-ci/gitignore.nix";
 
   inputs.git-hooks-nix = {
     ref = "84255025dee4c8701a99fbff65ac3c9095952f99";
@@ -54,6 +55,7 @@
       home-manager,
       treefmt-nix,
       git-hooks-nix,
+      gitignore-nix,
       ...
     }@inputs:
     let
@@ -101,13 +103,24 @@
       );
 
       overlays = [
-        (self: super:
-        let
-          global-treefmt = self.callPackage ./lib/treefmt.nix { };
-        in
-        {
-          inherit treefmt-nix git-hooks-nix global-treefmt;
-        })
+        (
+          self: super:
+          let
+            global-treefmt = (
+              super.callPackage ./lib/global-treefmt.nix {
+                inherit treefmt-nix;
+              }
+            );
+          in
+          {
+            inherit
+              treefmt-nix
+              gitignore-nix
+              git-hooks-nix
+              global-treefmt
+              ;
+          }
+        )
       ];
 
       config = {
@@ -137,7 +150,7 @@
     // (flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        pkgs = import nixpkgs { inherit system overlays config; };
         scripts = (pkgs.callPackage ./nixos/scripts { }).scripts;
         pre-commit = pkgs.callPackage ./lib/pre-commit.nix { };
       in
