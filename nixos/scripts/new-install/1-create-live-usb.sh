@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2155,SC2162
 
 root=$(git rev-parse --show-toplevel)
 nixos_dir="$root"/nixos
@@ -9,7 +10,7 @@ downloadIso() {
   default_value="y"
   read -p "download nixos iso? [$default_value] "
   REPLY=${REPLY:-"$default_value"}
-  if [[ "$REPLY" == "y" ]]; then
+  if [[ $REPLY == "y" ]]; then
 
     default_value="x86_64"
     alternative_value="aarch64"
@@ -40,10 +41,11 @@ transferToUsb() {
   default_value="y"
   read -p "unmount storage device now? [$default_value] "
   REPLY=${REPLY:-"$default_value"}
-  if [[ "$REPLY" == "y" ]]; then
+  if [[ $REPLY == "y" ]]; then
     sudo umount -f /dev/"$device"*
   fi
 
+  # shellcheck disable=SC2012
   default_value="$(ls "$root"/*.iso | head -1)"
   read -p "enter iso file to write to storage device [$default_value] " iso_file
   iso_file=${iso_file:-"$default_value"}
@@ -53,7 +55,7 @@ transferToUsb() {
   default_value="y"
   read -p "cleanup downloads? [$default_value] "
   REPLY=${REPLY:-"$default_value"}
-  if [[ "$REPLY" == "y" ]]; then
+  if [[ $REPLY == "y" ]]; then
     rm "$iso_file"
   fi
 }

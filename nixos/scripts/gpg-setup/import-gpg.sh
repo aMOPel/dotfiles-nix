@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2155,SC2162
 
 getUserInfo() {
   ls -lsa .
@@ -31,7 +32,7 @@ importKeys() {
   default_value="y"
   read -r -p "trust new key? [${default_value}]  "
   export REPLY=${REPLY:-"$default_value"}
-  if [[ "$REPLY" == "y" ]]; then
+  if [[ $REPLY == "y" ]]; then
     trustKey
   fi
 

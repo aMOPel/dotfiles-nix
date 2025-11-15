@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2155,SC2162
 
 getPins() {
   read -r -s -p "enter new yubikey gpg admin pin: " ADMIN_PIN
   echo ""
   read -r -s -p "confirm admin pin: " ADMIN_PIN_CONFIRM
   echo ""
-  if [[ "${ADMIN_PIN_CONFIRM}" != "${ADMIN_PIN}" ]]; then
-    while [[ "${ADMIN_PIN_CONFIRM}" != "${ADMIN_PIN}" ]]; do
+  if [[ ${ADMIN_PIN_CONFIRM} != "${ADMIN_PIN}" ]]; then
+    while [[ ${ADMIN_PIN_CONFIRM} != "${ADMIN_PIN}" ]]; do
       echo "admin pins did not match. try again."
       read -r -s -p "enter admin pin: " ADMIN_PIN
       echo ""
@@ -20,8 +21,8 @@ getPins() {
   echo ""
   read -r -s -p "confirm pin: " USER_PIN_CONFIRM
   echo ""
-  if [[ "${USER_PIN_CONFIRM}" != "${USER_PIN}" ]]; then
-    while [[ "${USER_PIN_CONFIRM}" != "${USER_PIN}" ]]; do
+  if [[ ${USER_PIN_CONFIRM} != "${USER_PIN}" ]]; then
+    while [[ ${USER_PIN_CONFIRM} != "${USER_PIN}" ]]; do
       echo "pins did not match. try again."
       read -r -s -p "enter pin: " USER_PIN
       echo ""
@@ -36,7 +37,7 @@ changeFactoryPins() {
   default_value="y"
   read -r -p "change pins? [${default_value}]  "
   export REPLY=${REPLY:-"$default_value"}
-  if [[ "$REPLY" == "y" ]]; then
+  if [[ $REPLY == "y" ]]; then
     gpg --command-fd=0 --pinentry-mode=loopback --change-pin <<EOF
 3
 12345678
@@ -61,7 +62,7 @@ setIdentityOnYK() {
   default_value="y"
   read -r -p "set identity on yubikey? [${default_value}]  "
   export REPLY=${REPLY:-"$default_value"}
-  if [[ "$REPLY" == "y" ]]; then
+  if [[ $REPLY == "y" ]]; then
     gpg --command-fd=0 --pinentry-mode=loopback --edit-card <<EOF
 admin
 login
@@ -76,7 +77,7 @@ transferSubkeysToYK() {
   default_value="y"
   read -r -p "transfer subkeys to yubikey? [${default_value}]  "
   export REPLY=${REPLY:-"$default_value"}
-  if [[ "$REPLY" == "y" ]]; then
+  if [[ $REPLY == "y" ]]; then
 
     gpg --command-fd=0 --edit-key "$KEYID" <<EOF
 key 1
@@ -107,7 +108,7 @@ activateTouchOnYK() {
   default_value="y"
   read -r -p "activate touch requirement with 15s cache on yubikey for all keys? [${default_value}]  "
   export REPLY=${REPLY:-"$default_value"}
-  if [[ "$REPLY" == "y" ]]; then
+  if [[ $REPLY == "y" ]]; then
     putoutPutin
 
     for SUBKEY in dec sig aut; do
@@ -131,7 +132,7 @@ putoutPutin() {
 }
 
 getBackupDir() {
-  if [[ -z "$BACKUP_DIR" ]]; then
+  if [[ -z $BACKUP_DIR ]]; then
     ls -lsa .
     default_value="./gpg-key-backup"
     read -r -e -p "enter path to backup directory [${default_value}]: " BACKUP_DIR
@@ -143,16 +144,16 @@ deleteOldKey() {
   default_value="y"
   read -r -p "change pins? [${default_value}]  "
   export REPLY=${REPLY:-"$default_value"}
-  if [[ "$REPLY" == "y" ]]; then
+  if [[ $REPLY == "y" ]]; then
     gpg --delete-secret-and-public-keys "$KEYID"
   fi
 }
 
-importKey(){
+importKey() {
   default_value="y"
   read -r -p "change pins? [${default_value}]  "
   export REPLY=${REPLY:-"$default_value"}
-  if [[ "$REPLY" == "y" ]]; then
+  if [[ $REPLY == "y" ]]; then
     echo "$CERTIFY_PASS" | gpg --batch --passphrase-fd 0 --import "$BACKUP_DIR"/*
   fi
 }
@@ -172,7 +173,7 @@ anotherYK() {
     default_value="y"
     read -r -p "setup another YK? [${default_value}]  " CONTINUE
     export CONTINUE=${CONTINUE:-"$default_value"}
-    if [[ "$CONTINUE" != "y" ]]; then break; fi
+    if [[ $CONTINUE != "y" ]]; then break; fi
 
     putout
     deleteOldKey

@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2155,SC2162
 
 default_value="y"
 read -p "add ssh daemon to nixos configuration.nix? [$default_value] "
 REPLY=${REPLY:-"$default_value"}
-if [[ "$REPLY" != "y" ]]; then
+if [[ $REPLY != "y" ]]; then
   exit 1
 fi
 
@@ -25,7 +26,7 @@ echo ""
 default_value="y"
 read -p "looks good? going to switch to new configuration in next step. [$default_value] "
 REPLY=${REPLY:-"$default_value"}
-if [[ "$REPLY" != "y" ]]; then
+if [[ $REPLY != "y" ]]; then
   exit 1
 fi
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2155,SC2162
 
 echo "Assumptions:"
 echo "  - The disk, the installation goes to, is backed up or the data on it is not valuable."
@@ -28,7 +29,7 @@ disk_path=${disk_path:-"$default_value"}
 default_value="y"
 read -p "partition disk into 1G EFI partition and the rest as LVM partition? [$default_value] "
 REPLY=${REPLY:-"$default_value"}
-if [[ "$REPLY" == "y" ]]; then
+if [[ $REPLY == "y" ]]; then
   gdisk "$disk_path" <<EOF
 o
 y
@@ -69,7 +70,7 @@ default_value="y"
 read -p "setup luks, lvm partitions and btrfs? [$default_value] "
 REPLY=${REPLY:-"$default_value"}
 
-if [[ "$REPLY" == "y" ]]; then
+if [[ $REPLY == "y" ]]; then
   default_value="16"
   read -p "enter ram size in GB [$default_value] " ram_size
   ram_size=${ram_size:-"$default_value"}
@@ -114,7 +115,7 @@ while :; do
   default_value="y"
   read -p "setup (another) yubikey for luks disk encryption? [$default_value] "
   REPLY=${REPLY:-"$default_value"}
-  if [[ "$REPLY" != "y" ]]; then
+  if [[ $REPLY != "y" ]]; then
     break
   fi
 
@@ -123,7 +124,7 @@ while :; do
   default_value="y"
   read -p "change yubikey fido pin? this requires 'ykman' in PATH [$default_value] "
   REPLY=${REPLY:-"$default_value"}
-  if [[ "$REPLY" == "y" ]]; then
+  if [[ $REPLY == "y" ]]; then
     ykman fido access change-pin
   fi
   systemd-cryptenroll --fido2-device=auto --fido2-with-client-pin=yes "$disk_path"2
@@ -133,13 +134,14 @@ default_value="y"
 read -p "generate nixos config? [$default_value] "
 REPLY=${REPLY:-"$default_value"}
 
-if [[ "$REPLY" == "y" ]]; then
+if [[ $REPLY == "y" ]]; then
   nixos-generate-config --root /mnt
 
   echo ""
   ls -l /dev/disk/by-uuid
   echo ""
 
+  # shellcheck disable=SC2010
   default_value=$(ls -l /dev/disk/by-uuid | grep "$(basename /dev/sda)"2 | awk '{print $9}')
   read -p "enter uuid of encrypted disk (should point to ${disk_path}2) [$default_value] " uuid
   uuid=${uuid:-"$default_value"}
@@ -296,7 +298,7 @@ EOF
   default_value="n"
   read -p "edit nixos config with vim? [$default_value] "
   REPLY=${REPLY:-"$default_value"}
-  if [[ "$REPLY" == "y" ]]; then
+  if [[ $REPLY == "y" ]]; then
     vim /mnt/etc/nixos/configuration.nix
   fi
 
@@ -305,14 +307,14 @@ fi
 default_value="y"
 read -p "install nixos now? [$default_value] "
 REPLY=${REPLY:-"$default_value"}
-if [[ "$REPLY" == "y" ]]; then
+if [[ $REPLY == "y" ]]; then
   nixos-install
 fi
 
 default_value="y"
 read -p "reboot now? you should be asked for the yubikey pin at startup. [$default_value] "
 REPLY=${REPLY:-"$default_value"}
-if [[ "$REPLY" == "y" ]]; then
+if [[ $REPLY == "y" ]]; then
   echo "before you restart, remember that you should remove the passphrase as a slot for the cryptsetup disk!"
   echo ""
   echo "    \$ systemd-cryptenroll --wipe-slot=password ${disk_path}2"

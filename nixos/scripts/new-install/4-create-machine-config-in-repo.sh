@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2155,SC2162
 
 is_git_clean="$(git diff --quiet && git diff --cached --quiet && echo "clean" || echo "dirty")"
-if [[ "$is_git_clean" != "clean" ]]; then
+if [[ $is_git_clean != "clean" ]]; then
   echo "git working directory is dirty. clean it first"
   exit 1
 fi
 
-default_value="$USERNAME"
+default_value="$USER"
 read -p "enter username [$default_value] " username
 username=${username:-"$default_value"}
 
@@ -44,4 +45,4 @@ echo "configuration files have been copied to '$target_dir'"
 echo "now you can adapt them as you please and run:"
 echo ""
 echo "    \$ cd $root"
-echo "    \$ make nixos-switch-flake"
+echo '    $ make nixos-switch-flake'

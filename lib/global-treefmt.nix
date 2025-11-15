@@ -83,10 +83,9 @@ let
       rustfmt.includes = [ "*.rs" ];
       shfmt.includes = [ "*.sh" ];
       dockfmt.includes = [
-        "*.sh"
-        "*.bash"
-        "*.envrc"
-        "*.envrc.*"
+        "Dockerfile"
+        "*.Dockerfile"
+        "Dockerfile.*"
       ];
       taplo.includes = [ ".toml" ];
 

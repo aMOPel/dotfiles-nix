@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2155,SC2162
 
 trustKey() {
   gpg --command-fd=0 --pinentry-mode=loopback --edit-key "$KEYID" <<EOF
@@ -14,7 +15,7 @@ generateKeys() {
   default_value="y"
   read -r -p "generate gpg keys? [${default_value}]  "
   export REPLY=${REPLY:-"$default_value"}
-  if [[ "$REPLY" == "y" ]]; then
+  if [[ $REPLY == "y" ]]; then
 
     echo "$CERTIFY_PASS" | gpg --batch --passphrase-fd 0 --quick-generate-key "$IDENTITY" "$KEY_TYPE" cert never
 
@@ -38,12 +39,12 @@ createBackup() {
   default_value="y"
   read -r -p "create backup? [${default_value}]  "
   export REPLY=${REPLY:-"$default_value"}
-  if [[ "$REPLY" == "y" ]]; then
+  if [[ $REPLY == "y" ]]; then
     default_value="./gpg-key-backup"
     read -r -p "enter path to backup directory [${default_value}]:  " BACKUP_DIR
     export BACKUP_DIR=${BACKUP_DIR:-"$default_value"}
 
-    if [[ -d "$BACKUP_DIR" ]]; then
+    if [[ -d $BACKUP_DIR ]]; then
       echo "removing $BACKUP_DIR"
       rm -rI "$BACKUP_DIR"
     fi
