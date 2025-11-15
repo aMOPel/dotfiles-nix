@@ -38,6 +38,14 @@
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
+  inputs.git-hooks-nix = {
+    ref = "84255025dee4c8701a99fbff65ac3c9095952f99";
+    type = "github";
+    owner = "cachix";
+    repo = "git-hooks.nix";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   outputs =
     {
       self,
@@ -45,6 +53,7 @@
       flake-utils,
       home-manager,
       treefmt-nix,
+      git-hooks-nix,
       ...
     }@inputs:
     let
@@ -92,8 +101,12 @@
       );
 
       overlays = [
-        (self: super: {
-          inherit treefmt-nix;
+        (self: super:
+        let
+          global-treefmt = self.callPackage ./lib/treefmt.nix { };
+        in
+        {
+          inherit treefmt-nix git-hooks-nix global-treefmt;
         })
       ];
 
@@ -126,16 +139,22 @@
       let
         pkgs = import nixpkgs { inherit system; };
         scripts = (pkgs.callPackage ./nixos/scripts { }).scripts;
+        pre-commit = pkgs.callPackage ./lib/pre-commit.nix { };
       in
       {
         packages = {
-        } // scripts;
+        }
+        // scripts;
         devShells = {
           default = pkgs.mkShellNoCC {
             packages = with pkgs; [
               gnumake
               git-crypt
             ];
+            shellHook = ''
+              ${pre-commit.pre-commit-check.shellHook}
+            '';
+            buildInputs = pre-commit.pre-commit-check.enabledPackages;
           };
           hmShell = pkgs.mkShellNoCC {
             packages = [

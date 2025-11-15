@@ -1,2 +1,3 @@
 config_values.nix filter=git-crypt diff=git-crypt
 config-values.nix filter=git-crypt diff=git-crypt
+* text=auto eol=lf
