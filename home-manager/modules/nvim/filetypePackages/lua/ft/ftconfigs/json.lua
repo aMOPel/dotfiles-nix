@@ -1,19 +1,19 @@
 local ft = "json"
 
 utils.addTable(g.lsp.fts, {
-	ft,
+  ft,
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
-	jsonls = function(on_attach, capabilities)
-		return {
-			capabilities = capabilities,
-			on_attach = on_attach,
-			settings = {
-				json = {
-					schemas = require("schemastore").json.schemas(),
-				},
-			},
-		}
-	end,
+  jsonls = function(on_attach, capabilities)
+    return {
+      capabilities = capabilities,
+      on_attach = on_attach,
+      settings = {
+        json = {
+          schemas = require("schemastore").json.schemas(),
+        },
+      },
+    }
+  end,
 })

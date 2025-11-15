@@ -1,4 +1,9 @@
-{ lib, pkgs, pkgs_latest, ... }:
+{
+  lib,
+  pkgs,
+  pkgs_latest,
+  ...
+}:
 let
 in
 {
@@ -7,6 +12,5 @@ in
     + builtins.readFile ./lua/options.lua
     + builtins.readFile ./lua/autocmds.lua
     + builtins.readFile ./lua/mappings.lua
-    + builtins.readFile ./lua/misc.lua
-  ;
+    + builtins.readFile ./lua/misc.lua;
 }

@@ -1,34 +1,34 @@
 g = {
-	lsp = {
-		fts = {},
-		servers = {
-			lsp_installer = {},
-		},
-	},
-	treesitter = {
-		highlight = {
-			disable = {},
-		},
-		incremental_selection = {
-			disable = {},
-		},
-		indent = {
-			disable = {},
-		},
-    context = {
-			disable = {},
+  lsp = {
+    fts = {},
+    servers = {
+      lsp_installer = {},
     },
-	},
-	linter = {
-		filetype = {},
-		custom_linter = {},
-	},
-	formatter = {
-		filetype = {},
-		on_save = {},
-	},
-	dap = {
-		filetype = {},
-	},
-	plugins = {},
+  },
+  treesitter = {
+    highlight = {
+      disable = {},
+    },
+    incremental_selection = {
+      disable = {},
+    },
+    indent = {
+      disable = {},
+    },
+    context = {
+      disable = {},
+    },
+  },
+  linter = {
+    filetype = {},
+    custom_linter = {},
+  },
+  formatter = {
+    filetype = {},
+    on_save = {},
+  },
+  dap = {
+    filetype = {},
+  },
+  plugins = {},
 }

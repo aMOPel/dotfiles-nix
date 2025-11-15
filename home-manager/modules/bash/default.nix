@@ -42,7 +42,10 @@
     # historyFile = ".local/share/bash/bash_history";
     historySize = 10000;
     historyFileSize = 10000;
-    historyControl = [ "ignoredups" "erasedups" ];
+    historyControl = [
+      "ignoredups"
+      "erasedups"
+    ];
     shellOptions = [
       "autocd"
       "cdspell"
@@ -55,9 +58,7 @@
     sessionVariables = {
       PROMPT_COMMAND = "history -a; history -c; history -r; $PROMPT_COMMAND";
     };
-    initExtra =
-      builtins.readFile ./aliases
-      + builtins.readFile ./prompt;
+    initExtra = builtins.readFile ./aliases + builtins.readFile ./prompt;
     # + ''set -o vi'';
   };
 }

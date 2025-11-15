@@ -37,8 +37,8 @@ in
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
-      glibc
-      gcc-unwrapped
+    glibc
+    gcc-unwrapped
   ];
 
   services.gnome.gnome-keyring.enable = lib.mkForce false;

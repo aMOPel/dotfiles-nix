@@ -1,26 +1,26 @@
 local ft = "go"
 
 utils.addTable(g.lsp.fts, {
-	ft,
+  ft,
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
-	gopls = "default",
+  gopls = "default",
 })
 
 utils.addTable(g.linter.filetype, {
-	[ft] = { "golangcilint" },
+  [ft] = { "golangcilint" },
 })
 
 local configs = {}
 
 configs[ft] = function()
-	local optl = vim.opt_local
-	require("dap-go").setup()
+  local optl = vim.opt_local
+  require("dap-go").setup()
 end
 
 vim.api.nvim_create_autocmd({ "Filetype" }, {
-	group = "MyFt",
-	pattern = { ft },
-	callback = configs[ft],
+  group = "MyFt",
+  pattern = { ft },
+  callback = configs[ft],
 })

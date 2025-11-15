@@ -1,4 +1,10 @@
-{ config, lib, pkgs, pkgs_latest, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  pkgs_latest,
+  ...
+}:
 let
   cfg = config.myModules.neovim;
 in
@@ -20,13 +26,12 @@ in
       neovim-remote
     ];
 
-    home.sessionVariables =
-      {
-        EDITOR = lib.mkForce "nvim";
-        VISUAL = lib.mkForce "nvim";
-        MANPAGER = lib.mkForce "nvim +Man!";
-        # PAGER = lib.mkForce "nvimpager";
-      };
+    home.sessionVariables = {
+      EDITOR = lib.mkForce "nvim";
+      VISUAL = lib.mkForce "nvim";
+      MANPAGER = lib.mkForce "nvim +Man!";
+      # PAGER = lib.mkForce "nvimpager";
+    };
 
     programs.neovim =
       let

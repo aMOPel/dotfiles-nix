@@ -1,4 +1,4 @@
-{device}:
+{ device }:
 {
   config,
   lib,

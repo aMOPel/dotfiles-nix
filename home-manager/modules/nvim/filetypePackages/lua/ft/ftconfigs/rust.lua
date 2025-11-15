@@ -1,23 +1,23 @@
 local ft = "rust"
 
 utils.addTable(g.lsp.fts, {
-	ft,
+  ft,
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
-	rust_analyzer = "default",
+  rust_analyzer = "default",
 })
 
 utils.addTable(g.linter.filetype, {
-	[ft] = { "clippy_custom" },
+  [ft] = { "clippy_custom" },
 })
 
 utils.addTable(g.linter.custom_linter, {
-	clippy_custom = (function()
-		local clippy_custom = require("lint").linters.clippy
-		clippy_custom.ignore_exitcode = true
-		return clippy_custom
-	end)(),
+  clippy_custom = (function()
+    local clippy_custom = require("lint").linters.clippy
+    clippy_custom.ignore_exitcode = true
+    return clippy_custom
+  end)(),
 })
 
 -- utils.addTable(g.dap.filetype, {

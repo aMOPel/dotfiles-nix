@@ -1,14 +1,14 @@
 table.insert(plugins, {
-	name = "",
-	setup = function() end,
-	config = function() end,
+  name = "",
+  setup = function() end,
+  config = function() end,
 })
 
 local p = require("utils").p
 
 local M = function(use)
-	use({
-		p(""),
-	})
+  use({
+    p(""),
+  })
 end
 return M

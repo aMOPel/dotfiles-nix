@@ -1,22 +1,22 @@
 local ft = "python"
 
 utils.addTable(g.lsp.fts, {
-	ft,
+  ft,
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
-	pylsp = "default",
+  pylsp = "default",
 })
 
 local configs = {}
 
 configs[ft] = function()
-	local optl = vim.opt_local
-	optl.foldmethod = "indent"
+  local optl = vim.opt_local
+  optl.foldmethod = "indent"
 end
 
 vim.api.nvim_create_autocmd({ "Filetype" }, {
-	group = "MyFt",
-	pattern = { ft },
-	callback = configs[ft],
+  group = "MyFt",
+  pattern = { ft },
+  callback = configs[ft],
 })

@@ -1,46 +1,46 @@
 local ft = "filetype_name"
 
 utils.addTable(g.lsp.fts, {
-	ft,
+  ft,
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
-	-- server_name = function(on_attach, capabilities) end,
-	server_name = "default",
+  -- server_name = function(on_attach, capabilities) end,
+  server_name = "default",
 })
 
 utils.addTable(g.treesitter.indent.disable, {
-	ft,
+  ft,
 })
 
 utils.addTable(g.formatter.filetype, {
-	[ft] = { require("formatter.filetypes")[ft].prettierd },
+  [ft] = { require("formatter.filetypes")[ft].prettierd },
 })
 
 utils.addTable(g.formatter.on_save, {
-	"*." .. ft,
+  "*." .. ft,
 })
 
 utils.addTable(g.linter.filetype, {
-	"",
+  "",
 })
 
 utils.addTable(g.linter.custom_linter, {
-	customName = {},
+  customName = {},
 })
 
 utils.addTable(g.dap.filetype, {
-	[ft] = { "" },
+  [ft] = { "" },
 })
 
 local configs = {}
 
 configs[ft] = function()
-	local optl = vim.opt_local
+  local optl = vim.opt_local
 end
 
 vim.api.nvim_create_autocmd({ "Filetype" }, {
-	group = "MyFt",
-	pattern = { ft },
-	callback = configs[ft],
+  group = "MyFt",
+  pattern = { ft },
+  callback = configs[ft],
 })

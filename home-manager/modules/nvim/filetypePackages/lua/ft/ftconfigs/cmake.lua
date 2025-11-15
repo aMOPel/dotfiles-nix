@@ -1,9 +1,9 @@
 local ft = "cmake"
 
 utils.addTable(g.lsp.fts, {
-	ft,
+  ft,
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
-	cmake = "default",
+  cmake = "default",
 })

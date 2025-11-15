@@ -1,9 +1,9 @@
 local ft = "toml"
 
 utils.addTable(g.lsp.fts, {
-	ft,
+  ft,
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
-	taplo = "default",
+  taplo = "default",
 })

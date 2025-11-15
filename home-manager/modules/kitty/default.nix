@@ -1,4 +1,5 @@
-{ pkgs, pkgs_latest, ... }: {
+{ pkgs, pkgs_latest, ... }:
+{
 
   fonts.fontconfig = {
     enable = true;
@@ -14,8 +15,7 @@
       name = "FiraCode Nerd Font";
     };
 
-    extraConfig =
-      builtins.readFile ./colors;
+    extraConfig = builtins.readFile ./colors;
 
     shellIntegration.mode = "no-cursor";
 

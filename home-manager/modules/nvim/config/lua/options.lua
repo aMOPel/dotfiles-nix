@@ -2,17 +2,17 @@
 
 vim.cmd("filetype plugin indent on")
 if vim.fn.exists("syntax_on") ~= 1 then
-	vim.cmd([[syntax enable]])
+  vim.cmd([[syntax enable]])
 end
 
 vim.opt.fileformats = { "unix", "dos", "mac" }
 vim.o.list = true
 vim.opt.listchars = {
-	tab = "» ",
-	trail = "␣",
-	nbsp = "␣",
-	extends = "…",
-	precedes = "…",
+  tab = "» ",
+  trail = "␣",
+  nbsp = "␣",
+  extends = "…",
+  precedes = "…",
 }
 
 vim.opt.clipboard:prepend({ "unnamedplus" })

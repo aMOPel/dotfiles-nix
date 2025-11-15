@@ -1,9 +1,9 @@
 local ft = "dockerfile"
 
 utils.addTable(g.lsp.fts, {
-	ft,
+  ft,
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
-	dockerls = "default",
+  dockerls = "default",
 })

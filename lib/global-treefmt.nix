@@ -2,7 +2,6 @@
   treefmt-nix,
   treefmt,
   pkgs,
-  system,
 }:
 let
 

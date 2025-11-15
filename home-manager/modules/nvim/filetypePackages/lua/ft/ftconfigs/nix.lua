@@ -1,15 +1,15 @@
 local ft = "nix"
 
 utils.addTable(g.lsp.fts, {
-	ft,
+  ft,
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
-	nixd = "default",
+  nixd = "default",
 })
 
 utils.addTable(g.linter.filetype, {
-	[ft] = { "nix", "deadnix" },
+  [ft] = { "nix", "deadnix" },
 })
 
 utils.addTable(g.treesitter.context.disable, {

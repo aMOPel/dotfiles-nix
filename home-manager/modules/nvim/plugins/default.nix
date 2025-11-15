@@ -1,4 +1,9 @@
-{ lib, pkgs, pkgs_latest, ... }:
+{
+  lib,
+  pkgs,
+  pkgs_latest,
+  ...
+}:
 let
 
   qf-nvim = pkgs.vimUtils.buildVimPlugin {
@@ -85,7 +90,6 @@ let
     };
     meta.homepage = "https://github.com/aMOPel/pre-commit.nvim";
   };
-
 
 in
 {
@@ -197,6 +201,5 @@ in
     + builtins.readFile ./lua/situational.lua
     + builtins.readFile ./lua/text_manipulation.lua
     + builtins.readFile ./lua/giveitashot.lua
-    + builtins.readFile ./lua/after.lua
-  ;
+    + builtins.readFile ./lua/after.lua;
 }

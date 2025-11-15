@@ -1,54 +1,54 @@
 local ft = "gdscript"
 
 utils.addTable(g.lsp.fts, {
-	ft,
+  ft,
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
-	gdscript = "default",
+  gdscript = "default",
 })
 
 utils.addTable(g.linter.filetype, {
-	[ft] = { "gdlint" },
+  [ft] = { "gdlint" },
 })
 
 utils.addTable(g.dap.filetype, {
-	[ft] = function()
-		local dap = require("dap")
-		dap.adapters.godot = {
-			type = "server",
-			host = "127.0.0.1",
-			port = 6006,
-		}
-		dap.configurations.gdscript = {
-			{
-				type = "godot",
-				request = "launch",
-				name = "Launch scene",
-				project = "${workspaceFolder}",
-				launch_scene = true,
-			},
-		}
-	end,
+  [ft] = function()
+    local dap = require("dap")
+    dap.adapters.godot = {
+      type = "server",
+      host = "127.0.0.1",
+      port = 6006,
+    }
+    dap.configurations.gdscript = {
+      {
+        type = "godot",
+        request = "launch",
+        name = "Launch scene",
+        project = "${workspaceFolder}",
+        launch_scene = true,
+      },
+    }
+  end,
 })
 
 local configs = {}
 
 configs[ft] = function()
-	local optl = vim.opt_local
+  local optl = vim.opt_local
 
-	-- gdscript styleguide
-	optl.fileformat = "unix"
-	optl.fixendofline = true
-	optl.fileencoding = "utf-8"
-	optl.expandtab = false
+  -- gdscript styleguide
+  optl.fileformat = "unix"
+  optl.fixendofline = true
+  optl.fileencoding = "utf-8"
+  optl.expandtab = false
 
-	optl.tabstop = 2
-	optl.shiftwidth = 2
+  optl.tabstop = 2
+  optl.shiftwidth = 2
 end
 
 vim.api.nvim_create_autocmd({ "Filetype" }, {
-	group = "MyFt",
-	pattern = { ft },
-	callback = configs[ft],
+  group = "MyFt",
+  pattern = { ft },
+  callback = configs[ft],
 })

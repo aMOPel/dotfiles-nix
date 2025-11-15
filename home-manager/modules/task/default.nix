@@ -1,4 +1,10 @@
-{ config, lib, pkgs, pkgs_latest, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  pkgs_latest,
+  ...
+}:
 let
   cfg = config.myModules.task;
   rootPath = "twarrior";
@@ -38,7 +44,7 @@ in
       };
     };
 
-    home.packages = with pkgs;[
+    home.packages = with pkgs; [
       taskwarrior-tui
       timewarrior
       python314
