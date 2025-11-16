@@ -2,7 +2,6 @@
 # TODO:
 # find a way to make xdg-open work with home manager on ubuntu
 # bulk rename in neovim broken, since <c-v> seems to equal <enter>
-# mount.yazi needs newer yazi version
 # extract doesn't work
 # need to add sudo mappings
 let
@@ -48,12 +47,12 @@ let
   #   rev = "60b24af23d1050f1700953a367dd4a2990ee51aa";
   #   sha256 = "sha256-Yf5R3H8t6cJBMan8FSpK3BDSG5UnGlypKSMOi0ZFqzE=";
   # };
-  # copy-file-contents = pkgs.fetchFromGitHub {
-  #   owner = "AnirudhG07";
-  #   repo = "plugins-yazi";
-  #   rev = "52ee2bacc344ab835ab279d036980ff9b9fe4b21";
-  #   sha256 = "sha256-djE0of7Y+IYP6/euAG4uxvZ/ch5aU/PsYBX6MN/km5s=";
-  # };
+  copy-file-contents = pkgs.fetchFromGitHub {
+    owner = "AnirudhG07";
+    repo = "plugins-yazi";
+    rev = "71545f4ee1a0896c555b3118dc3d2b0a1b92fad9";
+    sha256 = "sha256-JsQJg/SfXLQ/JIpl2YsfzdGpS1ZeWIACJwWTpHaVH3w=";
+  };
 in
 # sudo = pkgs.fetchFromGitHub {
 #   owner = "TD-sky";
@@ -95,13 +94,14 @@ in
 
     plugins = with pkgs_latest.yaziPlugins; {
       "smart-enter" = smart-enter;
-      # "mount" = "${official-plugins}/mount.yazi";
+      "mount" = mount;
       "git" = git;
       "chmod" = chmod;
       # "sudo-demo" = my-sudo-demo;
       "relative-motions" = relative-motions;
-      # "compress" = compress;
-      # "copy-file-contents" = "${copy-file-contents}/copy-file-contents.yazi";
+      "sudo" = sudo;
+      "compress" = compress;
+      "copy-file-contents" = "${copy-file-contents}/copy-file-contents.yazi";
     };
     initLua = ./init.lua;
 
