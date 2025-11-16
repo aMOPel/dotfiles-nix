@@ -5,6 +5,14 @@
     bashInteractive
   ];
 
+  home.shell = {
+    enableBashIntegration = true;
+    enableFishIntegration = false;
+    enableIonIntegration = false;
+    enableNushellIntegration = false;
+    enableZshIntegration = false;
+  };
+
   programs.readline = {
     enable = true;
     bindings = {

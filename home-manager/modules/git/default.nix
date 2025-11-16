@@ -86,6 +86,16 @@ in
 
     programs.lazygit = lib.mkIf cfg.enableLazygit {
       enable = true;
+      # https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
+      settings = {
+        gui = {
+          theme = {
+            selectedLineBgColor = [ "#4b5263" ]; # one dark gutter grey
+            cherryPickedCommitFgColor = [ "cyan" ];
+            cherryPickedCommitBgColor = [ "#5c6370" ]; # one dark comment grey
+          };
+        };
+      };
     };
 
     home.packages = with pkgs; [
