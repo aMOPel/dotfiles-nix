@@ -4,6 +4,7 @@
 # bulk rename in neovim broken, since <c-v> seems to equal <enter>
 # extract doesn't work
 # need to add sudo mappings
+# sudo plugin rename broken
 let
   # official-plugins = pkgs.fetchFromGitHub {
   #   owner = "yazi-rs";
@@ -25,15 +26,15 @@ let
   #   '';
   # });
 
-  # my-sudo-demo = pkgs.stdenv.mkDerivation (finalAttrs: {
-  #   pname = "my-sudo-demo";
-  #   version = "2025-03-02";
-  #   src = ./sudo-demo.yazi;
-  #
-  #   installPhase = ''
-  #     cp -r . $out
-  #   '';
-  # });
+  my-sudo-demo = pkgs.stdenv.mkDerivation (finalAttrs: {
+    pname = "my-sudo-demo";
+    version = "2025-03-02";
+    src = ./sudo-demo.yazi;
+
+    installPhase = ''
+      cp -r . $out
+    '';
+  });
 
   # relative-motions = pkgs.fetchFromGitHub {
   #   owner = "dedukun";
@@ -97,7 +98,7 @@ in
       "mount" = mount;
       "git" = git;
       "chmod" = chmod;
-      # "sudo-demo" = my-sudo-demo;
+      "sudo-demo" = my-sudo-demo;
       "relative-motions" = relative-motions;
       "sudo" = sudo;
       "compress" = compress;

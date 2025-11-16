@@ -30,7 +30,7 @@ end
 --- Verify if `sudo` is already authenticated
 --- @return boolean
 local sudo_already = function()
-  local status = Command("sudo"):args({ "--validate", "--non-interactive" }):status()
+  local status = Command("sudo"):arg({ "--validate", "--non-interactive" }):status()
   assert(status, "Failed to run `sudo --validate --non-interactive`")
   return status.success
 end
@@ -40,7 +40,7 @@ end
 --- @param args table
 --- @return Output|string output
 local run_with_sudo = function(program, args, cwd)
-  local cmd = Command("sudo"):args({ "--", program, table.unpack(args) }):cwd(cwd)
+  local cmd = Command("sudo"):arg({ "--", program, table.unpack(args) }):cwd(cwd)
   if sudo_already() then
     local permit = ya.hide()
     local output = cmd:output()
@@ -237,6 +237,7 @@ local entry = function(state, job)
   end
   local output = run_with_sudo(program, args, cwd)
 
+  ya.dbg("cmd", program, args, cwd)
   ya.dbg("stdout", output.stdout)
   ya.dbg("stderr", output.stderr)
   ya.dbg("status.code", output.status.code)
