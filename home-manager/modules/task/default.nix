@@ -62,6 +62,7 @@ in
         search.case.sensitive = "no";
         dateformat.info = "H:N:S - D.M.Y";
         verbose = "blank,header,footnote,label,new-id,new-uuid,affected,edit,special,project,sync,unwait,recur";
+        gc = true;
       };
     };
 
