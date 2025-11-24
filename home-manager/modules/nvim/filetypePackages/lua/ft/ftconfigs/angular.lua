@@ -9,6 +9,7 @@ utils.addTable(g.lsp.fts, {
 utils.addTable(g.lsp.servers.lsp_installer, {
   angularls = function(on_attach, capabilities)
     local lsputil = require("lspconfig.util")
+    -- TODO: fix root_pattern after nvim 0.11, see ts config
     local root_pattern = lsputil.root_pattern("angular.json", ".angular/")
 
     -- copied from https://github.com/neovim/nvim-lspconfig/blob/d95655822dc5d6a60d06a72fce26435ef5224b0b/lua/lspconfig/configs/angularls.lua

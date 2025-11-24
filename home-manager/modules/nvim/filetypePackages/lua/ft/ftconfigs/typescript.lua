@@ -16,7 +16,7 @@ utils.addTable(g.lsp.servers.lsp_installer, {
     return {
       capabilities = capabilities,
       on_attach = on_attach,
-      root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
+      root_markers = { "deno.json", "deno.jsonc" },
     }
   end,
   ts_ls = function(on_attach, capabilities)
@@ -24,16 +24,21 @@ utils.addTable(g.lsp.servers.lsp_installer, {
     return {
       capabilities = capabilities,
       on_attach = on_attach,
-      root_dir = function(filename, bufnr)
+      root_dir = function(bufnr, on_dir)
+        local info = vim.fn.getbufinfo(bufnr)
+        local filename = info[1].name
         local denoRootDir = lspconfig.util.root_pattern("deno.json", "deno.jsonc")(filename)
         if denoRootDir then
-          -- print('this seems to be a deno project; returning nil so that tsserver does not attach');
+          -- vim.print('this seems to be a deno project; returning nil so that tsserver does not attach');
           return nil
           -- else
-          -- print('this seems to be a ts project; return root dir based on package.json')
+          --   vim.print('this seems to be a ts project; return root dir based on package.json')
         end
 
-        return lspconfig.util.root_pattern("package.json")(filename)
+        local tsRootDir = lspconfig.util.root_pattern("package.json")(filename)
+        if tsRootDir then
+          on_dir(tsRootDir)
+        end
       end,
       single_file_support = false,
     }
