@@ -4,6 +4,7 @@
 root=$(git rev-parse --show-toplevel)
 nixos_dir="$root"/nixos
 repo_nixos_version="$(cat "$nixos_dir"/nixos-version)"
+default_desktop_environment="gnome"
 
 downloadIso() {
 
@@ -21,12 +22,25 @@ downloadIso() {
     read -p "enter nixos version [$default_value] " nixos_version
     nixos_version=${nixos_version:-"$default_value"}
 
-    iso_url=https://channels.nixos.org/nixos-"$nixos_version"/latest-nixos-gnome-"$arch"-linux.iso
+    default_value="$default_desktop_environment"
+    read -p "enter nixos desktop environment [$default_value] " desktop_environment
+    desktop_environment=${desktop_environment:-"$default_value"}
+
+    iso_url=https://channels.nixos.org/nixos-"$nixos_version"/latest-nixos-"$desktop_environment"-"$arch"-linux.iso
 
     wget -P "$root" "$iso_url".sha256
     wget -P "$root" "$iso_url"
 
-    sha256sum -c "$root"/*.iso.sha256
+    actual="$(sha256sum ./*.iso | cut -d' ' -f1)"
+    expected="$(cat ./*.sha256 | cut -d' ' -f1)"
+
+    if [[ $actual == "$expected" ]]; then
+      echo "integrity check success"
+    else
+      echo "integrity check failure"
+      echo "$actual != $expected"
+      exit 1
+    fi
   fi
 }
 
