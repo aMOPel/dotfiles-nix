@@ -75,16 +75,18 @@ if [[ $REPLY == "y" ]]; then
   read -p "enter ram size in GB [$default_value] " ram_size
   ram_size=${ram_size:-"$default_value"}
 
-  cryptsetup luksFormat "$disk_path"2
-  cryptsetup luksOpen "$disk_path"2 cryptroot
+  cryptsetup luksFormat "$disk_path"p2
+  cryptsetup luksOpen "$disk_path"p2 cryptroot
 
   pvcreate /dev/mapper/cryptroot
   vgcreate vg /dev/mapper/cryptroot
   lvcreate -L "$ram_size"G -n swap vg
-  lvcreate -l '100%FREE' -n root vg
+  lvcreate -L '200G' -n root vg
+  lvcreate -l '100%FREE' -n data vg
 
-  mkfs.fat -F 32 "$disk_path"1
+  mkfs.fat -F 32 "$disk_path"p1
   mkfs.btrfs -L root /dev/vg/root
+  mkfs.btrfs -L data /dev/vg/data
   mkswap -L swap /dev/vg/swap
 
   mkdir -p /mnt
@@ -92,13 +94,17 @@ if [[ $REPLY == "y" ]]; then
   btrfs subvolume create /mnt/root
   btrfs subvolume create /mnt/home
   btrfs subvolume create /mnt/nix
+  mount /dev/vg/data /mnt
+  btrfs subvolume create /mnt/data
   umount /mnt
 
   mount -o subvol=root /dev/vg/root /mnt
   mkdir /mnt/{home,nix,boot}
   mount -o subvol=home /dev/vg/root /mnt/home
   mount -o subvol=nix /dev/vg/root /mnt/nix
-  mount "$disk_path"1 /mnt/boot
+  mount "$disk_path"p1 /mnt/boot
+  mkdir /mnt/data
+  mount -o subvol=data /dev/vg/data /mnt/data
   swapon /dev/vg/swap
 
   echo ""
@@ -127,7 +133,7 @@ while :; do
   if [[ $REPLY == "y" ]]; then
     ykman fido access change-pin
   fi
-  systemd-cryptenroll --fido2-device=auto --fido2-with-client-pin=yes "$disk_path"2
+  systemd-cryptenroll --fido2-device=auto --fido2-with-client-pin=yes "$disk_path"p2
 done
 
 default_value="y"
@@ -142,8 +148,8 @@ if [[ $REPLY == "y" ]]; then
   echo ""
 
   # shellcheck disable=SC2010
-  default_value=$(ls -l /dev/disk/by-uuid | grep "$(basename /dev/sda)"2 | awk '{print $9}')
-  read -p "enter uuid of encrypted disk (should point to ${disk_path}2) [$default_value] " uuid
+  default_value=$(ls -l /dev/disk/by-uuid | grep "$(basename /dev/nvme0n1)"p2 | awk '{print $9}')
+  read -p "enter uuid of encrypted disk (should point to ${disk_path}p2) [$default_value] " uuid
   uuid=${uuid:-"$default_value"}
 
   default_value="user1"
@@ -317,7 +323,7 @@ REPLY=${REPLY:-"$default_value"}
 if [[ $REPLY == "y" ]]; then
   echo "before you restart, remember that you should remove the passphrase as a slot for the cryptsetup disk!"
   echo ""
-  echo "    \$ systemd-cryptenroll --wipe-slot=password ${disk_path}2"
+  echo "    \$ systemd-cryptenroll --wipe-slot=password ${disk_path}p2"
   echo ""
   read -p "understood?"
   systemctl reboot
