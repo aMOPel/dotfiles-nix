@@ -9,6 +9,9 @@
   ...
 }:
 
+let
+  config-values = import ./config_values.nix;
+in
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -49,10 +52,18 @@
     options = [ "umask=0077" ];
   };
 
-  fileSystems."/data" = {
+  systemd.tmpfiles.rules = [
+    "d /home/${config-values.username}/data 0700 ${config-values.username} users -"
+  ];
+
+  fileSystems."/home/${config-values.username}/data" = {
     device = "/dev/disk/by-uuid/c9e1a728-7580-4c7d-8d97-74768f80825e";
     fsType = "btrfs";
-    options = [ "subvol=data" ];
+    options = [
+      "subvol=data"
+      "x-systemd.allow-user"
+      "user"
+    ];
   };
 
   swapDevices = [
