@@ -45,4 +45,4 @@ echo "configuration files have been copied to '$target_dir'"
 echo "now you can adapt them as you please and run:"
 echo ""
 echo "    \$ cd $root"
-echo '    $ make nixos-switch-flake'
+echo '    $ make nixos-switch'
