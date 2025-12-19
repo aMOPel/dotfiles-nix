@@ -54,10 +54,7 @@ in
 
   systemd.tmpfiles.rules = [
     "d /home/${config-values.username}/data 0700 ${config-values.username} users -"
-    "d /home/${config-values.username}/data/samba-share 0775 samba-user samba-group -"
     "d /srv 0755 root root -"
-    "d /srv/samba 0775 samba-user samba-group -"
-    "d /srv/samba/public 0775 samba-user samba-group -"
   ];
 
   fileSystems."/home/${config-values.username}/data" = {
@@ -68,11 +65,6 @@ in
       "x-systemd.allow-user"
       "user"
     ];
-  };
-
-  fileSystems."/srv/samba/public" = {
-    device = "/home/${config-values.username}/data/samba-share";
-    options = [ "bind" ];
   };
 
   swapDevices = [
