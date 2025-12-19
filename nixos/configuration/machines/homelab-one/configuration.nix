@@ -17,6 +17,7 @@ in
   imports = [
     ./hardware-configuration.nix
     yubikey-disc-encryption
+    ./samba.nix
   ];
 
   networking.hostName = config-values.nixos.hostname;
@@ -82,49 +83,10 @@ in
     };
   };
 
-  users = {
-    groups = {
-      samba-group = {
-        gid = 1001;
-      };
-    };
-
-    extraUsers = {
-      samba-user = {
-        isSystemUser = true;
-        uid = 1001;
-        group = "samba-group";
-      };
-    };
-  };
-
-  services.samba = {
+  myModules.samba = {
     enable = true;
-    openFirewall = true;
-    settings = {
-      # https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html
-      global = {
-        "server string" = "samba-${config-values.nixos.hostname}";
-        "netbios name" = "samba-${config-values.nixos.hostname}";
-        "invalid users" = [
-          "root"
-        ];
-        "passwd program" = "/run/wrappers/bin/passwd %u";
-        security = "user";
-        "hosts allow" = "192.168.1. 127.0.0.1";
-        "hosts deny" = "ALL";
-      };
-      public = {
-        path = "/srv/samba/public";
-        writable = "yes";
-        "guest ok" = "no";
-        "browseable" = "yes";
-        "directory mask" = "0775";
-        "create mask" = "0775";
-        "force user" = "samba-user";
-        "force group" = "samba-group";
-      };
-    };
+    shareParentDir = "/home/${config-values.username}/data";
+    publicShareName = "samba-${config-values.nixos.hostname}";
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
