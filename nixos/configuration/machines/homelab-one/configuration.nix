@@ -86,7 +86,7 @@ in
   myModules.samba = {
     enable = true;
     shareParentDir = "/home/${config-values.username}/data";
-    publicShareName = "samba-${config-values.nixos.hostname}";
+    sambaServerName = "samba-${config-values.nixos.hostname}";
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
