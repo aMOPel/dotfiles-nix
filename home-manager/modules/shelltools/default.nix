@@ -17,6 +17,7 @@
     help2man
     gdb
     trash-cli
+    sshfs
   ];
 
   home.sessionVariables = {
