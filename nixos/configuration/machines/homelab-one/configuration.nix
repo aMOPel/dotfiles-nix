@@ -27,6 +27,7 @@ in
       "docker"
       "libvirtd"
       "wheel"
+      "samba-group"
     ];
     openssh.authorizedKeys.keys = config-values.nixos.authorizedKeys.keys;
   };
@@ -80,20 +81,44 @@ in
     };
   };
 
+  users.groups = {
+    samba-group = {
+      gid = 1001;
+    };
+  };
+
+  users.users.samba-user = {
+    isNormalUser = true;
+    extraGroups = [
+      "samba-group"
+    ];
+  };
+
   services.samba = {
     enable = true;
     openFirewall = true;
     settings = {
+      # https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html
       global = {
+        "server string" = "samba-${config-values.hostname}";
+        "netbios name" = "samba-${config-values.hostname}";
         "invalid users" = [
           "root"
         ];
         "passwd program" = "/run/wrappers/bin/passwd %u";
         security = "user";
+        "hosts allow" = "192.168.1. 127.0.0.1";
+        "hosts deny" = "ALL";
       };
       public = {
-        path = "%H/data";
+        path = "%H/data/samba-share";
         writable = "yes";
+        "guest ok" = "no";
+        "browseable" = "yes";
+        "directory mask" = "0775";
+        "create mask" = "0775";
+        "force user" = "samba-user";
+        "force group" = "samba-group";
       };
     };
   };
