@@ -35,22 +35,28 @@ in
       description = "the gid of the samba group";
     };
     filePermissionMask = lib.mkOption {
-      type = lib.types.string;
+      type = lib.types.str;
       default = "0775";
       example = '''';
       description = "umask for all samba share files and directories";
     };
     shareParentDir = lib.mkOption {
-      type = lib.types.string;
+      type = lib.types.str;
       example = '''';
       description = ''
         the parent directory of the share directory.
               the share directory will be created inside that directory with the correct permissions.'';
     };
-    publicShareName = lib.mkOption {
-      type = lib.types.string;
+    sambaServerName = lib.mkOption {
+      type = lib.types.str;
       example = '''';
-      description = "the name under which the share can be found";
+      description = "the name of the samba server (netbios, server string)";
+    };
+    sambaShareName = lib.mkOption {
+      type = lib.types.str;
+      default = "public";
+      example = '''';
+      description = "the name of the samba share, visible when logging in";
     };
   };
 
@@ -58,7 +64,7 @@ in
     let
       # create this dir and hardlink it to `targetMountPoint`
       sourceMountPoint = "${cfg.shareParentDir}/samba-share";
-      targetMountPoint = "/srv/samba/public";
+      targetMountPoint = "/srv/samba/${cfg.sambaShareName}";
     in
     {
       # ensure the directories for samba exist after boot
@@ -94,8 +100,8 @@ in
         settings = {
           # https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html
           global = {
-            "server string" = "${cfg.publicShareName}";
-            "netbios name" = "${cfg.publicShareName}";
+            "server string" = "${cfg.sambaServerName}";
+            "netbios name" = "${cfg.sambaServerName}";
             "invalid users" = [
               "root"
             ];
@@ -106,7 +112,7 @@ in
             "hosts allow" = "192.168.1. 127.0.0.1";
             "hosts deny" = "ALL";
           };
-          public = {
+          "${cfg.sambaShareName}" = {
             path = "${targetMountPoint}";
             writable = "yes";
             "guest ok" = "no";
