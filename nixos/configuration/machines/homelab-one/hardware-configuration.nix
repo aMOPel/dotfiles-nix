@@ -54,6 +54,9 @@ in
 
   systemd.tmpfiles.rules = [
     "d /home/${config-values.username}/data 0700 ${config-values.username} users -"
+    "d /home/${config-values.username}/data/radicale 0755 radicale radicale -"
+    "d /home/${config-values.username}/data/radicale/collections 0755 radicale radicale -"
+    "d /srv/radicale/collections 0755 radicale radicale -"
     "d /srv 0755 root root -"
   ];
 
