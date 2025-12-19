@@ -52,6 +52,7 @@ in
   environment.systemPackages = with pkgs; [
     neovim
     cntr
+    gnumake
   ];
 
   environment.variables = {
@@ -81,17 +82,20 @@ in
     };
   };
 
-  users.groups = {
-    samba-group = {
-      gid = 1001;
+  users = {
+    groups = {
+      samba-group = {
+        gid = 1001;
+      };
     };
-  };
 
-  users.users.samba-user = {
-    isNormalUser = true;
-    extraGroups = [
-      "samba-group"
-    ];
+    extraUsers = {
+      samba-user = {
+        isSystemUser = true;
+        uid = 1001;
+        group = "samba-group";
+      };
+    };
   };
 
   services.samba = {
@@ -100,8 +104,8 @@ in
     settings = {
       # https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html
       global = {
-        "server string" = "samba-${config-values.hostname}";
-        "netbios name" = "samba-${config-values.hostname}";
+        "server string" = "samba-${config-values.nixos.hostname}";
+        "netbios name" = "samba-${config-values.nixos.hostname}";
         "invalid users" = [
           "root"
         ];
@@ -111,7 +115,7 @@ in
         "hosts deny" = "ALL";
       };
       public = {
-        path = "%H/data/samba-share";
+        path = "/srv/samba/public";
         writable = "yes";
         "guest ok" = "no";
         "browseable" = "yes";
