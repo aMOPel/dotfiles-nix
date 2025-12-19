@@ -53,7 +53,8 @@ in
   };
 
   systemd.tmpfiles.rules = [
-    "d /home/${config-values.username}/data 0700 ${config-values.username} users -"
+    "d /home/${config-values.username}/data 0755 ${config-values.username} users -"
+    "d /home/${config-values.username}/data/samba-share 0775 samba-user samba-group -"
   ];
 
   fileSystems."/home/${config-values.username}/data" = {
