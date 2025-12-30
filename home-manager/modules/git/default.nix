@@ -95,6 +95,9 @@ in
             cherryPickedCommitBgColor = [ "#5c6370" ]; # one dark comment grey
           };
         };
+        git = {
+          overrideGpg = true;
+        };
       };
     };
 
