@@ -33,6 +33,10 @@ in
     openssh.authorizedKeys.keys = config-values.nixos.authorizedKeys.keys;
   };
 
+  users.users.root = {
+    openssh.authorizedKeys.keys = config-values.nixos.authorizedKeys.keys;
+  };
+
   nix.settings = {
     experimental-features = [
       "nix-command"
@@ -80,7 +84,7 @@ in
     enable = true;
     settings = {
       PasswordAuthentication = true;
-      PermitRootLogin = "no";
+      PermitRootLogin = "yes";
     };
   };
 
