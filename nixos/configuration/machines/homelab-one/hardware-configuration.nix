@@ -57,6 +57,10 @@ in
     "d /home/${config-values.username}/data/radicale 0755 radicale radicale -"
     "d /home/${config-values.username}/data/radicale/collections 0755 radicale radicale -"
     "d /srv/radicale/collections 0755 radicale radicale -"
+
+    "d /home/${config-values.username}/data/www 0755 nginx nginx -"
+    "d /srv/www/ 0755 nginx nginx -"
+
     "d /srv 0755 root root -"
   ];
 
