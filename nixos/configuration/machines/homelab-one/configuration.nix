@@ -78,6 +78,10 @@ in
   # Or disable the firewall altogether.
   networking.firewall = {
     enable = true;
+    allowedTCPPorts = [
+      80
+      443
+    ];
   };
 
   services.openssh = {
@@ -93,8 +97,7 @@ in
     settings = {
       server = {
         hosts = [
-          "0.0.0.0:5232"
-          "[::]:5232"
+          "127.0.0.1:5232"
         ];
         max_connections = 20;
         max_content_length = 100000000; # 100 Megabyte
@@ -114,17 +117,69 @@ in
 
   services.nginx = {
     enable = true;
+
+    # for acme
+    # recommendedProxySettings = true;
+    # recommendedTlsSettings = true;
+
+    virtualHosts = {
+      "${config-values.nixos.hostname}" = {
+        root = "/srv/www/";
+
+        # for acme
+        # enableACME = true;
+        # forceSSL = true;
+
+        locations = {
+          "/" = {
+            extraConfig = ''
+              index index.html;
+            '';
+          };
+          "/radicale/" = {
+            extraConfig = ''
+              proxy_pass        http://127.0.0.1:5232;
+              proxy_set_header  X-Script-Name /radicale;
+              proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header  X-Forwarded-Host $host;
+              proxy_set_header  X-Forwarded-Port $server_port;
+              proxy_set_header  X-Forwarded-Proto $scheme;
+              proxy_set_header  Host $host;
+              proxy_pass_header Authorization;
+            '';
+          };
+        };
+      };
+    };
   };
-  # location /radicale/ { # The trailing / is important!
-  #     proxy_pass        http://localhost:5232;
-  #     proxy_set_header  X-Script-Name /radicale;
-  #     proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-  #     proxy_set_header  X-Forwarded-Host $host;
-  #     proxy_set_header  X-Forwarded-Port $server_port;
-  #     proxy_set_header  X-Forwarded-Proto $scheme;
-  #     proxy_set_header  Host $http_host;
-  #     proxy_pass_header Authorization;
-  # }
+
+  # acme server
+  services.step-ca = {
+    enable = true;
+    openFirewall = false;
+    # overrides config
+    address = "127.0.0.1";
+    port = 8443;
+    # these files only exists after running `/nixos/scripts/new-install/6-init-step-ca.sh`
+    intermediatePasswordFile = "/run/keys/smallstep-password";
+    settings = builtins.fromJSON (builtins.readFile /var/lib/step-ca/.step/config/ca.json);
+
+  };
+
+  # # acme client
+  # security.acme = {
+  #   acceptTerms = true;
+  #   defaults = {
+  #     email = "admin@homelab-one";
+  #     server = "https://127.0.0.1:8443/acme/acme/directory";
+  #   };
+  # };
+
+  fileSystems."/srv/www" = {
+    device = "/home/${config-values.username}/data/www";
+    options = [ "bind" ];
+  };
+
   fileSystems."/srv/radicale/collections" = {
     device = "/home/${config-values.username}/data/radicale/collections";
     options = [ "bind" ];
