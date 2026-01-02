@@ -119,16 +119,16 @@ in
     enable = true;
 
     # for acme
-    # recommendedProxySettings = true;
-    # recommendedTlsSettings = true;
+    recommendedProxySettings = true;
+    recommendedTlsSettings = true;
 
     virtualHosts = {
       "${config-values.nixos.hostname}" = {
         root = "/srv/www/";
 
         # for acme
-        # enableACME = true;
-        # forceSSL = true;
+        enableACME = true;
+        forceSSL = true;
 
         locations = {
           "/" = {
@@ -161,19 +161,69 @@ in
     address = "127.0.0.1";
     port = 8443;
     # these files only exists after running `/nixos/scripts/new-install/6-init-step-ca.sh`
-    intermediatePasswordFile = "/run/keys/smallstep-password";
-    settings = builtins.fromJSON (builtins.readFile /var/lib/step-ca/.step/config/ca.json);
-
+    intermediatePasswordFile = "/var/lib/step-ca/smallstep-password";
+    package = pkgs.step-ca;
+    settings = {
+      root = "/var/lib/step-ca/.step/certs/root_ca.crt";
+      crt = "/var/lib/step-ca/.step/certs/intermediate_ca.crt";
+      key = "/var/lib/step-ca/.step/secrets/intermediate_ca_key";
+      dnsNames = [
+        "localhost"
+      ];
+      logger = {
+        format = "text";
+      };
+      db = {
+        type = "badgerv2";
+        dataSource = "/var/lib/step-ca/.step/db";
+      };
+      authority = {
+        provisioners = [
+          {
+            type = "ACME";
+            name = "acme";
+          }
+        ];
+      };
+      tls = {
+        cipherSuites = [
+          "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256"
+          "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
+        ];
+        minVersion = 1.2;
+        maxVersion = 1.3;
+      };
+    };
   };
 
-  # # acme client
-  # security.acme = {
-  #   acceptTerms = true;
-  #   defaults = {
-  #     email = "admin@homelab-one";
-  #     server = "https://127.0.0.1:8443/acme/acme/directory";
-  #   };
-  # };
+  # the problem is that the nixos module for step-ca creates a static config from
+  # the `services.step-ca.settings` key and starts the service
+  # with that config <https://github.com/NixOS/nixpkgs/blob/a08e2c3f2032d08fd77278ba30b663393b8c38ac/nixos/modules/services/security/step-ca.nix#L112>.
+  # the recommended workflow is to run `step ca init` once and put the contents of the
+  # generated config file in the `services.step-ca.settings`.
+  # but this doesn't seem to make much sense, as there are settings that are tied
+  # to the generated certificates directly, and will need to be changed when
+  # new certificates are generated so the settings are in a way stateful.
+  # this means we need to override the config used at execution to use the generated config.
+  # NOTE: this config will only exist after `6-init-step-ca.sh` was run once
+  # systemd.services.step-ca.serviceConfig.ExecStart = [
+  #   "" # clear the original entry
+  #   "${pkgs.step-ca}/bin/step-ca /etc/smallstep/actual-ca.json --password-file \${CREDENTIALS_DIRECTORY}/intermediate_password"
+  # ];
+
+  # trust root cert on this machine
+  security.pki.certificates = [
+    (builtins.readFile ./root_ca.crt)
+  ];
+
+  # acme client
+  security.acme = {
+    acceptTerms = true;
+    defaults = {
+      email = "admin@localhost:8443";
+      server = "https://localhost:8443/acme/acme/directory";
+    };
+  };
 
   fileSystems."/srv/www" = {
     device = "/home/${config-values.username}/data/www";
