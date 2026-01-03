@@ -196,21 +196,6 @@ in
     };
   };
 
-  # the problem is that the nixos module for step-ca creates a static config from
-  # the `services.step-ca.settings` key and starts the service
-  # with that config <https://github.com/NixOS/nixpkgs/blob/a08e2c3f2032d08fd77278ba30b663393b8c38ac/nixos/modules/services/security/step-ca.nix#L112>.
-  # the recommended workflow is to run `step ca init` once and put the contents of the
-  # generated config file in the `services.step-ca.settings`.
-  # but this doesn't seem to make much sense, as there are settings that are tied
-  # to the generated certificates directly, and will need to be changed when
-  # new certificates are generated so the settings are in a way stateful.
-  # this means we need to override the config used at execution to use the generated config.
-  # NOTE: this config will only exist after `6-init-step-ca.sh` was run once
-  # systemd.services.step-ca.serviceConfig.ExecStart = [
-  #   "" # clear the original entry
-  #   "${pkgs.step-ca}/bin/step-ca /etc/smallstep/actual-ca.json --password-file \${CREDENTIALS_DIRECTORY}/intermediate_password"
-  # ];
-
   # trust root cert on this machine
   security.pki.certificates = [
     (builtins.readFile ./root_ca.crt)

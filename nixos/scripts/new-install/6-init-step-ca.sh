@@ -22,5 +22,3 @@ sudo chown "$USER":users "$HOME"/root_ca.crt
 
 # give step-ca permissions for the files
 sudo chown -R step-ca:step-ca /var/lib/private/step-ca
-# need to put the config somewhere else, or the service won't start
-sudo mv /var/lib/step-ca/.step/config/ca.json /etc/ssl/step-ca-root.pem
