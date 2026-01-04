@@ -19,6 +19,7 @@ in
     ./hardware-configuration.nix
     yubikey-disc-encryption
     ./samba.nix
+    ./tls-in-lan.nix
     sops-nix.nixosModules.sops
   ];
 
@@ -160,81 +161,6 @@ in
     };
   };
 
-  # for acme server
-  sops.secrets."root-ca/public-cert" = {
-    sopsFile = ../../../../secrets/step-ca.yaml;
-    owner = "step-ca";
-  };
-  sops.secrets."intermediate-ca/public-cert" = {
-    sopsFile = ../../../../secrets/step-ca.yaml;
-    owner = "step-ca";
-  };
-  sops.secrets."intermediate-ca/private-password" = {
-    sopsFile = ../../../../secrets/step-ca.yaml;
-    owner = "step-ca";
-  };
-  sops.secrets."intermediate-ca/private-key" = {
-    sopsFile = ../../../../secrets/step-ca.yaml;
-    owner = "step-ca";
-  };
-
-  # acme server
-  services.step-ca = {
-    enable = true;
-    openFirewall = false;
-    # overrides config
-    address = "127.0.0.1";
-    port = 8443;
-    # these files only exists after running `/nixos/scripts/new-install/6-init-step-ca.sh`
-    intermediatePasswordFile = "/run/secrets/intermediate-ca/private-password";
-    package = pkgs.step-ca;
-    settings = {
-      root = "/run/secrets/root-ca/public-cert";
-      crt = "/run/secrets/intermediate-ca/public-cert";
-      key = "/run/secrets/intermediate-ca/private-key";
-      dnsNames = [
-        "localhost"
-      ];
-      logger = {
-        format = "text";
-      };
-      db = {
-        type = "badgerv2";
-        dataSource = "/var/lib/step-ca/.step/db";
-      };
-      authority = {
-        provisioners = [
-          {
-            type = "ACME";
-            name = "acme";
-          }
-        ];
-      };
-      tls = {
-        cipherSuites = [
-          "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256"
-          "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
-        ];
-        minVersion = 1.2;
-        maxVersion = 1.3;
-      };
-    };
-  };
-
-  # trust root cert on this machine
-  security.pki.certificates = [
-    (builtins.readFile ../root-ca.crt)
-  ];
-
-  # acme client
-  security.acme = {
-    acceptTerms = true;
-    defaults = {
-      email = "admin@localhost:8443";
-      server = "https://localhost:8443/acme/acme/directory";
-    };
-  };
-
   fileSystems."/srv/www" = {
     device = "/home/${config-values.username}/data/www";
     options = [ "bind" ];
@@ -249,6 +175,11 @@ in
     enable = true;
     shareParentDir = "/home/${config-values.username}/data";
     sambaServerName = "samba-${config-values.nixos.hostname}";
+  };
+
+  myModules.tls-in-lan = {
+    enable = true;
+    rootCaCrtPath = ../root-ca.crt;
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
