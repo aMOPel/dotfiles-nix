@@ -22,10 +22,6 @@ in
     sops-nix.nixosModules.sops
   ];
 
-  sops.defaultSopsFile = ../../../../secrets/example.yaml;
-  sops.secrets."example_key" = {
-    owner = config-values.username;
-  };
   sops.age.sshKeyPaths = [ ];
   sops.gnupg.sshKeyPaths = [ ];
   sops.age.generateKey = false;
@@ -164,6 +160,24 @@ in
     };
   };
 
+  # for acme server
+  sops.secrets."root-ca/public-cert" = {
+    sopsFile = ../../../../secrets/step-ca.yaml;
+    owner = "step-ca";
+  };
+  sops.secrets."intermediate-ca/public-cert" = {
+    sopsFile = ../../../../secrets/step-ca.yaml;
+    owner = "step-ca";
+  };
+  sops.secrets."intermediate-ca/private-password" = {
+    sopsFile = ../../../../secrets/step-ca.yaml;
+    owner = "step-ca";
+  };
+  sops.secrets."intermediate-ca/private-key" = {
+    sopsFile = ../../../../secrets/step-ca.yaml;
+    owner = "step-ca";
+  };
+
   # acme server
   services.step-ca = {
     enable = true;
@@ -172,12 +186,12 @@ in
     address = "127.0.0.1";
     port = 8443;
     # these files only exists after running `/nixos/scripts/new-install/6-init-step-ca.sh`
-    intermediatePasswordFile = "/var/lib/step-ca/smallstep-password";
+    intermediatePasswordFile = "/run/secrets/intermediate-ca/private-password";
     package = pkgs.step-ca;
     settings = {
-      root = "/var/lib/step-ca/.step/certs/root_ca.crt";
-      crt = "/var/lib/step-ca/.step/certs/intermediate_ca.crt";
-      key = "/var/lib/step-ca/.step/secrets/intermediate_ca_key";
+      root = "/run/secrets/root-ca/public-cert";
+      crt = "/run/secrets/intermediate-ca/public-cert";
+      key = "/run/secrets/intermediate-ca/private-key";
       dnsNames = [
         "localhost"
       ];
@@ -209,7 +223,7 @@ in
 
   # trust root cert on this machine
   security.pki.certificates = [
-    (builtins.readFile ./root_ca.crt)
+    (builtins.readFile ./root-ca.crt)
   ];
 
   # acme client
