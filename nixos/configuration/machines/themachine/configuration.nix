@@ -37,6 +37,11 @@ in
 
   boot.loader.timeout = 15;
 
+  # trust root cert on this machine
+  security.pki.certificates = [
+    (builtins.readFile ../root-ca.crt)
+  ];
+
   services.gnome.gnome-keyring.enable = lib.mkForce false;
   networking.hostName = config-values.nixos.hostname;
 

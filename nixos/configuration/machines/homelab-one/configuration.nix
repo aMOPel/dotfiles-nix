@@ -223,7 +223,7 @@ in
 
   # trust root cert on this machine
   security.pki.certificates = [
-    (builtins.readFile ./root-ca.crt)
+    (builtins.readFile ../root-ca.crt)
   ];
 
   # acme client
