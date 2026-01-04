@@ -188,7 +188,28 @@
         "nixpkgs": "nixpkgs_2",
         "nixpkgs_for_nvim": "nixpkgs_for_nvim",
         "nixpkgs_latest": "nixpkgs_latest",
+        "sops-nix": "sops-nix",
         "treefmt-nix": "treefmt-nix"
+      }
+    },
+    "sops-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1767499857,
+        "narHash": "sha256-0zUU/PW09d6oBaR8x8vMHcAhg1MOvo3CwoXgHijzzNE=",
+        "owner": "Mic92",
+        "repo": "sops-nix",
+        "rev": "ecc41505948ec2ab0325f14c9862a4329c2b4190",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "sops-nix",
+        "type": "github"
       }
     },
     "systems": {

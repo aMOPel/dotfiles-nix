@@ -47,6 +47,11 @@
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
+  inputs.sops-nix = {
+    url = "github:Mic92/sops-nix";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   outputs =
     {
       self,
@@ -56,6 +61,7 @@
       treefmt-nix,
       git-hooks-nix,
       gitignore-nix,
+      sops-nix,
       ...
     }@inputs:
     let
@@ -118,6 +124,7 @@
               gitignore-nix
               git-hooks-nix
               global-treefmt
+              sops-nix
               ;
           }
         )
@@ -163,6 +170,7 @@
             packages = with pkgs; [
               gnumake
               git-crypt
+              sops
             ];
             shellHook = ''
               ${pre-commit.pre-commit-check.shellHook}

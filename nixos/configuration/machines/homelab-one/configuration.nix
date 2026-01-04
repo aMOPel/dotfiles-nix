@@ -5,6 +5,7 @@
   lib,
   home-manager,
   hmlib,
+  sops-nix,
   ...
 }:
 let
@@ -18,7 +19,17 @@ in
     ./hardware-configuration.nix
     yubikey-disc-encryption
     ./samba.nix
+    sops-nix.nixosModules.sops
   ];
+
+  sops.defaultSopsFile = ../../../../secrets/example.yaml;
+  sops.secrets."example_key" = {
+    owner = config-values.username;
+  };
+  sops.age.sshKeyPaths = [ ];
+  sops.gnupg.sshKeyPaths = [ ];
+  sops.age.generateKey = false;
+  sops.age.keyFile = "/root/.config/sops/age/keys.txt";
 
   networking.hostName = config-values.nixos.hostname;
 

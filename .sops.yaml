@@ -1,0 +1,11 @@
+keys:
+  - &private-gpg 5197EF54A2A69ED9EEB561B4E280D5CC68B2722C
+  - &homelab-one-age age1cg8jzyqn5457p96s096h7xgp06vd74my5dzng7kjpyke92t4dc5qzacmff
+creation_rules:
+  - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
+    shamir_threshold: 1
+    key_groups:
+      - pgp:
+          - *private-gpg
+        age:
+          - *homelab-one-age

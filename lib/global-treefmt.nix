@@ -53,6 +53,9 @@ let
         "*.cts"
         "*.tsx"
       ];
+      deno.excludes = [
+        "secrets/*"
+      ];
       clang-format.includes = [
         "*.c"
         "*.cc"
