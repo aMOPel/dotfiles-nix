@@ -103,6 +103,7 @@ in
 
     # basics
     indent-blankline-nvim
+    # replace with https://github.com/folke/snacks.nvim/blob/main/docs/indent.md
     vim-matchup
     vim-asterisk
     vim-cutlass
@@ -112,12 +113,15 @@ in
     vim-dotenv
 
     # snippets
+    # replace with https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-snippets.md
     vim-vsnip
     vim-vsnip-integ
     friendly-snippets
     # vscode-angular-snippets
 
     # cmp
+    # replace with https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-completion.md
+    # https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-cmdline.md
     nvim-cmp
     lspkind-nvim
     cmp-vsnip
@@ -134,11 +138,14 @@ in
     cmp-vimtex
 
     # visuals
+    # look at https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-icons.md
     nvim-web-devicons
+    # look at https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-statusline.md
     lualine-nvim
     onedark-nvim
     nvim-scrollbar
     nvim-hlslens
+    # replace with https://github.com/folke/snacks.nvim/blob/main/docs/input.md
     dressing-nvim
 
     # text manipulation
@@ -151,12 +158,18 @@ in
     vim-abolish
     camelcasemotion
 
+    # repalce telescope https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-pick.md
+    # https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-extra.md
+    # or with https://github.com/folke/snacks.nvim/blob/main/docs/picker.md
+
     # situational
+    # replace with https://github.com/folke/snacks.nvim/blob/main/docs/terminal.md
     toggleterm-nvim
     vim-grepper
     vim-fugitive
     vim-rhubarb
     yazi-nvim
+    # add https://github.com/folke/snacks.nvim/blob/main/docs/lazygit.md
     todo-comments-nvim
     # TODO:
     # undotree
@@ -164,6 +177,8 @@ in
     qf-nvim
 
     # giveitashot
+    # add https://github.com/folke/snacks.nvim/blob/main/docs/bigfile.md
+    # add https://github.com/folke/snacks.nvim/blob/main/docs/scratch.md
   ];
 
   extraConfig =
