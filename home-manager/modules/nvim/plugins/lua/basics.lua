@@ -1,22 +1,6 @@
 plugins = g.plugins
 
 table.insert(plugins, {
-  name = "indent_blankline.nvim",
-  setup = function() end,
-  config = function()
-    require("ibl").setup({
-      enabled = true,
-      scope = {
-        enabled = true,
-      },
-      exclude = {
-        filetypes = {},
-      },
-    })
-  end,
-})
-
-table.insert(plugins, {
   name = "vim-matchup",
   setup = function()
     vim.g.matchup_mappings_enabled = 0

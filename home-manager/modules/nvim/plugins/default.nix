@@ -101,9 +101,13 @@ in
       optional = true;
     }
 
+    # mono repos
+    snacks-nvim
+    mini-nvim
+
     # basics
-    indent-blankline-nvim
     # replace with https://github.com/folke/snacks.nvim/blob/main/docs/indent.md
+    # indent-blankline-nvim
     vim-matchup
     vim-asterisk
     vim-cutlass
@@ -150,7 +154,6 @@ in
 
     # text manipulation
     vim-textobj-user
-    mini-nvim
     dial-nvim
     sideways-vim
     vim-subversive
@@ -183,6 +186,7 @@ in
 
   extraConfig =
     "\n\n"
+    + builtins.readFile ./lua/snacks.lua
     + builtins.readFile ./lua/basics.lua
     + builtins.readFile ./lua/cmp.lua
     + builtins.readFile ./lua/visuals.lua
