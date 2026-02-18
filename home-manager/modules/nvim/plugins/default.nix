@@ -106,8 +106,6 @@ in
     mini-nvim
 
     # basics
-    # replace with https://github.com/folke/snacks.nvim/blob/main/docs/indent.md
-    # indent-blankline-nvim
     vim-matchup
     vim-asterisk
     vim-cutlass
@@ -116,16 +114,11 @@ in
     vim-repeat
     vim-dotenv
 
-    # snippets
-    # replace with https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-snippets.md
     vim-vsnip
     vim-vsnip-integ
     friendly-snippets
     # vscode-angular-snippets
 
-    # cmp
-    # replace with https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-completion.md
-    # https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-cmdline.md
     nvim-cmp
     lspkind-nvim
     cmp-vsnip
