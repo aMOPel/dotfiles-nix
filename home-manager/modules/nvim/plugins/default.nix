@@ -66,31 +66,6 @@ let
     };
     meta.homepage = "https://github.com/svermeulen/vim-yoink";
   };
-
-  textobj-word-column-vim = pkgs.vimUtils.buildVimPlugin {
-    pname = "textobj-word-column-vim";
-    version = "2024-06-05";
-    src = pkgs.fetchFromGitHub {
-      owner = "coderifous";
-      repo = "textobj-word-column.vim";
-      rev = "cb40e1459817a7fa23741ff6df05e4481bde5a33";
-      sha256 = "sha256-6brmwkaxlSDLm2xXHkV6CsOL+bvsWLsZwE94eaRXFb0=";
-    };
-    meta.homepage = "https://github.com/coderifous/textobj-word-column.vim";
-  };
-
-  pre-commit-nvim = pkgs.vimUtils.buildVimPlugin {
-    pname = "pre-commit-nvim";
-    version = "2024-09-01";
-    src = pkgs.fetchFromGitHub {
-      owner = "aMOPel";
-      repo = "pre-commit.nvim";
-      rev = "2e693e97a283";
-      sha256 = "sha256-yap56Y9BxwddeE6v6ZdGd0kfXu4d9ov9CDm9jh6DMVQ=";
-    };
-    meta.homepage = "https://github.com/aMOPel/pre-commit.nvim";
-  };
-
 in
 {
   plugins = with pkgs.vimPlugins; [
@@ -168,7 +143,6 @@ in
 
     # text manipulation
     vim-textobj-user
-    textobj-word-column-vim
     mini-nvim
     dial-nvim
     sideways-vim
@@ -188,7 +162,6 @@ in
     # undotree
     nvim-bqf
     qf-nvim
-    pre-commit-nvim
 
     # giveitashot
   ];
