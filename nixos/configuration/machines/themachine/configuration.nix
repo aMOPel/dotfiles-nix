@@ -42,6 +42,8 @@ in
 
   programs.ssh.knownHosts = config-values.nixos.knownHosts;
 
+  hardware.bluetooth.enable = true;
+
   users.users."${config-values.username}" = {
     isNormalUser = true;
     extraGroups = [
