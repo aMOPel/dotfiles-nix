@@ -28,39 +28,36 @@ in
     let
       hostname = "localhost";
       hostnamePort = "${hostname}:${builtins.toString cfg.stepCaPort}";
+      stepCaSecretConfig = {
+        owner = "step-ca";
+        # TODO: maybe restart more units that depend on this
+        restartUnits = [ "step-ca.service" ];
+        sopsFile = ../../../../secrets/step-ca.yaml;
+      };
+      secretsRuntimePath = "/run/secrets";
     in
     {
       # make secrets available
-      sops.secrets."root-ca/public-cert" = {
-        sopsFile = ../../../../secrets/step-ca.yaml;
-        owner = "step-ca";
-      };
-      sops.secrets."intermediate-ca/public-cert" = {
-        sopsFile = ../../../../secrets/step-ca.yaml;
-        owner = "step-ca";
-      };
-      sops.secrets."intermediate-ca/private-password" = {
-        sopsFile = ../../../../secrets/step-ca.yaml;
-        owner = "step-ca";
-      };
-      sops.secrets."intermediate-ca/private-key" = {
-        sopsFile = ../../../../secrets/step-ca.yaml;
-        owner = "step-ca";
-      };
+      sops.secrets."root-ca/public-cert" = stepCaSecretConfig;
+      sops.secrets."intermediate-ca/public-cert" = stepCaSecretConfig;
+      sops.secrets."intermediate-ca/private-password" = stepCaSecretConfig;
+      sops.secrets."intermediate-ca/private-key" = stepCaSecretConfig;
 
+      # TODO: account not found bug, but it worked before refactor
       services.step-ca = {
         enable = true;
         openFirewall = false;
         # overrides config
         address = "127.0.0.1";
         port = cfg.stepCaPort;
-        intermediatePasswordFile = "/run/secrets/intermediate-ca/private-password";
+        intermediatePasswordFile = "${secretsRuntimePath}/intermediate-ca/private-password";
         package = pkgs.step-ca;
         settings = {
-          root = "/run/secrets/root-ca/public-cert";
-          crt = "/run/secrets/intermediate-ca/public-cert";
-          key = "/run/secrets/intermediate-ca/private-key";
+          root = "${secretsRuntimePath}/root-ca/public-cert";
+          crt = "${secretsRuntimePath}/intermediate-ca/public-cert";
+          key = "${secretsRuntimePath}/intermediate-ca/private-key";
           dnsNames = [
+            "homelab-one"
             hostname
           ];
           logger = {

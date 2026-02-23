@@ -36,7 +36,7 @@ in
       "docker"
       "libvirtd"
       "wheel"
-      "samba-group"
+      "samba-group" # can log into samba share
     ];
     openssh.authorizedKeys.keys = config-values.nixos.authorizedKeys.keys;
   };
@@ -80,10 +80,6 @@ in
   }
   // config-values.nixos.knownHosts;
 
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [
