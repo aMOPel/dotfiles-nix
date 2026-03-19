@@ -17,11 +17,8 @@ utils.addTable(g.formatter.filetype, {
       return {
         exe = "treefmt",
         args = {
-          "--stdin",
-          util.escape_path(util.get_current_buffer_file_name()),
+          "--tree-root-file=treefmt.toml",
         },
-        no_append = true,
-        stdin = true,
       }
     end,
   },
