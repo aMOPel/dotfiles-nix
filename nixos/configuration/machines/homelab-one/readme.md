@@ -129,3 +129,25 @@
   need to be updated
   - but this would make intermediate-ca rotation more complicated, since the
     offline root-ca would need to be accessed for rotation
+
+### client certificates
+
+- on android
+  1. convert PEM cert to DER cert
+  ```sh
+  nix-shell -p openssl --run "openssl x509 -in ./nixos/configuration/machines/homelab-one/certificates/root-ca.crt -outform der -out cert.der"
+  ```
+  2. copy cert to android device
+  3. install cert
+  ```
+  Settings > Security & Privacy > Encryption & Credentials >
+  Install a certificate > CA certificate > choose the file
+  ```
+- on nixos
+  ```nix
+  {
+    security.pki.certificateFiles = [
+      path-to-cert
+    ]
+  }
+  ```
