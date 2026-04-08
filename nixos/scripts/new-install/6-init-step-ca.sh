@@ -8,6 +8,8 @@
 # SOPS_FILE=./temp.yaml
 # ROTATE_INTERMEDIATE=true
 TEMP_SOPS_FILE=$SOPS_DIR/temp.yaml
+ROOT_LIFETIME_YEARS=10
+INTERMEDIATE_LIFETIME_YEARS=1
 
 ca_pre_setup() {
   rm -rI "$CA_OUTDIR"
@@ -29,8 +31,8 @@ ca_setup_root() {
   step certificate create "homelab-one Root CA" \
     "$CA_OUTDIR"/root-ca.crt "$CA_OUTDIR"/root-ca.key \
     --profile root-ca \
-    --password-file "$CA_OUTDIR"/root-password.txt
-
+    --password-file "$CA_OUTDIR"/root-password.txt \
+    --not-after "$(("24" * "365" * ROOT_LIFETIME_YEARS))"h
 }
 
 ca_setup_intermediate() {
@@ -51,6 +53,7 @@ ca_setup_intermediate() {
     --ca-key "$CA_OUTDIR"/root-ca.key \
     --password-file "$CA_OUTDIR"/intermediate-password.txt \
     --ca-password-file "$CA_OUTDIR"/root-password.txt \
+    --not-after "$(("24" * "365" * INTERMEDIATE_LIFETIME_YEARS))"h \
     --force
 }
 
