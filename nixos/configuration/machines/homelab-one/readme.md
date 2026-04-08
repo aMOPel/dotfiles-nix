@@ -9,7 +9,9 @@
 
 ## samba
 
-- default user can log into samba share
+- after new install, run `./nixos/scripts/new-install/5-init-samba.sh` on server
+  to set samba pw
+- then default user can log into samba share
 
 ## secrets
 
@@ -48,7 +50,7 @@
 - ca is generated with:
   ```sh
   nix-shell -p step-cli -p yq-go -p sops --run \
-      "SOPS_DIR=./secrets SOPS_FILE=./secrets.yaml CA_OUTDIR=./ca ./nixos/scripts/new-install/6-init-step-ca.sh"
+      "SOPS_DIR=./secrets SOPS_FILE=./step-ca.yaml CA_OUTDIR=./ca ./nixos/scripts/new-install/6-init-step-ca.sh"
   ```
   - this generates all necessary keys and certs and puts all those in a `.yaml`
     file and encrypt it with sops (all sensitive information is cleaned up
@@ -67,3 +69,8 @@
   ```
 - TODO: it would be safer to keep the root-ca offline, but we keep it encrypted
   online here
+- to rotate the intermediate-ca, use `ROTATE_INTERMEDIATE=true`
+  ```sh
+  nix-shell -p step-cli -p yq-go -p sops --run \
+      "SOPS_DIR=./secrets SOPS_FILE=./step-ca.yaml CA_OUTDIR=./ca ROTATE_INTERMEDIATE=true ./nixos/scripts/new-install/6-init-step-ca.sh"
+  ```
