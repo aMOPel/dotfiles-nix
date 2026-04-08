@@ -19,15 +19,18 @@ in
     };
     rootCaCrtPath = lib.mkOption {
       type = lib.types.path;
-      example = ''../root-ca.crt'';
+      example = ''./certificates/root-ca.crt'';
       description = "path in repo to the root-ca.crt, clients should trust this";
     };
   };
 
   config = lib.mkIf cfg.enable (
     let
-      hostname = "localhost";
-      hostnamePort = "${hostname}:${builtins.toString cfg.stepCaPort}";
+      hostname = "homelab-one";
+      localHostname = "localhost";
+      localAddress = "127.0.0.1";
+      localHostnamePort = "${localHostname}:${builtins.toString cfg.stepCaPort}";
+      localAddressPort = "${localAddress}:${builtins.toString cfg.stepCaPort}";
       stepCaSecretConfig = {
         owner = "step-ca";
         # TODO: maybe restart more units that depend on this
@@ -48,7 +51,7 @@ in
         enable = true;
         openFirewall = false;
         # overrides config
-        address = "127.0.0.1";
+        address = localAddress;
         port = cfg.stepCaPort;
         intermediatePasswordFile = "${secretsRuntimePath}/intermediate-ca/private-password";
         package = pkgs.step-ca;
@@ -56,8 +59,9 @@ in
           root = "${secretsRuntimePath}/root-ca/public-cert";
           crt = "${secretsRuntimePath}/intermediate-ca/public-cert";
           key = "${secretsRuntimePath}/intermediate-ca/private-key";
+          address = localAddressPort;
           dnsNames = [
-            "homelab-one"
+            localHostname
             hostname
           ];
           logger = {
@@ -95,8 +99,8 @@ in
       security.acme = {
         acceptTerms = true;
         defaults = {
-          email = "admin@${hostnamePort}";
-          server = "https://${hostnamePort}/acme/acme/directory";
+          email = "admin@${localHostname}";
+          server = "https://${localHostnamePort}/acme/acme/directory";
         };
       };
 
