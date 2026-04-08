@@ -26,7 +26,6 @@ in
 
   config = lib.mkIf cfg.enable (
     let
-      hostname = "homelab-one";
       localHostname = "localhost";
       localAddress = "127.0.0.1";
       localHostnamePort = "${localHostname}:${builtins.toString cfg.stepCaPort}";
@@ -46,7 +45,6 @@ in
       sops.secrets."intermediate-ca/private-password" = stepCaSecretConfig;
       sops.secrets."intermediate-ca/private-key" = stepCaSecretConfig;
 
-      # TODO: account not found bug, but it worked before refactor
       services.step-ca = {
         enable = true;
         openFirewall = false;
@@ -60,9 +58,10 @@ in
           crt = "${secretsRuntimePath}/intermediate-ca/public-cert";
           key = "${secretsRuntimePath}/intermediate-ca/private-key";
           address = localAddressPort;
+          # it seems the first name in the list decides which hostname has to be used
+          # for the acme client setup (email, and server address)
           dnsNames = [
             localHostname
-            hostname
           ];
           logger = {
             format = "text";
@@ -98,6 +97,7 @@ in
       # acme client
       security.acme = {
         acceptTerms = true;
+        # these need to hostnames and fit to the `dnsNames` used for the step-ca setup
         defaults = {
           email = "admin@${localHostname}";
           server = "https://${localHostnamePort}/acme/acme/directory";
