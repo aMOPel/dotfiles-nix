@@ -16,6 +16,12 @@ in
       example = '''';
       description = "the group of the samba user";
     };
+    allowedUsers = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      example = '''';
+      description = "space separated list, only these user names can log in";
+    };
     sambaUser = lib.mkOption {
       type = lib.types.str;
       default = "samba-user";
@@ -100,24 +106,57 @@ in
         settings = {
           # https://www.samba.org/samba/docs/current/man-html/smb.conf.5.html
           global = {
-            "server string" = "${cfg.sambaServerName}";
-            "netbios name" = "${cfg.sambaServerName}";
-            "invalid users" = [
-              "root"
-            ];
+            # for debugging
+            # "log level" = "3 auth:5 passdb:5";
+
+            "server string" = "samba-${cfg.sambaServerName}";
+            "netbios name" = builtins.substring 0 15 "${cfg.sambaServerName}"; # 15 chat limit
             "passwd program" = "/run/wrappers/bin/passwd %u";
             # use simple password based authentication
-            security = "user";
-            # only allow local network access
-            "hosts allow" = "192.168.1. 127.0.0.1";
-            "hosts deny" = "ALL";
+            "security" = "user";
+            "server role" = "standalone";
+            "ntlm auth" = "ntlmv2-only";
+
+            # harden
+            "restrict anonymous" = 2;
+            "map to guest" = "never";
+            "client min protocol" = "SMB3";
+            "client max protocol" = "SMB3";
+            "server min protocol" = "SMB3";
+            "server max protocol" = "SMB3";
+            "client signing" = "required";
+            "server signing" = "required";
+            "client smb encrypt" = "required";
+            "server smb encrypt" = "required";
+            # disable printer features
+            "load printers" = "no";
+            "disable spoolss" = "yes";
+            "printcap name" = "/dev/null";
+            # disable dns features
+            "wins support" = "no";
+            "dns proxy" = "no";
+            "multicast dns register" = "no";
+            # network
+            # TODO: get the interface name from somewhere else
+            "interfaces" = "enp1s0 127.0.0.1";
+            "bind interfaces only" = "yes";
+            # tls
+            "tls enabled" = "no"; # tls only used for ldap
           };
           "${cfg.sambaShareName}" = {
+            "printing" = "bsd";
+
+            # harden
+            "guest ok" = "no";
+            "valid users" = "${cfg.allowedUsers}";
+            # whether the share is discoverable on the network
+            "browseable" = "no";
+            # only allow local network access
+            "hosts deny" = "ALL";
+            "hosts allow" = "192.168.1. 127.0.0.1";
+
             path = "${targetMountPoint}";
             writable = "yes";
-            "guest ok" = "no";
-            # whether the share is discoverable on the network
-            "browseable" = "yes";
             "directory mask" = "${cfg.filePermissionMask}";
             "create mask" = "${cfg.filePermissionMask}";
             # after smb login, regardless of who logged in, all file actions are performed as this user

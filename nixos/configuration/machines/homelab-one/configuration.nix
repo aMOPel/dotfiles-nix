@@ -195,7 +195,8 @@ in
   myModules.samba = {
     enable = true;
     shareParentDir = "/home/${config-values.username}/data";
-    sambaServerName = "samba-${config-values.nixos.hostname}";
+    sambaServerName = "${config-values.nixos.hostname}";
+    allowedUsers = "${config-values.username}";
   };
 
   myModules.tls-in-lan = {
