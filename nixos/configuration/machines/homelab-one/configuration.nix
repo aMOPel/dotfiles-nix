@@ -52,6 +52,9 @@ in
     ];
   };
 
+  # system hardening
+  security.sudo.wheelNeedsPassword = true;
+
   networking.networkmanager.enable = true;
 
   time.timeZone = "Europe/Berlin";
@@ -83,7 +86,6 @@ in
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [
-      80
       443
     ];
   };
@@ -126,6 +128,23 @@ in
     recommendedProxySettings = true;
     recommendedTlsSettings = true;
 
+    recommendedGzipSettings = false;
+    recommendedOptimisation = true;
+    recommendedZstdSettings = true;
+    recommendedUwsgiSettings = true;
+    recommendedBrotliSettings = false;
+
+    appendHttpConfig = ''
+      # Strict Transport Security (HSTS)
+      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+      # Content Security Policy (CSP)
+      add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self';" always;
+
+      add_header Referrer-Policy "no-referrer" always;
+      add_header X-Content-Type-Options "nosniff" always;
+      add_header X-Frame-Options "DENY" always;
+    '';
+
     virtualHosts = {
       "${config-values.nixos.hostname}" = {
         root = "/srv/www/";
@@ -133,6 +152,12 @@ in
         # for acme
         enableACME = true;
         forceSSL = true;
+
+        # don't configure top level to not collide with recommended settings, which breaks config
+        extraConfig = ''
+          ssl_stapling off; # because ocsp is not supported by step-ca
+          ssl_prefer_server_ciphers on;
+        '';
 
         locations = {
           "/" = {
