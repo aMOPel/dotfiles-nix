@@ -94,8 +94,30 @@ in
     enable = true;
     settings = {
       PasswordAuthentication = false;
-      PermitRootLogin = "yes";
+      KbdInteractiveAuthentication = false;
+      PermitEmptyPasswords = false;
+      X11Forwarding = false;
+      AllowAgentForwarding = false;
+      AllowTcpForwarding = false;
+      KexAlgorithms = [ "curve25519-sha256" ];
+      Ciphers = [
+        "aes256-gcm@openssh.com"
+      ];
+      Macs = [ "hmac-sha2-512-etm@openssh.com" ];
+      AllowUsers = [
+        "root"
+        "${config-values.username}"
+      ];
+      LogLevel = "VERBOSE"; # for fail2ban
+
+      PermitRootLogin = "without-password"; # required for remote nixos-rebuild
     };
+  };
+
+  # automatically blacklist hosts that have too many failed auth attempts
+  services.fail2ban = {
+    enable = true;
+    # TODO: jail for samba
   };
 
   # services.radicale = {

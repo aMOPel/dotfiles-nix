@@ -15,7 +15,18 @@
   ```sh
   ./nixos/scripts/new-install/5-init-samba.sh
   ```
-- after that, default user can log into samba share
+- after that, log into samba share
+
+```
+WORKGROUP: WORKGROUP
+HOSTNAME: homelab-one
+SHARE: public
+USER: default user
+```
+
+```sh
+nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
+```
 
 ## secrets
 
@@ -227,4 +238,36 @@ general server test
 
 ```sh
 nix-shell -p nikto --run "nikto -host homelab-one -ssl"
+```
+
+### smb
+
+nmap scripts
+
+```sh
+nix-shell -p nmap --run "nmap --script 'smb*' -p445 homelab-one"
+```
+
+verify connection
+
+```sh
+nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
+```
+
+### ssh
+
+#### nmap
+
+common problems
+
+```sh
+nix-shell -p nmap --run "nmap --script 'ssh*' -p22 homelab-one"
+```
+
+#### ssh-audit
+
+ensure only save algorithms are used by sshd
+
+```sh
+nix-shell -p ssh-audit --run "ssh-audit homelab-one"
 ```
