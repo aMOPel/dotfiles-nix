@@ -75,8 +75,25 @@ in
               {
                 type = "ACME";
                 name = "acme";
+                claims = {
+                  minTLSCertDuration = "5m";
+                  maxTLSCertDuration = "24h";
+                  defaultTLSCertDuration = "24h";
+                  disableRenewal = false;
+                };
               }
             ];
+          };
+          policy = {
+            x509 = {
+              allow = {
+                dns = [ "homelab-one" ];
+              };
+              deny = {
+                ip = [ "0.0.0.0/0" ];
+              };
+              allowWildcardNames = true;
+            };
           };
           tls = {
             cipherSuites = [
