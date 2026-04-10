@@ -37,6 +37,34 @@ in
         sopsFile = ../../../../secrets/step-ca.yaml;
       };
       secretsRuntimePath = "/run/secrets";
+      hardenedSystemdConfig = {
+        AmbientCapabilities = "";
+
+        ProtectSystem = "strict";
+        ProtectHome = true;
+        ProtectHostname = true;
+        ProtectProc = "noaccess";
+        ProcSubset = "pid";
+        ProtectClock = true;
+        ProtectKernelLogs = true;
+        ProtectKernelModules = true;
+        ProtectControlGroups = true;
+        ProtectKernelTunables = true;
+
+        NoNewPrivileges = true;
+        DynamicUser = true;
+
+        PrivateTmp = true;
+        PrivateDevices = true;
+        PrivateUsers = true;
+        PrivateMounts = true;
+
+        MemoryDenyWriteExecute = true;
+        LockPersonality = true;
+
+        RestrictNamespaces = true;
+      };
+
     in
     {
       # make secrets available
@@ -105,6 +133,8 @@ in
           };
         };
       };
+
+      systemd.services.step-ca.serviceConfig = hardenedSystemdConfig;
 
       # trust root cert on this machine
       security.pki.certificateFiles = [
