@@ -38,6 +38,7 @@ in
     ./samba.nix
     ./tls-in-lan.nix
     ./dns.nix
+    ./ssh.nix
     sops-nix.nixosModules.sops
   ];
 
@@ -106,30 +107,6 @@ in
     allowedTCPPorts = [
       443 # HTTPS
     ];
-  };
-
-  services.openssh = {
-    enable = true;
-    settings = {
-      PasswordAuthentication = false;
-      KbdInteractiveAuthentication = false;
-      PermitEmptyPasswords = false;
-      X11Forwarding = false;
-      AllowAgentForwarding = false;
-      AllowTcpForwarding = false;
-      KexAlgorithms = [ "curve25519-sha256" ];
-      Ciphers = [
-        "aes256-gcm@openssh.com"
-      ];
-      Macs = [ "hmac-sha2-512-etm@openssh.com" ];
-      AllowUsers = [
-        "root"
-        "${config-values.username}"
-      ];
-      LogLevel = "VERBOSE"; # for fail2ban
-
-      PermitRootLogin = "without-password"; # required for remote nixos-rebuild
-    };
   };
 
   # automatically blacklist hosts that have too many failed auth attempts
@@ -269,6 +246,14 @@ in
 
   myModules.dns = {
     enable = true;
+  };
+
+  myModules.ssh = {
+    enable = true;
+    allowUsers = [
+      "root"
+      "${config-values.username}"
+    ];
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
