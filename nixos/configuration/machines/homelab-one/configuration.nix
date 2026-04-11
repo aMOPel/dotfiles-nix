@@ -102,8 +102,12 @@ in
 
   networking.firewall = {
     enable = true;
+    allowedUDPPorts = [
+      53 # DNS
+    ];
     allowedTCPPorts = [
-      443
+      443 # HTTPS
+      53 # DNS
     ];
   };
 
@@ -128,6 +132,17 @@ in
       LogLevel = "VERBOSE"; # for fail2ban
 
       PermitRootLogin = "without-password"; # required for remote nixos-rebuild
+    };
+  };
+
+  services.dnsmasq = {
+    enable = true;
+    settings = {
+      server = [
+        "192.168.1.1" # redirect to router for unknown routes
+      ];
+      address = "/homelab-one/192.168.1.196"; # route all subdomains to same ip
+      cache-size = 1000;
     };
   };
 
@@ -193,6 +208,24 @@ in
     '';
 
     virtualHosts = {
+      "other.${config-values.nixos.hostname}" = {
+        root = "/srv/www/";
+
+        # for acme
+        enableACME = true;
+        forceSSL = true;
+
+        # don't configure top level to not collide with recommended settings, which breaks config
+        extraConfig = hardenedServerExtraConfig;
+
+        locations = {
+          "/" = {
+            extraConfig = ''
+              index index.html;
+            '';
+          };
+        };
+      };
       "${config-values.nixos.hostname}" = {
         root = "/srv/www/";
 

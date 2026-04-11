@@ -143,14 +143,26 @@ in
       ];
 
       # acme client
-      security.acme = {
-        acceptTerms = true;
-        # these need to hostnames and fit to the `dnsNames` used for the step-ca setup
-        defaults = {
-          email = "admin@${localHostname}";
-          server = "https://${localHostnamePort}/acme/acme/directory";
+      security.acme =
+        let
+          webroot = "/var/lib/acme/acme-challenge/";
+        in
+        {
+          acceptTerms = true;
+          # these need to hostnames and fit to the `dnsNames` used for the step-ca setup
+          defaults = {
+            email = "admin@${localHostname}";
+            server = "https://${localHostnamePort}/acme/acme/directory";
+          };
+          certs = {
+            "${localHostname}" = {
+              inherit webroot;
+            };
+            "other.${localHostname}" = {
+              inherit webroot;
+            };
+          };
         };
-      };
 
     }
 

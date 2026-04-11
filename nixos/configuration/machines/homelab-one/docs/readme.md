@@ -165,3 +165,15 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
     ]
   }
   ```
+
+## subdomains and dns
+
+- to gain service domain isolation and its security benefits, we use nginx to
+  reverse proxy subdomains per service (e.g. resolve "radicale.homelab-one" to
+  same ip address as "homelab-one")
+- to do that name resolution dnsmasq is used
+
+### after new setup
+
+- register homelab lan ip address as static dns in the lan router, so other
+  devices in the lan can resolve the subdomains
