@@ -115,12 +115,13 @@ in
           policy = {
             x509 = {
               allow = {
-                dns = [ "homelab-one" ];
+                dns = [ "localhost" ];
+                ip = [ "127.0.0.1" ];
               };
               deny = {
                 ip = [ "0.0.0.0/0" ];
               };
-              allowWildcardNames = true;
+              allowWildcardNames = false;
             };
           };
           tls = {
