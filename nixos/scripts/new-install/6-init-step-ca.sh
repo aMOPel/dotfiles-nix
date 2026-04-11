@@ -35,6 +35,11 @@ ca_setup_root() {
     --not-after "$(("24" * "365" * ROOT_LIFETIME_YEARS))"h
 }
 
+ca_generate_der_format() {
+  # also generate DER format for android
+  openssl x509 -in "$CA_OUTDIR"/root-ca.crt -outform der -out "$CA_OUTDIR"/root-ca.der
+}
+
 ca_setup_intermediate() {
   # intermediate-ca password
   step crypto rand --format upper 32 >"$CA_OUTDIR"/intermediate-password.txt
@@ -91,6 +96,8 @@ ca_cleanup_root() {
 ca_cleanup_intermediate() {
   rm "$CA_OUTDIR"/intermediate-ca.key
   rm "$CA_OUTDIR"/intermediate-password.txt
+  rm "$CA_OUTDIR"/intermediate.pub
+  rm "$CA_OUTDIR"/intermediate-ca.crt
 }
 
 ca_pre_setup
@@ -100,6 +107,7 @@ if [[ -v ROTATE_INTERMEDIATE && $ROTATE_INTERMEDIATE ]]; then
 else
   ca_setup_root
 fi
+ca_generate_der_format
 ca_setup_intermediate
 
 sops_pre_setup

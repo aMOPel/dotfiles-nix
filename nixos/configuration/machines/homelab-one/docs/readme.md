@@ -108,8 +108,11 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
 
 - ca is generated with:
   ```sh
-  nix-shell -p step-cli -p yq-go -p sops --run \
-      "SOPS_DIR=./secrets SOPS_FILE=./step-ca.yaml CA_OUTDIR=./ca ./nixos/scripts/new-install/6-init-step-ca.sh"
+  nix-shell -p step-cli -p yq-go -p sops -p openssl --run \
+      "SOPS_DIR=./secrets \
+      SOPS_FILE=./step-ca.yaml \
+      CA_OUTDIR=./nixos/configuration/machines/homelab-one/certificates \
+      ./nixos/scripts/new-install/6-init-step-ca.sh"
   ```
   - this generates all necessary keys and certs and puts all those in a `.yaml`
     file and encrypt it with sops (all sensitive information is cleaned up
@@ -123,8 +126,12 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
 - to rotate both root and intermediate-ca, do same as initial generation
 - to rotate just the intermediate-ca, use `ROTATE_INTERMEDIATE=true`
   ```sh
-  nix-shell -p step-cli -p yq-go -p sops --run \
-      "SOPS_DIR=./secrets SOPS_FILE=./step-ca.yaml CA_OUTDIR=./ca ROTATE_INTERMEDIATE=true ./nixos/scripts/new-install/6-init-step-ca.sh"
+  nix-shell -p step-cli -p yq-go -p sops -p openssl --run \
+      "SOPS_DIR=./secrets \
+      SOPS_FILE=./step-ca.yaml \
+      CA_OUTDIR=./nixos/configuration/machines/homelab-one/certificates \
+      ROTATE_INTERMEDIATE=true \
+      ./nixos/scripts/new-install/6-init-step-ca.sh"
   ```
 
 ### threat model
@@ -144,12 +151,8 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
 ### client certificates
 
 - on android
-  1. convert PEM cert to DER cert
-  ```sh
-  nix-shell -p openssl --run "openssl x509 -in ./nixos/configuration/machines/homelab-one/certificates/root-ca.crt -outform der -out cert.der"
-  ```
-  2. copy cert to android device
-  3. install cert
+  1. copy DER cert to android device
+  2. install cert
   ```
   Settings > Security & Privacy > Encryption & Credentials >
   Install a certificate > CA certificate > choose the file
@@ -158,7 +161,7 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
   ```nix
   {
     security.pki.certificateFiles = [
-      path-to-cert
+      path-to/root-ca.crt
     ]
   }
   ```
