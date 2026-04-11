@@ -13,23 +13,6 @@ let
   yubikey-disc-encryption = import ../../common/yubikey-disc-encryption.nix {
     device = config-values.nixos.luksDiskPath;
   };
-
-  hardenedServerExtraConfig = ''
-    ssl_stapling off; # because ocsp is not supported by step-ca
-    ssl_prefer_server_ciphers on;
-    proxy_cookie_path / "/; Secure; HttpOnly; SameSite=Strict";
-    server_tokens off; # don't leak server information
-
-    # dos protection
-    client_max_body_size 10M;
-    client_body_timeout 10s;
-    client_header_timeout 10s;
-    limit_req zone=global burst=20 nodelay;
-
-    # block external access
-    allow 192.168.1.0/24;
-    deny all;
-  '';
 in
 {
   imports = [
@@ -39,6 +22,7 @@ in
     ./tls-in-lan.nix
     ./dns.nix
     ./ssh.nix
+    ./nginx.nix
     sops-nix.nixosModules.sops
   ];
 
@@ -104,9 +88,6 @@ in
 
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [
-      443 # HTTPS
-    ];
   };
 
   # automatically blacklist hosts that have too many failed auth attempts
@@ -138,89 +119,35 @@ in
   #   };
   # };
 
-  services.nginx = {
-    enable = true;
-
-    # for acme
-    recommendedProxySettings = true;
-    recommendedTlsSettings = true;
-
-    recommendedGzipSettings = false;
-    recommendedOptimisation = true;
-    recommendedZstdSettings = true;
-    recommendedUwsgiSettings = true;
-    recommendedBrotliSettings = false;
-
-    appendHttpConfig = ''
-      # Strict Transport Security (HSTS)
-      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains;" always;
-      # Content Security Policy (CSP)
-      add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" always;
-
-      add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-      add_header X-Content-Type-Options "nosniff" always;
-      add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
-      # CORS
-      add_header Access-Control-Allow-Origin "https://homelab-one" always;
-      add_header Cross-Origin-Opener-Policy "same-origin" always;
-      add_header Cross-Origin-Resource-Policy "same-site" always;
-      add_header Cross-Origin-Embedder-Policy "unsafe-none" always;
-
-      # dos protection
-      limit_req_zone $binary_remote_addr zone=global:10m rate=10r/s;
-    '';
-
-    virtualHosts = {
-      "other.${config-values.nixos.hostname}" = {
-        root = "/srv/www/";
-
-        # for acme
-        enableACME = true;
-        forceSSL = true;
-
-        # don't configure top level to not collide with recommended settings, which breaks config
-        extraConfig = hardenedServerExtraConfig;
-
-        locations = {
-          "/" = {
-            extraConfig = ''
-              index index.html;
-            '';
-          };
-        };
-      };
-      "${config-values.nixos.hostname}" = {
-        root = "/srv/www/";
-
-        # for acme
-        enableACME = true;
-        forceSSL = true;
-
-        # don't configure top level to not collide with recommended settings, which breaks config
-        extraConfig = hardenedServerExtraConfig;
-
-        locations = {
-          "/" = {
-            extraConfig = ''
-              index index.html;
-            '';
-          };
-          # "/radicale/" = {
-          #   extraConfig = ''
-          #     proxy_pass        http://127.0.0.1:5232;
-          #     proxy_set_header  X-Script-Name /radicale;
-          #     proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-          #     proxy_set_header  X-Forwarded-Host $host;
-          #     proxy_set_header  X-Forwarded-Port $server_port;
-          #     proxy_set_header  X-Forwarded-Proto $scheme;
-          #     proxy_set_header  Host $host;
-          #     proxy_pass_header Authorization;
-          #   '';
-          # };
-        };
-      };
-    };
-  };
+  # services.nginx = {
+  #   virtualHosts = {
+  #     "radicale.${config-values.nixos.hostname}" = {
+  #       root = "/srv/www/";
+  #
+  #       # for acme
+  #       enableACME = true;
+  #       forceSSL = true;
+  #
+  #       # don't configure top level to not collide with recommended settings, which breaks config
+  #       extraConfig = hardenedServerExtraConfig;
+  #
+  #       locations = {
+  #         "/" = {
+  #           extraConfig = ''
+  #             proxy_pass        http://127.0.0.1:5232;
+  #             proxy_set_header  X-Script-Name /;
+  #             proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+  #             proxy_set_header  X-Forwarded-Host $host;
+  #             proxy_set_header  X-Forwarded-Port $server_port;
+  #             proxy_set_header  X-Forwarded-Proto $scheme;
+  #             proxy_set_header  Host $host;
+  #             proxy_pass_header Authorization;
+  #           '';
+  #         };
+  #       };
+  #     };
+  #   };
+  # };
 
   fileSystems."/srv/www" = {
     device = "/home/${config-values.username}/data/www";
@@ -254,6 +181,11 @@ in
       "root"
       "${config-values.username}"
     ];
+  };
+
+  myModules.nginx = {
+    enable = true;
+    defaultDomain = "${config-values.nixos.hostname}";
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
