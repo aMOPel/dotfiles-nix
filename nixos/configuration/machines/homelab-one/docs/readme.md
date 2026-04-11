@@ -28,6 +28,18 @@ USER: default user
 nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
 ```
 
+## radicale
+
+### after new setup
+
+- on server, set radicale password for default user
+  ```sh
+  ./nixos/scripts/new-install/8-init-radicale.sh
+  ```
+- after that, log into
+
+  <https://radicale.homelab-one/.web/>
+
 ## secrets
 
 - managed with [sops-nix](https://github.com/Mic92/sops-nix)

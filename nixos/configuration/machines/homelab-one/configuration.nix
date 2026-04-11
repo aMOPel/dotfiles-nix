@@ -84,6 +84,7 @@ in
     neovim
     cntr
     gnumake
+    apacheHttpd
   ];
 
   environment.variables = {
@@ -108,58 +109,56 @@ in
     # TODO: jail for samba
   };
 
-  # services.radicale = {
-  #   enable = true;
-  #   settings = {
-  #     server = {
-  #       hosts = [
-  #         "127.0.0.1:5232"
-  #       ];
-  #       max_connections = 20;
-  #       max_content_length = 100000000; # 100 Megabyte
-  #       timeout = 30; # 30 seconds
-  #     };
-  #     auth = {
-  #       type = "none";
-  #       # htpasswd_filename = "/etc/radicale/users";
-  #       # htpasswd_encryption = "bcrypt";
-  #       # delay = 1; # Average delay after failed login attempts in seconds
-  #     };
-  #     storage = {
-  #       filesystem_folder = "/srv/radicale/collections";
-  #     };
-  #   };
-  # };
+  services.radicale = {
+    enable = true;
+    settings = {
+      server = {
+        hosts = [
+          "127.0.0.1:5232"
+        ];
+        max_connections = 20;
+        max_content_length = 100000000; # 100 Megabyte
+        timeout = 30; # 30 seconds
+      };
+      auth = {
+        # type = "none";
+        type = "htpasswd";
+        htpasswd_filename = "/var/lib/radicale/users";
+        htpasswd_encryption = "autodetect";
+        delay = 1; # Average delay after failed login attempts in seconds
+      };
+      storage = {
+        filesystem_folder = "/srv/radicale/collections";
+      };
+    };
+  };
 
-  # services.nginx = {
-  #   virtualHosts = {
-  #     "radicale.${config-values.nixos.hostname}" = {
-  #       root = "/srv/www/";
-  #
-  #       # for acme
-  #       enableACME = true;
-  #       forceSSL = true;
-  #
-  #       # don't configure top level to not collide with recommended settings, which breaks config
-  #       extraConfig = hardenedServerExtraConfig;
-  #
-  #       locations = {
-  #         "/" = {
-  #           extraConfig = ''
-  #             proxy_pass        http://127.0.0.1:5232;
-  #             proxy_set_header  X-Script-Name /;
-  #             proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-  #             proxy_set_header  X-Forwarded-Host $host;
-  #             proxy_set_header  X-Forwarded-Port $server_port;
-  #             proxy_set_header  X-Forwarded-Proto $scheme;
-  #             proxy_set_header  Host $host;
-  #             proxy_pass_header Authorization;
-  #           '';
-  #         };
-  #       };
-  #     };
-  #   };
-  # };
+  services.nginx = {
+    virtualHosts = {
+      "radicale.${config-values.nixos.hostname}" = {
+        # for acme
+        enableACME = true;
+        forceSSL = true;
+
+        # don't configure top level to not collide with recommended settings, which breaks config
+        extraConfig = hardenedServerExtraConfig;
+
+        locations = {
+          "/" = {
+            extraConfig = ''
+              proxy_pass        http://127.0.0.1:5232;
+              proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header  X-Forwarded-Host $host;
+              proxy_set_header  X-Forwarded-Port $server_port;
+              proxy_set_header  X-Forwarded-Proto $scheme;
+              proxy_set_header  Host $host;
+              proxy_pass_header Authorization;
+            '';
+          };
+        };
+      };
+    };
+  };
 
   fileSystems."/srv/www" = {
     device = "/home/${config-values.username}/data/www";
