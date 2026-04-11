@@ -172,6 +172,10 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
   reverse proxy subdomains per service (e.g. resolve "radicale.homelab-one" to
   same ip address as "homelab-one")
 - to do that name resolution dnsmasq is used
+- test dns setup with
+  ```sh
+  nix-shell -p dig --run "dig @<dns ip> <domain to resolve>"
+  ```
 
 ### after new setup
 

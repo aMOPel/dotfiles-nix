@@ -37,6 +37,7 @@ in
     yubikey-disc-encryption
     ./samba.nix
     ./tls-in-lan.nix
+    ./dns.nix
     sops-nix.nixosModules.sops
   ];
 
@@ -102,12 +103,8 @@ in
 
   networking.firewall = {
     enable = true;
-    allowedUDPPorts = [
-      53 # DNS
-    ];
     allowedTCPPorts = [
       443 # HTTPS
-      53 # DNS
     ];
   };
 
@@ -132,17 +129,6 @@ in
       LogLevel = "VERBOSE"; # for fail2ban
 
       PermitRootLogin = "without-password"; # required for remote nixos-rebuild
-    };
-  };
-
-  services.dnsmasq = {
-    enable = true;
-    settings = {
-      server = [
-        "192.168.1.1" # redirect to router for unknown routes
-      ];
-      address = "/homelab-one/192.168.1.196"; # route all subdomains to same ip
-      cache-size = 1000;
     };
   };
 
@@ -279,6 +265,10 @@ in
   myModules.tls-in-lan = {
     enable = true;
     rootCaCrtPath = ./certificates/root-ca.crt;
+  };
+
+  myModules.dns = {
+    enable = true;
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
