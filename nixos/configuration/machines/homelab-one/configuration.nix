@@ -8,6 +8,23 @@ let
   yubikey-disc-encryption = import ../../common/yubikey-disc-encryption.nix {
     device = config-values.nixos.luksDiskPath;
   };
+
+  hardenedServerExtraConfig = ''
+    ssl_stapling off; # because ocsp is not supported by step-ca
+    ssl_prefer_server_ciphers on;
+    proxy_cookie_path / "/; Secure; HttpOnly; SameSite=Strict";
+    server_tokens off; # don't leak server information
+
+    # dos protection
+    client_max_body_size 10M;
+    client_body_timeout 10s;
+    client_header_timeout 10s;
+    limit_req zone=global burst=20 nodelay;
+
+    # block external access
+    allow 192.168.1.0/24;
+    deny all;
+  '';
 in
 {
   imports = [
@@ -164,7 +181,6 @@ in
   myModules.tls-in-lan = {
     enable = true;
     rootCaCrtPath = ./certificates/root-ca.crt;
-    # subdomains = [ "radicale" ];
   };
 
   myModules.dns = {

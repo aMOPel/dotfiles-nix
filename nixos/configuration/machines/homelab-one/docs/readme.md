@@ -179,8 +179,11 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
 
 ### after new setup
 
-- register homelab lan ip address as static dns in the lan router, so other
-  devices in the lan can resolve the subdomains
+- register homelab lan ip address as
+  `connectivity > local network > "static DNS 1"` in the lan router, so other
+  devices in the lan can resolve the subdomains (**warning**: this means, all
+  intra-lan dns traffic will be routed from the router to the selfhosted dnsmasq
+  instance, only be routed back again)
 
 ## disk formatting/partitions/filesystem
 

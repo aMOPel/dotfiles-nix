@@ -22,12 +22,6 @@ in
       example = ''./certificates/root-ca.crt'';
       description = "path in repo to the root-ca.crt, clients should trust this";
     };
-    subdomains = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
-      example = ''["first", "second"]'';
-      description = "each is registered with acme so that certs per subdomain are created";
-    };
   };
 
   config = lib.mkIf cfg.enable (
@@ -154,29 +148,14 @@ in
       ];
 
       # acme client
-      security.acme =
-        let
-          webroot = "/var/lib/acme/acme-challenge/";
-          subDomainCerts = builtins.foldl' (next: result: result // next) { } (
-            builtins.map (subdomain: {
-              "${subdomain}.${localHostname}" = { inherit webroot; };
-            }) cfg.subdomains
-          );
-        in
-        {
-          acceptTerms = true;
-          # these need to hostnames and fit to the `dnsNames` used for the step-ca setup
-          defaults = {
-            email = "admin@${localHostname}";
-            server = "https://${localHostnamePort}/acme/acme/directory";
-          };
-          certs = {
-            "${localHostname}" = {
-              inherit webroot;
-            };
-          }
-          // subDomainCerts;
+      security.acme = {
+        acceptTerms = true;
+        # these need to hostnames and fit to the `dnsNames` used for the step-ca setup
+        defaults = {
+          email = "admin@${localHostname}";
+          server = "https://${localHostnamePort}/acme/acme/directory";
         };
+      };
     }
   );
 }
