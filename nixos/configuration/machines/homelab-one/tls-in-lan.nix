@@ -22,6 +22,12 @@ in
       example = ''./certificates/root-ca.crt'';
       description = "path in repo to the root-ca.crt, clients should trust this";
     };
+    subdomains = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      example = ''["first", "second"]'';
+      description = "each is registered with acme so that certs per subdomain are created";
+    };
   };
 
   config = lib.mkIf cfg.enable (
@@ -37,6 +43,7 @@ in
         sopsFile = ../../../../secrets/step-ca.yaml;
       };
       secretsRuntimePath = "/run/secrets";
+      # test with `systemd-analyze security step-ca.service`
       hardenedSystemdConfig = {
         AmbientCapabilities = "";
 
@@ -63,6 +70,10 @@ in
         LockPersonality = true;
 
         RestrictNamespaces = true;
+
+        # TODO: isolate service networks
+        RestrictAddressFamilies = "AF_INET"; # only ipv4
+        # PrivateNetwork = true; # only loopback
       };
 
     in
@@ -146,6 +157,11 @@ in
       security.acme =
         let
           webroot = "/var/lib/acme/acme-challenge/";
+          subDomainCerts = builtins.foldl' (next: result: result // next) { } (
+            builtins.map (subdomain: {
+              "${subdomain}.${localHostname}" = { inherit webroot; };
+            }) cfg.subdomains
+          );
         in
         {
           acceptTerms = true;
@@ -158,13 +174,9 @@ in
             "${localHostname}" = {
               inherit webroot;
             };
-            "other.${localHostname}" = {
-              inherit webroot;
-            };
-          };
+          }
+          // subDomainCerts;
         };
-
     }
-
   );
 }

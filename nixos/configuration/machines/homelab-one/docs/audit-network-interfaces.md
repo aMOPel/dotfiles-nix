@@ -5,6 +5,7 @@ auditing the exposed network interfaces:
 - https (tls)
 - smb
 - ssh
+- dns
 
 ## general
 
@@ -118,3 +119,7 @@ ensure only save algorithms are used by sshd
 ```sh
 nix-shell -p ssh-audit --run "ssh-audit homelab-one"
 ```
+
+## dns
+
+TODO:

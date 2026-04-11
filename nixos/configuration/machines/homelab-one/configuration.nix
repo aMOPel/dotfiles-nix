@@ -1,10 +1,5 @@
 {
-  pkgs_latest,
-  pkgs_for_nvim,
   pkgs,
-  lib,
-  home-manager,
-  hmlib,
   sops-nix,
   ...
 }:
@@ -72,7 +67,6 @@ in
     neovim
     cntr
     gnumake
-    apacheHttpd
   ];
 
   environment.variables = {
@@ -92,7 +86,8 @@ in
 
   # automatically blacklist hosts that have too many failed auth attempts
   services.fail2ban = {
-    enable = true;
+    # TODO: enable after auditing
+    enable = false;
     # TODO: jail for samba
   };
 
@@ -169,6 +164,7 @@ in
   myModules.tls-in-lan = {
     enable = true;
     rootCaCrtPath = ./certificates/root-ca.crt;
+    # subdomains = [ "radicale" ];
   };
 
   myModules.dns = {

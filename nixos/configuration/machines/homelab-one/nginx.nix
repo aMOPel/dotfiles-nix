@@ -37,7 +37,6 @@ in
       '';
     in
     {
-
       networking.firewall = {
         enable = true;
         allowedTCPPorts = [

@@ -151,7 +151,7 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
 ### client certificates
 
 - on android
-  1. copy DER cert to android device
+  1. copy `.der` cert to android device
   2. install cert
   ```
   Settings > Security & Privacy > Encryption & Credentials >
@@ -181,3 +181,15 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
 
 - register homelab lan ip address as static dns in the lan router, so other
   devices in the lan can resolve the subdomains
+
+## disk formatting/partitions/filesystem
+
+TODO:
+
+## service isolation
+
+TODO:
+
+### network isolation
+
+TODO:
