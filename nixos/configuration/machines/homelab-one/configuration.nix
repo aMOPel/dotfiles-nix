@@ -13,6 +13,23 @@ let
   yubikey-disc-encryption = import ../../common/yubikey-disc-encryption.nix {
     device = config-values.nixos.luksDiskPath;
   };
+
+  hardenedServerExtraConfig = ''
+    ssl_stapling off; # because ocsp is not supported by step-ca
+    ssl_prefer_server_ciphers on;
+    proxy_cookie_path / "/; Secure; HttpOnly; SameSite=Strict";
+    server_tokens off; # don't leak server information
+
+    # dos protection
+    client_max_body_size 10M;
+    client_body_timeout 10s;
+    client_header_timeout 10s;
+    limit_req zone=global burst=20 nodelay;
+
+    # block external access
+    allow 192.168.1.0/24;
+    deny all;
+  '';
 in
 {
   imports = [
@@ -158,13 +175,21 @@ in
 
     appendHttpConfig = ''
       # Strict Transport Security (HSTS)
-      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains;" always;
       # Content Security Policy (CSP)
-      add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self';" always;
+      add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" always;
 
-      add_header Referrer-Policy "no-referrer" always;
+      add_header Referrer-Policy "strict-origin-when-cross-origin" always;
       add_header X-Content-Type-Options "nosniff" always;
-      add_header X-Frame-Options "DENY" always;
+      add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+      # CORS
+      add_header Access-Control-Allow-Origin "https://homelab-one" always;
+      add_header Cross-Origin-Opener-Policy "same-origin" always;
+      add_header Cross-Origin-Resource-Policy "same-site" always;
+      add_header Cross-Origin-Embedder-Policy "unsafe-none" always;
+
+      # dos protection
+      limit_req_zone $binary_remote_addr zone=global:10m rate=10r/s;
     '';
 
     virtualHosts = {
@@ -176,10 +201,7 @@ in
         forceSSL = true;
 
         # don't configure top level to not collide with recommended settings, which breaks config
-        extraConfig = ''
-          ssl_stapling off; # because ocsp is not supported by step-ca
-          ssl_prefer_server_ciphers on;
-        '';
+        extraConfig = hardenedServerExtraConfig;
 
         locations = {
           "/" = {
