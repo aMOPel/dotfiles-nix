@@ -5,9 +5,6 @@
 }:
 let
   config-values = import ./config_values.nix;
-  yubikey-disc-encryption = import ../../common/yubikey-disc-encryption.nix {
-    device = config-values.nixos.luksDiskPath;
-  };
 
   hardenedServerExtraConfig = ''
     ssl_stapling off; # because ocsp is not supported by step-ca
@@ -29,7 +26,6 @@ in
 {
   imports = [
     ./hardware-configuration.nix
-    yubikey-disc-encryption
     ./samba.nix
     ./tls-in-lan.nix
     ./dns.nix
@@ -37,6 +33,23 @@ in
     ./nginx.nix
     sops-nix.nixosModules.sops
   ];
+
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.initrd = {
+    systemd.enable = true;
+    luks.devices = {
+      cryptdisk0 = {
+        device = config-values.nixos.luksDiskPaths.cryptdisk0;
+      };
+      cryptdisk1 = {
+        device = config-values.nixos.luksDiskPaths.cryptdisk1;
+      };
+      cryptdisk2 = {
+        device = config-values.nixos.luksDiskPaths.cryptdisk2;
+      };
+    };
+  };
 
   sops.age.sshKeyPaths = [ ];
   sops.gnupg.sshKeyPaths = [ ];
@@ -50,7 +63,7 @@ in
     extraGroups = [
       "docker"
       "libvirtd"
-      "wheel"
+      # TODO: check if this is necessary
       "samba-group" # can log into samba share
     ];
     openssh.authorizedKeys.keys = config-values.nixos.authorizedKeys.keys;
@@ -109,56 +122,56 @@ in
     # TODO: jail for samba
   };
 
-  services.radicale = {
-    enable = true;
-    settings = {
-      server = {
-        hosts = [
-          "127.0.0.1:5232"
-        ];
-        max_connections = 20;
-        max_content_length = 100000000; # 100 Megabyte
-        timeout = 30; # 30 seconds
-      };
-      auth = {
-        # type = "none";
-        type = "htpasswd";
-        htpasswd_filename = "/var/lib/radicale/users";
-        htpasswd_encryption = "autodetect";
-        delay = 1; # Average delay after failed login attempts in seconds
-      };
-      storage = {
-        filesystem_folder = "/srv/radicale/collections";
-      };
-    };
-  };
-
-  services.nginx = {
-    virtualHosts = {
-      "radicale.${config-values.nixos.hostname}" = {
-        # for acme
-        enableACME = true;
-        forceSSL = true;
-
-        # don't configure top level to not collide with recommended settings, which breaks config
-        extraConfig = hardenedServerExtraConfig;
-
-        locations = {
-          "/" = {
-            extraConfig = ''
-              proxy_pass        http://127.0.0.1:5232;
-              proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header  X-Forwarded-Host $host;
-              proxy_set_header  X-Forwarded-Port $server_port;
-              proxy_set_header  X-Forwarded-Proto $scheme;
-              proxy_set_header  Host $host;
-              proxy_pass_header Authorization;
-            '';
-          };
-        };
-      };
-    };
-  };
+  # services.radicale = {
+  #   enable = true;
+  #   settings = {
+  #     server = {
+  #       hosts = [
+  #         "127.0.0.1:5232"
+  #       ];
+  #       max_connections = 20;
+  #       max_content_length = 100000000; # 100 Megabyte
+  #       timeout = 30; # 30 seconds
+  #     };
+  #     auth = {
+  #       # type = "none";
+  #       type = "htpasswd";
+  #       htpasswd_filename = "/var/lib/radicale/users";
+  #       htpasswd_encryption = "autodetect";
+  #       delay = 1; # Average delay after failed login attempts in seconds
+  #     };
+  #     storage = {
+  #       filesystem_folder = "/srv/radicale/collections";
+  #     };
+  #   };
+  # };
+  #
+  # services.nginx = {
+  #   virtualHosts = {
+  #     "radicale.${config-values.nixos.hostname}" = {
+  #       # for acme
+  #       enableACME = true;
+  #       forceSSL = true;
+  #
+  #       # don't configure top level to not collide with recommended settings, which breaks config
+  #       extraConfig = hardenedServerExtraConfig;
+  #
+  #       locations = {
+  #         "/" = {
+  #           extraConfig = ''
+  #             proxy_pass        http://127.0.0.1:5232;
+  #             proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+  #             proxy_set_header  X-Forwarded-Host $host;
+  #             proxy_set_header  X-Forwarded-Port $server_port;
+  #             proxy_set_header  X-Forwarded-Proto $scheme;
+  #             proxy_set_header  Host $host;
+  #             proxy_pass_header Authorization;
+  #           '';
+  #         };
+  #       };
+  #     };
+  #   };
+  # };
 
   fileSystems."/srv/www" = {
     device = "/home/${config-values.username}/data/www";
@@ -171,19 +184,19 @@ in
   };
 
   myModules.samba = {
-    enable = true;
+    enable = false;
     shareParentDir = "/home/${config-values.username}/data";
     sambaServerName = "${config-values.nixos.hostname}";
     allowedUsers = "${config-values.username}";
   };
 
   myModules.tls-in-lan = {
-    enable = true;
+    enable = false;
     rootCaCrtPath = ./certificates/root-ca.crt;
   };
 
   myModules.dns = {
-    enable = true;
+    enable = false;
   };
 
   myModules.ssh = {
@@ -195,7 +208,7 @@ in
   };
 
   myModules.nginx = {
-    enable = true;
+    enable = false;
     defaultDomain = "${config-values.nixos.hostname}";
   };
 

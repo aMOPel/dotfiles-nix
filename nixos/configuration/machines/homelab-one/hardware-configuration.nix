@@ -9,9 +9,6 @@
   ...
 }:
 
-let
-  config-values = import ./config_values.nix;
-in
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -29,53 +26,58 @@ in
   boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/a15571ba-39fb-4ac0-9302-01a4b5cc945c";
+    device = "/dev/disk/by-uuid/dc52e175-60d8-4811-8798-7614810fd123";
     fsType = "btrfs";
     options = [ "subvol=root" ];
   };
 
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/4D46-3725";
+    fsType = "vfat";
+    options = [
+      "fmask=0022"
+      "dmask=0022"
+    ];
+  };
+
+  fileSystems."/data" = {
+    device = "/dev/disk/by-uuid/2a07411b-092d-467d-beb3-900cd18bb339";
+    fsType = "btrfs";
+    options = [ "subvol=data" ];
+  };
+
   fileSystems."/home" = {
-    device = "/dev/disk/by-uuid/a15571ba-39fb-4ac0-9302-01a4b5cc945c";
+    device = "/dev/disk/by-uuid/dc52e175-60d8-4811-8798-7614810fd123";
     fsType = "btrfs";
     options = [ "subvol=home" ];
   };
 
   fileSystems."/nix" = {
-    device = "/dev/disk/by-uuid/a15571ba-39fb-4ac0-9302-01a4b5cc945c";
+    device = "/dev/disk/by-uuid/dc52e175-60d8-4811-8798-7614810fd123";
     fsType = "btrfs";
     options = [ "subvol=nix" ];
   };
 
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/12CE-A600";
-    fsType = "vfat";
-    options = [ "umask=0077" ];
+  fileSystems."/snapraid/disk1" = {
+    device = "/dev/disk/by-uuid/89f7d4c4-80cc-482d-8b51-3305701ee87e";
+    fsType = "btrfs";
+    options = [ "subvol=sub1" ];
   };
 
-  systemd.tmpfiles.rules = [
-    "d /home/${config-values.username}/data 0700 ${config-values.username} users -"
-    "d /home/${config-values.username}/data/radicale 0755 radicale radicale -"
-    "d /home/${config-values.username}/data/radicale/collections 0755 radicale radicale -"
-    "d /srv/radicale/collections 0755 radicale radicale -"
-
-    "d /home/${config-values.username}/data/www 0755 nginx nginx -"
-    "d /srv/www/ 0755 nginx nginx -"
-
-    "d /srv 0755 root root -"
-  ];
-
-  fileSystems."/home/${config-values.username}/data" = {
-    device = "/dev/disk/by-uuid/c9e1a728-7580-4c7d-8d97-74768f80825e";
+  fileSystems."/snapraid/disk2" = {
+    device = "/dev/disk/by-uuid/ad88c745-5fa0-459d-ae1d-2cae0e2d634a";
     fsType = "btrfs";
-    options = [
-      "subvol=data"
-      "x-systemd.allow-user"
-      "user"
-    ];
+    options = [ "subvol=sub1" ];
+  };
+
+  fileSystems."/snapraid/parity" = {
+    device = "/dev/disk/by-uuid/85042328-41b8-47f1-9f7b-fa3d8eb68991";
+    fsType = "btrfs";
+    options = [ "subvol=parity" ];
   };
 
   swapDevices = [
-    { device = "/dev/disk/by-uuid/f6114f2b-c736-45a8-9153-dbeb06f6191f"; }
+    { device = "/dev/disk/by-uuid/6f84f967-d26d-4faa-b7b9-531ee0ed057e"; }
   ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking

@@ -1,140 +1,9 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2155,SC2162
 
-echo "Assumptions:"
-echo "  - The disk, the installation goes to, is backed up or the data on it is not valuable."
-echo "  - You want a disk layout like this:"
-echo ""
-echo "    sda             8:0    0 223.6G  0 disk            "
-echo "    ├─sda1          8:1    0  1023M  0 part  /mnt/boot "
-echo "    └─sda2          8:2    0 222.6G  0 part            "
-echo "      └─cryptroot 254:0    0 222.6G  0 crypt           "
-echo "        ├─vg-swap 254:1    0     8G  0 lvm   [SWAP]    "
-echo "        └─vg-root 254:2    0 214.6G  0 lvm   /mnt/nix  "
-echo "                                             /mnt/home "
-echo "                                             /mnt      "
-echo ""
-echo "  - The first 1GB of the physical disk is given to a fat32 EFI partion."
-echo "  - The rest of the disk is a linux partition and encrypted at rest with 'cryptsetup', using yubikey's 'fido2' for authentication."
-echo "  - The encrypted partition is  managed by LVM (Logic Volume Manager)."
-echo "  - In the LVM disk there is a 'swap' volume of a size of your choice, the rest of the space is given to the 'root' volume."
-echo "  - The 'root' volume is formatted in an btrfs filesystem and there are 3 subvolumes (/root /home /nix)"
-echo ""
-read -p "understood?"
-
-default_value="/dev/sda"
-read -p "enter disk path, where nixos should be installed [$default_value] " disk_path
-disk_path=${disk_path:-"$default_value"}
-
-default_value="y"
-read -p "partition disk into 1G EFI partition and the rest as LVM partition? [$default_value] "
-REPLY=${REPLY:-"$default_value"}
-if [[ $REPLY == "y" ]]; then
-  gdisk "$disk_path" <<EOF
-o
-y
-n
-
-
-1G
-ef00
-n
-
-
-
-
-w
-y
-EOF
-
-  echo ""
-  gdisk -l "$disk_path"
-  echo ""
-
-  default_value="y"
-  read -p "does this look correct? [$default_value] "
-  REPLY=${REPLY:-"$default_value"}
-  [ "$REPLY" != "y" ] && exit 1
-
-  echo ""
-  lsblk
-  echo ""
-
-  default_value="y"
-  read -p "does this look correct? [$default_value] "
-  REPLY=${REPLY:-"$default_value"}
-  [ "$REPLY" != "y" ] && exit 1
-fi
-
-default_value="y"
-read -p "setup luks, lvm partitions and btrfs? [$default_value] "
-REPLY=${REPLY:-"$default_value"}
-
-if [[ $REPLY == "y" ]]; then
-  default_value="16"
-  read -p "enter ram size in GB [$default_value] " ram_size
-  ram_size=${ram_size:-"$default_value"}
-
-  cryptsetup luksFormat "$disk_path"p2
-  cryptsetup luksOpen "$disk_path"p2 cryptroot
-
-  pvcreate /dev/mapper/cryptroot
-  vgcreate vg /dev/mapper/cryptroot
-  lvcreate -L "$ram_size"G -n swap vg
-  lvcreate -L '200G' -n root vg
-  lvcreate -l '100%FREE' -n data vg
-
-  mkfs.fat -F 32 "$disk_path"p1
-  mkfs.btrfs -L root /dev/vg/root
-  mkfs.btrfs -L data /dev/vg/data
-  mkswap -L swap /dev/vg/swap
-
-  mkdir -p /mnt
-  mount /dev/vg/root /mnt
-  btrfs subvolume create /mnt/root
-  btrfs subvolume create /mnt/home
-  btrfs subvolume create /mnt/nix
-  mount /dev/vg/data /mnt
-  btrfs subvolume create /mnt/data
-  umount /mnt
-
-  mount -o subvol=root /dev/vg/root /mnt
-  mkdir /mnt/{home,nix,boot}
-  mount -o subvol=home /dev/vg/root /mnt/home
-  mount -o subvol=nix /dev/vg/root /mnt/nix
-  mount "$disk_path"p1 /mnt/boot
-  mkdir /mnt/data
-  mount -o subvol=data /dev/vg/data /mnt/data
-  swapon /dev/vg/swap
-
-  echo ""
-  lsblk
-  echo ""
-
-  default_value="y"
-  read -p "does this look correct? [$default_value] "
-  REPLY=${REPLY:-"$default_value"}
-  [ "$REPLY" != "y" ] && exit 1
-fi
-
-while :; do
-  default_value="y"
-  read -p "setup (another) yubikey for luks disk encryption? [$default_value] "
-  REPLY=${REPLY:-"$default_value"}
-  if [[ $REPLY != "y" ]]; then
-    break
-  fi
-
-  read -p "plugin the yubikey now! "
-
-  default_value="y"
-  read -p "change yubikey fido pin? this requires 'ykman' in PATH [$default_value] "
-  REPLY=${REPLY:-"$default_value"}
-  if [[ $REPLY == "y" ]]; then
-    ykman fido access change-pin
-  fi
-  systemd-cryptenroll --fido2-device=auto --fido2-with-client-pin=yes "$disk_path"p2
-done
+sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko/latest -- \
+  --mode destroy,format,mount \
+  ./nixos/configuration/machines/homelab-one/partitioning/disko.nix
 
 default_value="y"
 read -p "generate nixos config? [$default_value] "
@@ -149,8 +18,18 @@ if [[ $REPLY == "y" ]]; then
 
   # shellcheck disable=SC2010
   default_value=$(ls -l /dev/disk/by-uuid | grep "$(basename /dev/nvme0n1)"p2 | awk '{print $9}')
-  read -p "enter uuid of encrypted disk (should point to ${disk_path}p2) [$default_value] " uuid
-  uuid=${uuid:-"$default_value"}
+  read -p "enter uuid of encrypted disk (should point to /dev/nvme0n1p2) [$default_value] " uuid0
+  uuid0=${uuid0:-"$default_value"}
+
+  # shellcheck disable=SC2010
+  default_value=$(ls -l /dev/disk/by-uuid | grep "$(basename /dev/sda)"1 | awk '{print $9}')
+  read -p "enter uuid of encrypted disk (should point to /dev/sda1) [$default_value] " uuid1
+  uuid1=${uuid1:-"$default_value"}
+
+  # shellcheck disable=SC2010
+  default_value=$(ls -l /dev/disk/by-uuid | grep "$(basename /dev/sdb)"1 | awk '{print $9}')
+  read -p "enter uuid of encrypted disk (should point to /dev/sdb1) [$default_value] " uuid1
+  uuid2=${uuid2:-"$default_value"}
 
   default_value="user1"
   read -p "enter username. [$default_value] " username
@@ -180,7 +59,6 @@ if [[ $REPLY == "y" ]]; then
   # boot.loader.grub.efiInstallAsRemovable = true;
   # boot.loader.efi.efiSysMountPoint = "/boot/efi";
   # Define on which hard drive you want to install Grub.
-  # boot.loader.grub.device = "${disk_path}"; # or "nodev" for efi only
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -189,15 +67,15 @@ if [[ $REPLY == "y" ]]; then
     luks.devices = {
       cryptdisk0 = {
         crypttabExtraOpts = [ "fido2-device=auto" ];
-        device = "/dev/disk/by-uuid/ca12320a-27ce-4ea8-b440-bec65dd51642";
+        device = "/dev/disk/by-uuid/${uuid0}";
       };
       cryptdisk1 = {
         crypttabExtraOpts = [ "fido2-device=auto" ];
-        device = "/dev/disk/by-uuid/418fcdb0-9edd-425c-8f25-16c45dc52265";
+        device = "/dev/disk/by-uuid/${uuid1}";
       };
       cryptdisk2 = {
         crypttabExtraOpts = [ "fido2-device=auto" ];
-        device = "/dev/disk/by-uuid/cd03e58c-b8cf-4fae-a755-073e64a57f08";
+        device = "/dev/disk/by-uuid/${uuid2}";
       };
     };
   };
@@ -342,10 +220,5 @@ default_value="y"
 read -p "reboot now? you should be asked for the yubikey pin at startup. [$default_value] "
 REPLY=${REPLY:-"$default_value"}
 if [[ $REPLY == "y" ]]; then
-  echo "before you restart, remember that you should remove the passphrase as a slot for the cryptsetup disk!"
-  echo ""
-  echo "    \$ systemd-cryptenroll --wipe-slot=password ${disk_path}p2"
-  echo ""
-  read -p "understood?"
   systemctl reboot
 fi
