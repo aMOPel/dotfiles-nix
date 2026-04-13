@@ -1,8 +1,7 @@
 let
   partitionEfi =
-    { size }:
+    args:
     {
-      inherit size;
       type = "EF00";
       priority = 0;
       content = {
@@ -14,11 +13,12 @@ let
           "dmask=0022"
         ];
       };
-    };
+    }
+    // args;
   partitionLuksLvm =
-    { size, diskIndex }:
+    args:
+    { diskIndex }:
     {
-      inherit size;
       label = "disk${builtins.toString diskIndex}-p1";
       content = {
         type = "luks";
@@ -34,11 +34,11 @@ let
           vg = "disk${builtins.toString diskIndex}-pool";
         };
       };
-    };
+    }
+    // args;
   partitionBtrfs =
-    { size, subvolumes }:
+    args: btrgsArgs:
     {
-      inherit size;
       content = {
         type = "btrfs";
         mountOptions = [
@@ -46,27 +46,28 @@ let
           "compress=zstd"
           "noatime"
         ];
-        inherit subvolumes;
-      };
-    };
+      }
+      // btrgsArgs;
+    }
+    // args;
   partitionSwap =
-    { size }:
+    args:
     {
-      inherit size;
       content = {
         type = "swap";
       };
-    };
+    }
+    // args;
   diskGpt =
-    { device, partitions }:
+    args: gptArgs:
     {
-      inherit device;
       type = "disk";
       content = {
         type = "gpt";
-        inherit partitions;
-      };
-    };
+      }
+      // gptArgs;
+    }
+    // args;
 in
 {
   disko.devices = {
@@ -77,28 +78,43 @@ in
           ESP = partitionEfi {
             size = "1000M";
           };
-          p1 = partitionLuksLvm {
-            size = "100%";
-            diskIndex = 0;
-          };
+          p1 =
+            partitionLuksLvm
+              {
+                size = "100%";
+                uuid = "b2e3e409-7e59-4cc4-91ea-88d09d3e5f96";
+              }
+              {
+                diskIndex = 0;
+              };
         };
       };
       disk1 = diskGpt {
         device = "/dev/disk/by-id/ata-SanDisk_SDSSDA240G_171799447907";
         partitions = {
-          p1 = partitionLuksLvm {
-            size = "100%";
-            diskIndex = 1;
-          };
+          p1 =
+            partitionLuksLvm
+              {
+                size = "100%";
+                uuid = "3597d698-2379-4e8b-bd5a-c3fdcc2f3b16";
+              }
+              {
+                diskIndex = 1;
+              };
         };
       };
       disk2 = diskGpt {
         device = "/dev/disk/by-id/ata-Samsung_SSD_850_EVO_250GB_S21PNXAG977384L";
         partitions = {
-          p1 = partitionLuksLvm {
-            size = "100%";
-            diskIndex = 2;
-          };
+          p1 =
+            partitionLuksLvm
+              {
+                size = "100%";
+                uuid = "71944308-c58f-4f5f-a434-e1a3149a38c1";
+              }
+              {
+                diskIndex = 2;
+              };
         };
       };
     };
@@ -106,27 +122,35 @@ in
       disk1-pool = {
         type = "lvm_vg";
         lvs = {
-          root = partitionBtrfs {
-            size = "100%";
-            subvolumes = {
-              "/sub1" = {
-                mountpoint = "/snapraid/disk1";
+          root =
+            partitionBtrfs
+              {
+                size = "100%";
+              }
+              {
+                subvolumes = {
+                  "/sub1" = {
+                    mountpoint = "/snapraid/disk1";
+                  };
+                };
               };
-            };
-          };
         };
       };
       disk2-pool = {
         type = "lvm_vg";
         lvs = {
-          root = partitionBtrfs {
-            size = "100%";
-            subvolumes = {
-              "/sub1" = {
-                mountpoint = "/snapraid/disk2";
+          root =
+            partitionBtrfs
+              {
+                size = "100%";
+              }
+              {
+                subvolumes = {
+                  "/sub1" = {
+                    mountpoint = "/snapraid/disk2";
+                  };
+                };
               };
-            };
-          };
         };
       };
       disk0-pool = {
@@ -135,36 +159,48 @@ in
           swap = partitionSwap {
             size = "16G";
           };
-          root = partitionBtrfs {
-            size = "200G";
-            subvolumes = {
-              "/root" = {
-                mountpoint = "/";
+          root =
+            partitionBtrfs
+              {
+                size = "200G";
+              }
+              {
+                subvolumes = {
+                  "/root" = {
+                    mountpoint = "/";
+                  };
+                  "/home" = {
+                    mountpoint = "/home";
+                  };
+                  "/nix" = {
+                    mountpoint = "/nix";
+                  };
+                };
               };
-              "/home" = {
-                mountpoint = "/home";
+          snapraidParity =
+            partitionBtrfs
+              {
+                size = "250G";
+              }
+              {
+                subvolumes = {
+                  "/parity" = {
+                    mountpoint = "/snapraid/parity";
+                  };
+                };
               };
-              "/nix" = {
-                mountpoint = "/nix";
+          data =
+            partitionBtrfs
+              {
+                size = "100%";
+              }
+              {
+                subvolumes = {
+                  "/data" = {
+                    mountpoint = "/data";
+                  };
+                };
               };
-            };
-          };
-          snapraidParity = partitionBtrfs {
-            size = "250G";
-            subvolumes = {
-              "/parity" = {
-                mountpoint = "/snapraid/parity";
-              };
-            };
-          };
-          data = partitionBtrfs {
-            size = "100%";
-            subvolumes = {
-              "/data" = {
-                mountpoint = "/data";
-              };
-            };
-          };
         };
       };
     };
