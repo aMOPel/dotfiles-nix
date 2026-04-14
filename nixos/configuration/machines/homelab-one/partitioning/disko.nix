@@ -72,51 +72,64 @@ in
 {
   disko.devices = {
     disk = {
-      disk0 = diskGpt {
-        device = "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_Plus_4TB_S7U9NU0YA00981L";
-        partitions = {
-          ESP = partitionEfi {
-            size = "1000M";
+      disk0 =
+        diskGpt
+          {
+            device = "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_Plus_4TB_S7U9NU0YA00981L";
+          }
+          {
+            partitions = {
+              ESP = partitionEfi {
+                size = "1000M";
+                uuid = "46bcb782-a60b-4426-ab49-0f3432549643";
+              };
+              p1 =
+                partitionLuksLvm
+                  {
+                    size = "100%";
+                    uuid = "b2e3e409-7e59-4cc4-91ea-88d09d3e5f96"; # partuuid, not uuid
+                  }
+                  {
+                    diskIndex = 0;
+                  };
+            };
           };
-          p1 =
-            partitionLuksLvm
-              {
-                size = "100%";
-                uuid = "b2e3e409-7e59-4cc4-91ea-88d09d3e5f96";
-              }
-              {
-                diskIndex = 0;
-              };
-        };
-      };
-      disk1 = diskGpt {
-        device = "/dev/disk/by-id/ata-SanDisk_SDSSDA240G_171799447907";
-        partitions = {
-          p1 =
-            partitionLuksLvm
-              {
-                size = "100%";
-                uuid = "3597d698-2379-4e8b-bd5a-c3fdcc2f3b16";
-              }
-              {
-                diskIndex = 1;
-              };
-        };
-      };
-      disk2 = diskGpt {
-        device = "/dev/disk/by-id/ata-Samsung_SSD_850_EVO_250GB_S21PNXAG977384L";
-        partitions = {
-          p1 =
-            partitionLuksLvm
-              {
-                size = "100%";
-                uuid = "71944308-c58f-4f5f-a434-e1a3149a38c1";
-              }
-              {
-                diskIndex = 2;
-              };
-        };
-      };
+      disk1 =
+        diskGpt
+          {
+            device = "/dev/disk/by-id/ata-SanDisk_SDSSDA240G_171799447907";
+          }
+          {
+            partitions = {
+              p1 =
+                partitionLuksLvm
+                  {
+                    size = "100%";
+                    uuid = "3597d698-2379-4e8b-bd5a-c3fdcc2f3b16"; # partuuid, not uuid
+                  }
+                  {
+                    diskIndex = 1;
+                  };
+            };
+          };
+      disk2 =
+        diskGpt
+          {
+            device = "/dev/disk/by-id/ata-Samsung_SSD_850_EVO_250GB_S21PNXAG977384L";
+          }
+          {
+            partitions = {
+              p1 =
+                partitionLuksLvm
+                  {
+                    size = "100%";
+                    uuid = "71944308-c58f-4f5f-a434-e1a3149a38c1"; # partuuid, not uuid
+                  }
+                  {
+                    diskIndex = 2;
+                  };
+            };
+          };
     };
     lvm_vg = {
       disk1-pool = {

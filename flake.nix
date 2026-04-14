@@ -39,6 +39,14 @@
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.gitignore-nix.url = "github:hercules-ci/gitignore.nix";
 
+  inputs."disko-nix" = {
+    ref = "v1.13.0";
+    owner = "nix-community";
+    repo = "disko";
+    type = "github";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   inputs.git-hooks-nix = {
     ref = "84255025dee4c8701a99fbff65ac3c9095952f99";
     type = "github";
@@ -62,6 +70,7 @@
       git-hooks-nix,
       gitignore-nix,
       sops-nix,
+      disko-nix,
       ...
     }@inputs:
     let
@@ -125,6 +134,7 @@
               git-hooks-nix
               global-treefmt
               sops-nix
+              disko-nix
               ;
           }
         )

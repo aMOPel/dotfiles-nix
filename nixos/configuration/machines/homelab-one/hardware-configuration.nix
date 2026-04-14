@@ -8,7 +8,10 @@
   modulesPath,
   ...
 }:
-
+# let
+#   diskofile = import ./partitioning/disko.nix;
+#   uuidEFI = diskofile.disko.devices.disk.disk0.content.partitions.EFI.uuid;
+# in
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -25,60 +28,60 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/dc52e175-60d8-4811-8798-7614810fd123";
-    fsType = "btrfs";
-    options = [ "subvol=root" ];
-  };
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/4D46-3725";
-    fsType = "vfat";
-    options = [
-      "fmask=0022"
-      "dmask=0022"
-    ];
-  };
-
-  fileSystems."/data" = {
-    device = "/dev/disk/by-uuid/2a07411b-092d-467d-beb3-900cd18bb339";
-    fsType = "btrfs";
-    options = [ "subvol=data" ];
-  };
-
-  fileSystems."/home" = {
-    device = "/dev/disk/by-uuid/dc52e175-60d8-4811-8798-7614810fd123";
-    fsType = "btrfs";
-    options = [ "subvol=home" ];
-  };
-
-  fileSystems."/nix" = {
-    device = "/dev/disk/by-uuid/dc52e175-60d8-4811-8798-7614810fd123";
-    fsType = "btrfs";
-    options = [ "subvol=nix" ];
-  };
-
-  fileSystems."/snapraid/disk1" = {
-    device = "/dev/disk/by-uuid/89f7d4c4-80cc-482d-8b51-3305701ee87e";
-    fsType = "btrfs";
-    options = [ "subvol=sub1" ];
-  };
-
-  fileSystems."/snapraid/disk2" = {
-    device = "/dev/disk/by-uuid/ad88c745-5fa0-459d-ae1d-2cae0e2d634a";
-    fsType = "btrfs";
-    options = [ "subvol=sub1" ];
-  };
-
-  fileSystems."/snapraid/parity" = {
-    device = "/dev/disk/by-uuid/85042328-41b8-47f1-9f7b-fa3d8eb68991";
-    fsType = "btrfs";
-    options = [ "subvol=parity" ];
-  };
-
-  swapDevices = [
-    { device = "/dev/disk/by-uuid/6f84f967-d26d-4faa-b7b9-531ee0ed057e"; }
-  ];
+  # fileSystems."/boot" = {
+  #   device = "/dev/disk/by-partuuid/${uuidEFI}";
+  #   fsType = "vfat";
+  #   options = [
+  #     "fmask=0022"
+  #     "dmask=0022"
+  #   ];
+  # };
+  #
+  # fileSystems."/" = {
+  #   device = "/dev/disk0-pool/root";
+  #   fsType = "btrfs";
+  #   options = [ "subvol=root" ];
+  # };
+  #
+  # fileSystems."/home" = {
+  #   device = "/dev/disk0-pool/root";
+  #   fsType = "btrfs";
+  #   options = [ "subvol=home" ];
+  # };
+  #
+  # fileSystems."/nix" = {
+  #   device = "/dev/disk0-pool/root";
+  #   fsType = "btrfs";
+  #   options = [ "subvol=nix" ];
+  # };
+  #
+  # fileSystems."/snapraid/parity" = {
+  #   device = "/dev/disk0-pool/snapraidParity";
+  #   fsType = "btrfs";
+  #   options = [ "subvol=parity" ];
+  # };
+  #
+  # fileSystems."/data" = {
+  #   device = "/dev/disk0-pool/data";
+  #   fsType = "btrfs";
+  #   options = [ "subvol=data" ];
+  # };
+  #
+  # swapDevices = [
+  #   { device = "/dev/disk0-pool/swap"; }
+  # ];
+  #
+  # fileSystems."/snapraid/disk1" = {
+  #   device = "/dev/disk1-pool/root";
+  #   fsType = "btrfs";
+  #   options = [ "subvol=sub1" ];
+  # };
+  #
+  # fileSystems."/snapraid/disk2" = {
+  #   device = "/dev/disk2-pool/root";
+  #   fsType = "btrfs";
+  #   options = [ "subvol=sub1" ];
+  # };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
