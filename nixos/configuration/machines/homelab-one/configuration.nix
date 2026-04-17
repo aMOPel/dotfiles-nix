@@ -41,17 +41,17 @@ in
   boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd = {
     systemd.enable = true;
-    #   luks.devices = {
-    #     cryptdisk0 = {
-    #       device = config-values.nixos.luksDiskPaths.cryptdisk0;
-    #     };
-    #     cryptdisk1 = {
-    #       device = config-values.nixos.luksDiskPaths.cryptdisk1;
-    #     };
-    #     cryptdisk2 = {
-    #       device = config-values.nixos.luksDiskPaths.cryptdisk2;
-    #     };
-    #   };
+    luks.devices = {
+      cryptdisk0 = {
+        device = config-values.nixos.luksDiskPaths.cryptdisk0;
+      };
+      cryptdisk1 = {
+        device = config-values.nixos.luksDiskPaths.cryptdisk1;
+      };
+      cryptdisk2 = {
+        device = config-values.nixos.luksDiskPaths.cryptdisk2;
+      };
+    };
   };
 
   sops.age.sshKeyPaths = [ ];

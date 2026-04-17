@@ -1,39 +1,8 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2155,SC2162
 
-DISKO_FILE=""
-
-require_value() {
-  local opt="$1"
-  local val="${2:-}"
-
-  if [[ -z $val || $val == -* ]]; then
-    echo "Error: $opt requires a value." >&2
-    exit 1
-  fi
-}
-
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-  --disko-file)
-    require_value "$1" "${2:-}"
-    DISKO_FILE="$2"
-    shift 2
-    ;;
-  *)
-    echo "Unknown option: $1" >&2
-    exit 1
-    ;;
-  esac
-done
-
-if [[ -z $DISKO_FILE ]]; then
-  echo "Error: --disko-file is required." >&2
-  exit 1
-fi
-
 default_value="y"
-read -p "partition disk now? [$default_value] "
+read -p "partition disk and install nixos now? [$default_value] "
 REPLY=${REPLY:-"$default_value"}
 if [[ $REPLY == "y" ]]; then
 
@@ -58,16 +27,15 @@ if [[ $REPLY == "y" ]]; then
   chown root:root $file
   echo "$passphrase1" >$file
 
-  sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko/v1.13.0 -- \
-    --mode destroy,format,mount \
-    "$DISKO_FILE"
-fi
-
-default_value="y"
-read -p "install nixos now? [$default_value] "
-REPLY=${REPLY:-"$default_value"}
-if [[ $REPLY == "y" ]]; then
-  nixos-install -f 'github:amopel/dotfiles-nix#homelab-one'
+  nix \
+    --extra-experimental-features flakes \
+    --extra-experimental-features nix-command \
+    run 'github:nix-community/disko/v1.13.0#disko-install' -- \
+    --flake '/root/dotfiles-nix#homelab-one' \
+    --disk disk0 /dev/nvme0n1 \
+    --disk disk1 /dev/sda \
+    --disk disk2 /dev/sdb \
+    --write-efi-boot-entries
 fi
 
 default_value="y"
