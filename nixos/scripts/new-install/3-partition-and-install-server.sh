@@ -44,27 +44,6 @@ read -p "partition disk now? [$default_value] "
 REPLY=${REPLY:-"$default_value"}
 if [[ $REPLY == "y" ]]; then
 
-  askPass() {
-    echo ""
-    read -sp "enter luks passphrase " passphrase1
-    echo ""
-    read -sp "enter luks passphrase again " passphrase2
-  }
-
-  askPass
-  while [[ $passphrase1 != "$passphrase2" ]]; do
-    echo ""
-    echo "passphrases don't match"
-    askPass
-  done
-
-  # needs to match the keyfile in disko.nix
-  file=/tmp/secret.key
-  touch $file
-  chmod 600 $file
-  chown root:root $file
-  echo "$passphrase1" >$file
-
   if $MOUNT_ONLY; then
     sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko/v1.13.0 -- \
       --mode mount \
