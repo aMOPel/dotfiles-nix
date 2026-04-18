@@ -7,7 +7,7 @@
 
   programs.kitty = {
     enable = true;
-    package = pkgs.kitty;
+    package = pkgs_latest.kitty;
 
     font = {
       size = 13;
@@ -137,6 +137,8 @@
       "kitty_mod+t>kitty_mod+8" = "goto_tab 8";
       "kitty_mod+t>kitty_mod+9" = "goto_tab 9";
       "kitty_mod+t>kitty_mod+0" = "goto_tab 10";
+
+      "kitty_mod+s" = "save_as_session .";
 
     };
   };

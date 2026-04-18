@@ -2,3 +2,4 @@ Session.vim
 *.qcow2
 result
 .pre-commit-config.yaml
+*.kitty-session
