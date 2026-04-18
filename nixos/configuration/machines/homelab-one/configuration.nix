@@ -43,7 +43,7 @@ in
 
   sops.age.sshKeyPaths = [ ];
   sops.gnupg.sshKeyPaths = [ ];
-  sops.age.generateKey = false;
+  sops.age.generateKey = true;
   sops.age.keyFile = "/root/.config/sops/age/keys.txt";
 
   networking.hostName = config-values.nixos.hostname;
