@@ -146,8 +146,8 @@ in
               }
               {
                 subvolumes = {
-                  "/sub1" = {
-                    mountpoint = "/snapraid/disk1";
+                  "/snapraid-data" = {
+                    mountpoint = "/snapraid/data-disk1";
                   };
                 };
               };
@@ -163,8 +163,8 @@ in
               }
               {
                 subvolumes = {
-                  "/sub1" = {
-                    mountpoint = "/snapraid/disk2";
+                  "/snapraid-data" = {
+                    mountpoint = "/snapraid/data-disk2";
                   };
                 };
               };
@@ -202,8 +202,8 @@ in
               }
               {
                 subvolumes = {
-                  "/parity" = {
-                    mountpoint = "/snapraid/parity";
+                  "/snapraid-parity" = {
+                    mountpoint = "/snapraid/parity-disk0";
                   };
                 };
               };

@@ -205,11 +205,11 @@ in
   myModules.snapraid-mergerfs = {
     enable = true;
     parityDisks = [
-      "/snapraid/parity"
+      "/snapraid/parity-disk0"
     ];
     dataDisks = [
-      "/snapraid/disk1"
-      "/snapraid/disk2"
+      "/snapraid/data-disk1"
+      "/snapraid/data-disk2"
     ];
     mergerfsMountpoint = "/snapraid/mergerfs";
     user = config-values.username;
