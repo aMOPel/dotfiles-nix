@@ -212,6 +212,8 @@ in
       "/snapraid/disk2"
     ];
     mergerfsMountpoint = "/snapraid/mergerfs";
+    user = config-values.username;
+    group = "users";
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,

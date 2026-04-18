@@ -14,12 +14,12 @@ in
     parityDisks = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       example = ''[ "/snapraid/parity-disk1" ]'';
-      description = "drives to use (purely) for parity";
+      description = "drives to use purely for parity";
     };
     dataDisks = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       example = ''[ "/snapraid/disk1" ]'';
-      description = "drives to use (purely) for parity";
+      description = "drives to use for data";
     };
     filePermissionMask = lib.mkOption {
       type = lib.types.str;
@@ -57,9 +57,16 @@ in
           value = d;
         }) cfg.dataDisks
       );
-      mergerfsSourceDirRules = builtins.map (
-        d: "d ${d}/data ${cfg.filePermissionMask} ${cfg.user} ${cfg.group} -"
-      ) cfg.dataDisks;
+      mergerfsSourceDirPermissions = builtins.concatStringsSep "\n" (
+        builtins.map (d: ''
+          chown -R ${cfg.user}:${cfg.group} ${d}/data;
+          chmod -R ${cfg.filePermissionMask} ${d}/data;
+        '') cfg.dataDisks
+      );
+      mergerfsMountpointPermissions = ''
+        chown -R ${cfg.user}:${cfg.group} ${cfg.mergerfsMountpoint};
+        chmod -R ${cfg.filePermissionMask} ${cfg.mergerfsMountpoint};
+      '';
       mergerfsSourceDirs = builtins.concatStringsSep ":" (builtins.map (d: "${d}/data") cfg.dataDisks);
     in
     {
@@ -83,8 +90,9 @@ in
         mergerfs
       ];
 
-      # ensure that mount dirs exist
-      systemd.tmpfiles.rules = mergerfsSourceDirRules;
+      # set permissions
+      system.activationScripts.setDataPermissions.text =
+        mergerfsSourceDirPermissions + mergerfsMountpointPermissions;
 
       fileSystems = {
         "${cfg.mergerfsMountpoint}" = {
