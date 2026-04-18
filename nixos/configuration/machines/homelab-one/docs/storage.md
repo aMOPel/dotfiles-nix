@@ -39,6 +39,8 @@ the important data should go on the snapraid drives.
 the `snapraid-mergerfs.nix` module takes care of setting up snapraid data drives
 and parity drives, as well as merge the data drives to a single mountpoint.
 
+snapraid syncs and scrubs run on a schedule.
+
 ## luks
 
 each physical disk is encrypted individually, but all with the same passphrase.

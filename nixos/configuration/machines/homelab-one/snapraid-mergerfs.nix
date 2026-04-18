@@ -59,11 +59,13 @@ in
       );
       mergerfsSourceDirPermissions = builtins.concatStringsSep "\n" (
         builtins.map (d: ''
+          mkdir -p ${d}/data;
           chown -R ${cfg.user}:${cfg.group} ${d}/data;
           chmod -R ${cfg.filePermissionMask} ${d}/data;
         '') cfg.dataDisks
       );
       mergerfsMountpointPermissions = ''
+        mkdir -p ${cfg.mergerfsMountpoint};
         chown -R ${cfg.user}:${cfg.group} ${cfg.mergerfsMountpoint};
         chmod -R ${cfg.filePermissionMask} ${cfg.mergerfsMountpoint};
       '';
@@ -75,6 +77,7 @@ in
         enable = true;
         inherit parityFiles contentFiles dataDisks;
         touchBeforeSync = true;
+        # TODO: setup monitoring with prometheus or similar for the output of `snapraid status`
         sync = {
           interval = "01:00"; # recalc parity every night
         };
@@ -94,19 +97,22 @@ in
       system.activationScripts.setDataPermissions.text =
         mergerfsSourceDirPermissions + mergerfsMountpointPermissions;
 
+      # WARNING: mergerfs does not support "remount", which `nixos-rebuild switch` uses to restart the service.
+      # to restart with new options, comment out, `nixos-rebuild switch`, comment back in, `nixos-rebuild switch`
       fileSystems = {
         "${cfg.mergerfsMountpoint}" = {
           device = mergerfsSourceDirs;
           fsType = "mergerfs";
           options = [
             "cache.files=off"
-            "category.create=pfrd"
+            "category.create=lfs" # least free space, completely fill up one disk first
             "func.getattr=newest"
             "dropcacheonclose=false"
           ];
           depends = cfg.dataDisks;
         };
       };
+
     }
   );
 }
