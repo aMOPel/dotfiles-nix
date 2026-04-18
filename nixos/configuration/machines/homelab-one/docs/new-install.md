@@ -33,10 +33,19 @@ the hardware changes, the `disko.nix` needs to be adapted
    passwd
    ```
 
-6. setup lvm, luks encryption and btrfs partitioning and install nixos
+6. copy dotfiles repo to remote machine
 
    ```sh
-   ./nixos/scripts/3-partition-and-install-server.sh
+   rsync -aqz --progress ~/dev/dotfiles-nix/ root@192.168.1.196:/root/dotfiles-nix/
    ```
 
-7. boot into the newly installed nixos
+7. copy luks passphrase to clipboard, you're gonna need it for the next step
+
+8. setup lvm, luks encryption and btrfs partitioning and install nixos, this
+   will ask for some inputs, including the luks passphrases for the disks
+
+   ```sh
+   /root/dotfiles-nix/nixos/scripts/new-install-server/3-partition-and-install-server.sh --local-dotfiles-repo /root/dotfiles-nix
+   ```
+
+9. boot into the newly installed nixos
