@@ -32,24 +32,24 @@ much as the smallest disk, the 4tb disk has a separate 250gb partition. those 3
 to merge the fs of the 3 ssds together, mergerfs is used.
 
 the rest of the 4tb drive can't be protected with parity until the other drives
-are upgraded.
+are upgraded to 4tb as well.
 
 the important data should go on the snapraid drives.
 
 ## luks
 
-each physical disk is encrypted individually, but all with the same key.
+each physical disk is encrypted individually, but all with the same passphrase.
 
 ## layering
 
 ```
 physical disk
--> gpt partitions
--> luks
--> lvm
--> lvm volume groups
--> btrfs
--> btrfs subvolumes
+-> gpt parttions # because some systems expect to find partition tables
+-> luks # for disk encryption, as low as possible
+-> lvm # for disk abstraction, to avoid physical repartitioning
+-> lvm volume groups # but disks need to stay separate for
+-> btrfs # for it's performance features
+-> btrfs subvolumes #
 ```
 
 ## lsblk

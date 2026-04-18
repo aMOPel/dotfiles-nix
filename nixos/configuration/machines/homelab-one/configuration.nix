@@ -87,6 +87,7 @@ in
     cntr
     gnumake
     apacheHttpd
+    mergerfs
   ];
 
   environment.variables = {
@@ -102,6 +103,31 @@ in
 
   networking.firewall = {
     enable = true;
+  };
+
+  # https://github.com/amadvance/snapraid/blob/master/doc/snapraid.txt
+  services.snapraid = {
+    enable = true;
+    parityFiles = [
+      "/snapraid/parity/snapraid.parity"
+    ];
+    contentFiles = [
+      "/snapraid/disk1/snapraid.content"
+      "/snapraid/disk2/snapraid.content"
+    ];
+    dataDisks = {
+      d1 = "/snapraid/disk1";
+      d2 = "/snapraid/disk2";
+    };
+    touchBeforeSync = true;
+    sync = {
+      interval = "01:00"; # recalc parity every night
+    };
+    scrub = {
+      interval = "Mon *-*-* 02:00:00"; # check for errors every week
+      plan = 8; # check 8% of the array
+      olderThan = 10; # check block older than 10 days
+    };
   };
 
   # automatically blacklist hosts that have too many failed auth attempts
