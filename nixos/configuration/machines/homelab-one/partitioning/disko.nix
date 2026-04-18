@@ -23,13 +23,11 @@ let
       content = {
         type = "luks";
         name = "disk${builtins.toString diskIndex}-crypted";
-        # passwordFile = "/tmp/secret.key";
         askPassword = true;
         initrdUnlock = true;
         settings = {
           # if you want to use the key for interactive login be sure there is no trailing newline
           # for example use `echo -n "password" > /tmp/secret.key`
-          # keyFile = "/tmp/secret.key";
           allowDiscards = true;
         };
         content = {
@@ -78,6 +76,7 @@ in
       disk0 =
         diskGpt
           {
+            # adapt this if hardware changes
             device = "/dev/disk/by-id/nvme-Samsung_SSD_990_EVO_Plus_4TB_S7U9NU0YA00981L";
           }
           {
@@ -100,6 +99,7 @@ in
       disk1 =
         diskGpt
           {
+            # adapt this if hardware changes
             device = "/dev/disk/by-id/ata-SanDisk_SDSSDA240G_171799447907";
           }
           {
@@ -118,6 +118,7 @@ in
       disk2 =
         diskGpt
           {
+            # adapt this if hardware changes
             device = "/dev/disk/by-id/ata-Samsung_SSD_850_EVO_250GB_S21PNXAG977384L";
           }
           {
@@ -173,6 +174,7 @@ in
         type = "lvm_vg";
         lvs = {
           swap = partitionSwap {
+            # adapt this if hardware changes
             size = "16G";
           };
           root =

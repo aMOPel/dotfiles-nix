@@ -8,10 +8,6 @@
   modulesPath,
   ...
 }:
-# let
-#   diskofile = import ./partitioning/disko.nix;
-#   uuidEFI = diskofile.disko.devices.disk.disk0.content.partitions.EFI.uuid;
-# in
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -27,61 +23,6 @@
   boot.initrd.kernelModules = [ "dm-snapshot" ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
-
-  # fileSystems."/boot" = {
-  #   device = "/dev/disk/by-partuuid/${uuidEFI}";
-  #   fsType = "vfat";
-  #   options = [
-  #     "fmask=0022"
-  #     "dmask=0022"
-  #   ];
-  # };
-  #
-  # fileSystems."/" = {
-  #   device = "/dev/disk0-pool/root";
-  #   fsType = "btrfs";
-  #   options = [ "subvol=root" ];
-  # };
-  #
-  # fileSystems."/home" = {
-  #   device = "/dev/disk0-pool/root";
-  #   fsType = "btrfs";
-  #   options = [ "subvol=home" ];
-  # };
-  #
-  # fileSystems."/nix" = {
-  #   device = "/dev/disk0-pool/root";
-  #   fsType = "btrfs";
-  #   options = [ "subvol=nix" ];
-  # };
-  #
-  # fileSystems."/snapraid/parity" = {
-  #   device = "/dev/disk0-pool/snapraidParity";
-  #   fsType = "btrfs";
-  #   options = [ "subvol=parity" ];
-  # };
-  #
-  # fileSystems."/data" = {
-  #   device = "/dev/disk0-pool/data";
-  #   fsType = "btrfs";
-  #   options = [ "subvol=data" ];
-  # };
-  #
-  # swapDevices = [
-  #   { device = "/dev/disk0-pool/swap"; }
-  # ];
-  #
-  # fileSystems."/snapraid/disk1" = {
-  #   device = "/dev/disk1-pool/root";
-  #   fsType = "btrfs";
-  #   options = [ "subvol=sub1" ];
-  # };
-  #
-  # fileSystems."/snapraid/disk2" = {
-  #   device = "/dev/disk2-pool/root";
-  #   fsType = "btrfs";
-  #   options = [ "subvol=sub1" ];
-  # };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's

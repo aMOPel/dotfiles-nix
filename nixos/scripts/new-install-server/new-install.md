@@ -1,0 +1,1 @@
+../../configuration/machines/homelab-one/docs/new-install.md

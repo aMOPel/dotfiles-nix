@@ -24,10 +24,11 @@
    cd dotfiles-nix
    ```
 
-6. (Optional) add the ssh daemon to login from another machine
+6. to use ssh
 
    ```sh
-   ./nixos/scripts/2-add-ssh-to-live-usb.sh
+   sudo -i
+   passwd
    ```
 
 7. setup lvm, luks encryption and btrfs partitioning and install nixos
