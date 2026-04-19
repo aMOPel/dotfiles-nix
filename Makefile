@@ -33,4 +33,4 @@ clean-boot-entries:
 
 .PHONY: homelab-one-nixos-switch
 homelab-one-nixos-switch:
-	nixos-rebuild switch --use-remote-sudo --fast --flake '.#homelab-one' --target-host root@homelab-one
+	nixos-rebuild switch --sudo --no-reexec --flake '.#homelab-one' --target-host root@homelab-one
