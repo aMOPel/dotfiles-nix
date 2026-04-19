@@ -3,7 +3,7 @@
   git-hooks-nix,
   gitignore-nix,
   global-treefmt,
-  system,
+  stdenv,
 }:
 let
   dotenv_linter = {
@@ -28,7 +28,7 @@ let
   };
 in
 {
-  pre-commit-check = git-hooks-nix.lib.${system}.run {
+  pre-commit-check = git-hooks-nix.lib.${stdenv.hostPlatform.system}.run {
     src = gitignore-nix.gitignoreSource ../.;
     # If your hooks are intrusive, avoid running on each commit with a default_states like this:
     # default_stages = ["manual" "push"];
