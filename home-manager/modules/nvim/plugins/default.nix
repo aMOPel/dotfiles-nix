@@ -77,7 +77,7 @@ in
     }
     {
       type = "lua";
-      plugin = fzfWrapper;
+      plugin = fzf-wrapper;
       optional = true;
     }
     {

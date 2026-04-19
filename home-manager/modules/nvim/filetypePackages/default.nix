@@ -206,7 +206,8 @@ let
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [
         json
         json5
-        jsonc
+        # TODO:
+        # jsonc
       ];
       lsps = [ vscode-langservers-extracted ];
       # TODO:
@@ -233,7 +234,8 @@ let
       linters = [
         proselint
         write-good
-        nodePackages.alex
+        # TODO:
+        # nodePackages.alex
         markdownlint-cli
       ];
       extraTools = [ python312Packages.grip ];
@@ -292,7 +294,7 @@ let
 
     sh = {
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [ bash ];
-      lsps = [ nodePackages.bash-language-server ];
+      lsps = [ bash-language-server ];
       linters = [ shellcheck ];
     };
 
@@ -323,7 +325,7 @@ let
         tsx
         jsdoc
       ];
-      lsps = [ nodePackages.typescript-language-server ];
+      lsps = [ typescript-language-server ];
       linters = [ pkgs_latest.eslint_d ];
       # TODO:
       # debuggers = [ ];

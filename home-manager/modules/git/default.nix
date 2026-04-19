@@ -55,8 +55,12 @@ in
   config = lib.mkIf cfg.enable {
     programs.git = {
       enable = true;
-      userName = cfg.globalUserName;
-      userEmail = cfg.globalUserEmail;
+      settings = {
+        user = {
+          name = cfg.globalUserName;
+          email = cfg.globalUserEmail;
+        };
+      };
       includes = lib.lists.flatten (
         builtins.map (value: [
           {

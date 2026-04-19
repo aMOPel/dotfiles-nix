@@ -16,12 +16,12 @@ hm-switch:
 
 .PHONY: nixos-switch
 nixos-switch:
-	nixos-rebuild switch --use-remote-sudo --fast --flake '.#'$$(cat /etc/hostname)
+	nixos-rebuild switch --sudo --no-reexec --flake '.#'$$(cat /etc/hostname)
 
 .PHONY: nixos-upgrade
 nixos-upgrade:
 	nix flake update
-	nixos-rebuild boot --use-remote-sudo --fast --flake '.#'$$(cat /etc/hostname)
+	nixos-rebuild boot --sudo --no-reexec --flake '.#'$$(cat /etc/hostname)
 	sudo reboot
 
 .PHONY: clean-boot-entries
@@ -33,4 +33,4 @@ clean-boot-entries:
 
 .PHONY: homelab-one-nixos-switch
 homelab-one-nixos-switch:
-	nixos-rebuild switch --use-remote-sudo --fast --flake '.#homelab-one' --target-host root@homelab-one
+	nixos-rebuild switch --sudo --no-reexec --flake '.#homelab-one' --target-host root@homelab-one

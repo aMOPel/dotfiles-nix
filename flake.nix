@@ -4,7 +4,7 @@
     owner = "nix-community";
     repo = "home-manager";
     ref = "release-25.11";
-    inputs.nixpkgs.follows = "nixpkgs";
+    inputs.nixpkgs.follows = "nixpkgs2";
   };
 
   inputs."nixpkgs_for_nvim" = {
@@ -21,7 +21,9 @@
     type = "github";
   };
 
-  inputs."nixpkgs" = {
+  # NOTE: calling it "nixpkgs", creates a collision with inputs for other flakes,
+  # for which we don't explicitly define inputs
+  inputs."nixpkgs2" = {
     ref = "nixos-25.11";
     owner = "NixOS";
     repo = "nixpkgs";
@@ -33,7 +35,7 @@
     owner = "numtide";
     repo = "treefmt-nix";
     type = "github";
-    inputs.nixpkgs.follows = "nixpkgs";
+    inputs.nixpkgs.follows = "nixpkgs2";
   };
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
@@ -44,7 +46,7 @@
     owner = "nix-community";
     repo = "disko";
     type = "github";
-    inputs.nixpkgs.follows = "nixpkgs";
+    inputs.nixpkgs.follows = "nixpkgs2";
   };
 
   inputs.git-hooks-nix = {
@@ -52,18 +54,18 @@
     type = "github";
     owner = "cachix";
     repo = "git-hooks.nix";
-    inputs.nixpkgs.follows = "nixpkgs";
+    inputs.nixpkgs.follows = "nixpkgs2";
   };
 
   inputs.sops-nix = {
     url = "github:Mic92/sops-nix";
-    inputs.nixpkgs.follows = "nixpkgs";
+    inputs.nixpkgs.follows = "nixpkgs2";
   };
 
   outputs =
     {
       self,
-      nixpkgs,
+      nixpkgs2,
       flake-utils,
       home-manager,
       treefmt-nix,
@@ -85,7 +87,7 @@
           path = ./nixos/configuration/machines + "/${hostname}/configuration.nix";
           system = config_values.nixos.system;
         in
-        (nixpkgs.lib.nixosSystem {
+        (nixpkgs2.lib.nixosSystem {
           system = system;
           specialArgs = makeInputsForSystem inputs system;
           modules = [ path ];
@@ -149,12 +151,12 @@
         (
           prev_inputs
           // rec {
-            pkgs = import prev_inputs.nixpkgs {
+            pkgs = import prev_inputs.nixpkgs2 {
               inherit system overlays config;
             };
             pkgs_latest = import prev_inputs.nixpkgs_latest { inherit system overlays config; };
             pkgs_for_nvim = import prev_inputs.nixpkgs_for_nvim { inherit system overlays config; };
-            lib = prev_inputs.nixpkgs.lib;
+            lib = prev_inputs.nixpkgs2.lib;
             hmlib = import "${prev_inputs.home-manager}/modules/lib" { inherit lib; };
           }
         );
@@ -167,7 +169,7 @@
     // (flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = import nixpkgs { inherit system overlays config; };
+        pkgs = import nixpkgs2 { inherit system overlays config; };
         scripts = (pkgs.callPackage ./nixos/scripts { }).scripts;
         pre-commit = pkgs.callPackage ./lib/pre-commit.nix { };
       in

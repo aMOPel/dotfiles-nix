@@ -16,6 +16,7 @@ vim.opt.listchars = {
 }
 
 vim.opt.clipboard:prepend({ "unnamedplus" })
+vim.g.clipboard = "xclip" -- even on wayland, because wl-clipboard is broken
 vim.o.relativenumber = true
 vim.o.signcolumn = "yes:2"
 vim.o.showtabline = 2

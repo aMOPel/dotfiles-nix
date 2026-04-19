@@ -3,7 +3,7 @@
     "disko-nix": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs"
+          "nixpkgs2"
         ]
       },
       "locked": {
@@ -60,7 +60,7 @@
         "flake-compat": "flake-compat",
         "gitignore": "gitignore",
         "nixpkgs": [
-          "nixpkgs"
+          "nixpkgs2"
         ]
       },
       "locked": {
@@ -120,7 +120,7 @@
     "home-manager": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs"
+          "nixpkgs2"
         ]
       },
       "locked": {
@@ -152,7 +152,7 @@
         "type": "indirect"
       }
     },
-    "nixpkgs_2": {
+    "nixpkgs2": {
       "locked": {
         "lastModified": 1776434932,
         "narHash": "sha256-gyqXNMgk3sh+ogY5svd2eNLJ6oEwzbAeaoBrrxD0lKk=",
@@ -207,7 +207,7 @@
         "git-hooks-nix": "git-hooks-nix",
         "gitignore-nix": "gitignore-nix",
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs2": "nixpkgs2",
         "nixpkgs_for_nvim": "nixpkgs_for_nvim",
         "nixpkgs_latest": "nixpkgs_latest",
         "sops-nix": "sops-nix",
@@ -217,7 +217,7 @@
     "sops-nix": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs"
+          "nixpkgs2"
         ]
       },
       "locked": {
@@ -252,7 +252,7 @@
     "treefmt-nix": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs"
+          "nixpkgs2"
         ]
       },
       "locked": {
