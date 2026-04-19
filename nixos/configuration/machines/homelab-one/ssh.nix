@@ -27,6 +27,7 @@ in
         openFirewall = true;
         settings = {
           PasswordAuthentication = false;
+          PubkeyAuthentication = true;
           KbdInteractiveAuthentication = false;
           PermitEmptyPasswords = false;
           X11Forwarding = false;
@@ -40,6 +41,11 @@ in
           AllowUsers = cfg.allowUsers;
           LogLevel = "VERBOSE"; # for fail2ban
           PermitRootLogin = "without-password"; # required for remote nixos-rebuild
+          ClientAliveCountMax = 2;
+          MaxAuthTries = 3;
+          IgnoreRhosts = true;
+          UseDns = true;
+          TCPKeepAlive = false;
         };
       };
     }

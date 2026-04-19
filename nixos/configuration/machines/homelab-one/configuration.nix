@@ -68,10 +68,17 @@ in
       "nix-command"
       "flakes"
     ];
+    allowed-users = [
+      "@users" # "users" group
+    ];
   };
 
   # system hardening
   security.sudo.wheelNeedsPassword = true;
+  security.apparmor = {
+    enable = true;
+    killUnconfinedConfinables = true;
+  };
 
   networking.networkmanager.enable = true;
 
