@@ -6,23 +6,6 @@
 }:
 let
   config-values = import ./config_values.nix;
-
-  hardenedServerExtraConfig = ''
-    ssl_stapling off; # because ocsp is not supported by step-ca
-    ssl_prefer_server_ciphers on;
-    proxy_cookie_path / "/; Secure; HttpOnly; SameSite=Strict";
-    server_tokens off; # don't leak server information
-
-    # dos protection
-    client_max_body_size 10M;
-    client_body_timeout 10s;
-    client_header_timeout 10s;
-    limit_req zone=global burst=20 nodelay;
-
-    # block external access
-    allow 192.168.1.0/24;
-    deny all;
-  '';
 in
 {
   imports = [
@@ -32,6 +15,7 @@ in
     ./dns.nix
     ./ssh.nix
     ./nginx.nix
+    ./radicale.nix
     ./snapraid-mergerfs.nix
     disko-nix.nixosModules.disko
     sops-nix.nixosModules.sops
@@ -113,64 +97,6 @@ in
     enable = true;
   };
 
-  # automatically blacklist hosts that have too many failed auth attempts
-  services.fail2ban = {
-    # TODO: enable after auditing
-    enable = false;
-    # TODO: jail for samba
-  };
-
-  # services.radicale = {
-  #   enable = true;
-  #   settings = {
-  #     server = {
-  #       hosts = [
-  #         "127.0.0.1:5232"
-  #       ];
-  #       max_connections = 20;
-  #       max_content_length = 100000000; # 100 Megabyte
-  #       timeout = 30; # 30 seconds
-  #     };
-  #     auth = {
-  #       # type = "none";
-  #       type = "htpasswd";
-  #       htpasswd_filename = "/var/lib/radicale/users";
-  #       htpasswd_encryption = "autodetect";
-  #       delay = 1; # Average delay after failed login attempts in seconds
-  #     };
-  #     storage = {
-  #       filesystem_folder = "/srv/radicale/collections";
-  #     };
-  #   };
-  # };
-  #
-  # services.nginx = {
-  #   virtualHosts = {
-  #     "radicale.${config-values.nixos.hostname}" = {
-  #       # for acme
-  #       enableACME = true;
-  #       forceSSL = true;
-  #
-  #       # don't configure top level to not collide with recommended settings, which breaks config
-  #       extraConfig = hardenedServerExtraConfig;
-  #
-  #       locations = {
-  #         "/" = {
-  #           extraConfig = ''
-  #             proxy_pass        http://127.0.0.1:5232;
-  #             proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-  #             proxy_set_header  X-Forwarded-Host $host;
-  #             proxy_set_header  X-Forwarded-Port $server_port;
-  #             proxy_set_header  X-Forwarded-Proto $scheme;
-  #             proxy_set_header  Host $host;
-  #             proxy_pass_header Authorization;
-  #           '';
-  #         };
-  #       };
-  #     };
-  #   };
-  # };
-
   fileSystems."/srv/www" = {
     device = "/home/${config-values.username}/data/www";
     options = [ "bind" ];
@@ -179,6 +105,38 @@ in
   fileSystems."/srv/radicale/collections" = {
     device = "/home/${config-values.username}/data/radicale/collections";
     options = [ "bind" ];
+  };
+
+  myModules.ssh = {
+    enable = true;
+    allowUsers = [
+      "root"
+      "${config-values.username}"
+    ];
+  };
+
+  myModules.snapraid-mergerfs = {
+    enable = true;
+    parityDisks = [
+      "/snapraid/parity-disk0"
+    ];
+    dataDisks = [
+      "/snapraid/data-disk1"
+      "/snapraid/data-disk2"
+    ];
+    mergerfsMountpoint = "/snapraid/mergerfs";
+    user = config-values.username;
+    group = "users";
+  };
+
+  # ==========================
+  # SERVICES
+
+  # automatically blacklist hosts that have too many failed auth attempts
+  services.fail2ban = {
+    # TODO: enable after auditing
+    enable = false;
+    # TODO: jail for samba
   };
 
   myModules.samba = {
@@ -197,31 +155,14 @@ in
     enable = false;
   };
 
-  myModules.ssh = {
-    enable = true;
-    allowUsers = [
-      "root"
-      "${config-values.username}"
-    ];
-  };
-
   myModules.nginx = {
     enable = false;
     defaultDomain = "${config-values.nixos.hostname}";
   };
 
-  myModules.snapraid-mergerfs = {
-    enable = true;
-    parityDisks = [
-      "/snapraid/parity-disk0"
-    ];
-    dataDisks = [
-      "/snapraid/data-disk1"
-      "/snapraid/data-disk2"
-    ];
-    mergerfsMountpoint = "/snapraid/mergerfs";
-    user = config-values.username;
-    group = "users";
+  myModules.radicale = {
+    enable = false;
+    defaultDomain = "${config-values.nixos.hostname}";
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
