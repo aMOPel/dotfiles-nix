@@ -13,7 +13,7 @@
 
 - on server, set samba password for default user
   ```sh
-  ./nixos/scripts/new-install/5-init-samba.sh
+  ./nixos/scripts/new-install-server/5-init-samba.sh
   ```
 - after that, log into samba share
 
@@ -34,7 +34,7 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
 
 - on server, set radicale password for default user
   ```sh
-  ./nixos/scripts/new-install/8-init-radicale.sh
+  ./nixos/scripts/new-install-server/8-init-radicale.sh
   ```
 - after that, log into
 
@@ -80,7 +80,7 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
    ```
    or
    ```sh
-   nix-shell -p age --run "./nixos/scripts/new-install/7-generate-age-key.sh"
+   nix-shell -p age --run "./nixos/scripts/new-install-server/7-generate-age-key.sh"
    ```
 2. insert the new public key into [.sops.yaml](https://github.com/getsops/sops)
    and reencrypt secrets
@@ -124,7 +124,7 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
       "SOPS_DIR=./secrets \
       SOPS_FILE=./step-ca.yaml \
       CA_OUTDIR=./nixos/configuration/machines/homelab-one/certificates \
-      ./nixos/scripts/new-install/6-init-step-ca.sh"
+      ./nixos/scripts/new-install-server/6-init-step-ca.sh"
   ```
   - this generates all necessary keys and certs and puts all those in a `.yaml`
     file and encrypt it with sops (all sensitive information is cleaned up
@@ -143,7 +143,7 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
       SOPS_FILE=./step-ca.yaml \
       CA_OUTDIR=./nixos/configuration/machines/homelab-one/certificates \
       ROTATE_INTERMEDIATE=true \
-      ./nixos/scripts/new-install/6-init-step-ca.sh"
+      ./nixos/scripts/new-install-server/6-init-step-ca.sh"
   ```
 
 ### threat model
