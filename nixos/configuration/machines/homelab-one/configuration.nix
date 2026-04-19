@@ -6,6 +6,7 @@
 }:
 let
   config-values = import ./config_values.nix;
+  enableEndUserServices = false;
 in
 {
   imports = [
@@ -135,33 +136,34 @@ in
   # automatically blacklist hosts that have too many failed auth attempts
   services.fail2ban = {
     # TODO: enable after auditing
+    # enable = enableEndUserServices;
     enable = false;
     # TODO: jail for samba
   };
 
   myModules.samba = {
-    enable = false;
+    enable = enableEndUserServices;
     shareParentDir = "/home/${config-values.username}/data";
     sambaServerName = "${config-values.nixos.hostname}";
     allowedUsers = "${config-values.username}";
   };
 
   myModules.tls-in-lan = {
-    enable = false;
+    enable = enableEndUserServices;
     rootCaCrtPath = ./certificates/root-ca.crt;
   };
 
   myModules.dns = {
-    enable = false;
+    enable = enableEndUserServices;
   };
 
   myModules.nginx = {
-    enable = false;
+    enable = enableEndUserServices;
     defaultDomain = "${config-values.nixos.hostname}";
   };
 
   myModules.radicale = {
-    enable = false;
+    enable = enableEndUserServices;
     defaultDomain = "${config-values.nixos.hostname}";
   };
 
