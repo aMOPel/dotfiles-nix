@@ -163,7 +163,8 @@ in
   };
 
   myModules.radicale = {
-    enable = enableEndUserServices;
+    # enable = enableEndUserServices;
+    enable = false;
     defaultDomain = "${config-values.nixos.hostname}";
   };
 

@@ -12,7 +12,7 @@ in
     enable = lib.mkEnableOption "${moduleName}";
     defaultDomain = lib.mkOption {
       type = lib.types.str;
-      example = '''';
+      example = "";
       description = "leads to landing page";
     };
   };
@@ -53,7 +53,6 @@ in
 
         recommendedGzipSettings = false;
         recommendedOptimisation = true;
-        recommendedZstdSettings = true;
         recommendedUwsgiSettings = true;
         recommendedBrotliSettings = false;
 
