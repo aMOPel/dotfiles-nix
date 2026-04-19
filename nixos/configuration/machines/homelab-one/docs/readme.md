@@ -75,18 +75,18 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
 ### after new setup
 
 1. generate new key on server
+   ```nix
+   sops.age.generateKey = true;
+   ```
+   or
    ```sh
    nix-shell -p age --run "./nixos/scripts/new-install/7-generate-age-key.sh"
    ```
-2. edit [.sops.yaml](https://github.com/getsops/sops) and add the new age public
-   key to the list
-3. reencrypt secrets
+2. insert the new public key into [.sops.yaml](https://github.com/getsops/sops)
+   and reencrypt secrets
    ```sh
-   nix-shell -p sops --run "sops updatekeys secrets/*.yaml"
+   nix-shell -p sops --run "./nixos/scripts/new-install-server/8-update-age-key.sh"
    ```
-
-- TODO: maybe use builtin age key generation from sops-nix
-- TODO: or improve script to automate all 3 steps
 
 ### threat model
 

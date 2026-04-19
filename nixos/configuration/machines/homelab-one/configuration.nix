@@ -95,6 +95,7 @@ in
     cntr
     gnumake
     apacheHttpd
+    age
   ];
 
   environment.variables = {
