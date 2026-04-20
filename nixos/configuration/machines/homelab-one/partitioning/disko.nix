@@ -206,7 +206,7 @@ in
           var =
             partitionBtrfs
               {
-                size = "10G";
+                size = "100G";
               }
               {
                 subvolumes = {

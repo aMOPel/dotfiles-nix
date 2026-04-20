@@ -172,3 +172,37 @@ data d2 /mnt/disk2/
 ```sh
 snapraid sync
 ```
+
+## resize partitions
+
+to resize lvs:
+
+0. if in doubt, backup data
+1. reduce size in btrfs
+
+   ```sh
+   # /data needs to be mounted
+   btrfs filesystem resize -90G /data
+   ```
+
+2. reduce size of lv
+
+   ```sh
+   umount /data
+   lvreduce -L -90G --fs ignore /dev/disk0-pool/data
+   mount /dev/disk0-pool/data /data
+   ```
+
+3. extend size of target lv
+
+   ```sh
+   lvextend -L +10G /dev/disk0-pool/var
+   ```
+
+4. extend size of target btrfs
+
+   ```sh
+   btrfs filesystem resize max /var
+   ```
+
+5. adapt `disko.nix`
