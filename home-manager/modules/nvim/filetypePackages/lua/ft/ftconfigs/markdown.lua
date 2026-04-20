@@ -41,7 +41,7 @@ utils.addTable(g.linter.filetype, {
   [ft] = {
     "proselint",
     "write_good",
-    "alex",
+    -- "alex",
     "markdownlint",
   },
 })
