@@ -33,7 +33,9 @@ in
           X11Forwarding = false;
           AllowAgentForwarding = false;
           AllowTcpForwarding = false;
-          KexAlgorithms = [ "curve25519-sha256" ];
+          KexAlgorithms = [
+            "mlkem768x25519-sha256"
+          ];
           Ciphers = [
             "aes256-gcm@openssh.com"
           ];
