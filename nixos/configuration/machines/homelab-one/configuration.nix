@@ -17,6 +17,7 @@ in
     ./ssh.nix
     ./nginx.nix
     ./radicale.nix
+    ./monitoring.nix
     ./snapraid-mergerfs.nix
     disko-nix.nixosModules.disko
     sops-nix.nixosModules.sops
@@ -167,121 +168,11 @@ in
     dataParentDir = "/snapraid/mergerfs";
   };
 
-  services.prometheus.exporters.node = {
+  myModules.monitoring = {
+    # enable = enableEndUserServices;
     enable = true;
-    port = 9100;
-    listenAddress = "127.0.0.1";
-    enabledCollectors = [
-      "logind"
-      "systemd"
-    ];
-    disabledCollectors = [ "textfile" ];
-    openFirewall = false;
-  };
-
-  services.prometheus = {
-    enable = true;
-    port = 9090;
-    listenAddress = "127.0.0.1";
-    scrapeConfigs = [
-      {
-        job_name = "node";
-        static_configs = [
-          {
-            targets = [
-              "127.0.0.1:9100"
-            ];
-          }
-        ];
-      }
-    ];
-  };
-
-  services.grafana = {
-    enable = true;
-    settings = {
-      server = {
-        http_addr = "127.0.0.1";
-        http_port = 3000;
-        domain = "grafana.homelab-one";
-        root_url = "https://grafana.homelab-one";
-      };
-    };
-    provision = {
-      dashboards.settings = {
-        apiVersion = 1;
-        providers = [
-          # {
-          #   name = "node-exporter";
-          #   options.path = ./test.json;
-          #   type = "file";
-          # }
-        ];
-      };
-      datasources = {
-        settings = {
-          apiVersion = 1;
-          datasources = [
-            {
-              name = "Prometheus";
-              type = "prometheus";
-              url = "http://127.0.0.1:9090";
-            }
-          ];
-        };
-      };
-    };
-  };
-
-  services.nginx = {
-    virtualHosts = {
-      "prometheus.homelab-one" = {
-        # for acme
-        enableACME = true;
-        forceSSL = true;
-        # don't configure top level to not collide with recommended settings, which breaks config
-        # extraConfig = hardenedServerExtraConfig;
-        locations = {
-          "/" = {
-            extraConfig = ''
-              # Content Security Policy (CSP)
-              add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
-              add_header X-Content-Type-Options "nosniff" always;
-              proxy_set_header Host $host;
-              proxy_pass        http://127.0.0.1:9090;
-            '';
-          };
-        };
-      };
-      "grafana.homelab-one" = {
-        # for acme
-        enableACME = true;
-        forceSSL = true;
-        # don't configure top level to not collide with recommended settings, which breaks config
-        # extraConfig = hardenedServerExtraConfig;
-        locations = {
-          "/" = {
-            extraConfig = ''
-              # Content Security Policy (CSP)
-              add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
-              add_header X-Content-Type-Options "nosniff" always;
-              proxy_set_header Host $host;
-              proxy_pass        http://127.0.0.1:3000;
-            '';
-          };
-          # Proxy Grafana Live WebSocket connections.
-          "/api/live/" = {
-            extraConfig = ''
-              proxy_http_version 1.1;
-              proxy_set_header Upgrade $http_upgrade;
-              proxy_set_header Connection $connection_upgrade;
-              proxy_set_header Host $host;
-              proxy_pass        http://127.0.0.1:3000;
-            '';
-          };
-        };
-      };
-    };
+    defaultDomain = "${config-values.nixos.hostname}";
+    dataParentDir = "/snapraid/mergerfs";
   };
 
   services.smartd = {
