@@ -196,6 +196,21 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
   intra-lan dns traffic will be routed from the router to the selfhosted dnsmasq
   instance, only be routed back again)
 
+## authelia
+
+- OIDC provider
+
+### after new setup
+
+- regenerate secrets
+  ```sh
+  nix-shell -p sops -p yq-go --run \
+      "OUTDIR=./temp \
+      SOPS_DIR=./secrets \
+      SOPS_FILE=authelia.yaml \
+      ./nixos/scripts/new-install-server/9-init-authelia.sh"
+  ```
+
 ## disk formatting/partitions/filesystem
 
 TODO:
