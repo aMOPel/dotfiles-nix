@@ -9,8 +9,10 @@ let
         format = "vfat";
         mountpoint = "/boot";
         mountOptions = [
-          "fmask=0022"
-          "dmask=0022"
+          "uid=0"
+          "gid=0"
+          "fmask=0077"
+          "dmask=0077"
         ];
       };
     }
@@ -180,18 +182,60 @@ in
           root =
             partitionBtrfs
               {
-                size = "200G";
+                size = "100G";
               }
               {
                 subvolumes = {
                   "/root" = {
                     mountpoint = "/";
                   };
-                  "/home" = {
-                    mountpoint = "/home";
-                  };
+                };
+              };
+          nix =
+            partitionBtrfs
+              {
+                size = "200G";
+              }
+              {
+                subvolumes = {
                   "/nix" = {
                     mountpoint = "/nix";
+                  };
+                };
+              };
+          var =
+            partitionBtrfs
+              {
+                size = "10G";
+              }
+              {
+                subvolumes = {
+                  "/var" = {
+                    mountpoint = "/var";
+                  };
+                };
+              };
+          tmp =
+            partitionBtrfs
+              {
+                size = "10G";
+              }
+              {
+                subvolumes = {
+                  "/tmp" = {
+                    mountpoint = "/tmp";
+                  };
+                };
+              };
+          home =
+            partitionBtrfs
+              {
+                size = "10G";
+              }
+              {
+                subvolumes = {
+                  "/home" = {
+                    mountpoint = "/home";
                   };
                 };
               };

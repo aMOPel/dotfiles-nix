@@ -98,15 +98,15 @@ in
     enable = true;
   };
 
-  fileSystems."/srv/www" = {
-    device = "/home/${config-values.username}/data/www";
-    options = [ "bind" ];
-  };
+  # fileSystems."/srv/www" = {
+  #   device = "/home/${config-values.username}/data/www";
+  #   options = [ "bind" ];
+  # };
 
-  fileSystems."/srv/radicale/collections" = {
-    device = "/home/${config-values.username}/data/radicale/collections";
-    options = [ "bind" ];
-  };
+  # fileSystems."/srv/radicale/collections" = {
+  #   device = "/home/${config-values.username}/data/radicale/collections";
+  #   options = [ "bind" ];
+  # };
 
   myModules.ssh = {
     enable = true;
@@ -143,7 +143,7 @@ in
 
   myModules.samba = {
     enable = enableEndUserServices;
-    shareParentDir = "/home/${config-values.username}/data";
+    shareParentDir = "/snapraid/mergerfs";
     sambaServerName = "${config-values.nixos.hostname}";
     allowedUsers = "${config-values.username}";
   };

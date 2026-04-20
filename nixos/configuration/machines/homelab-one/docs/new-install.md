@@ -14,6 +14,7 @@ the hardware changes, the `disko.nix` needs to be adapted
 1. clone repo on the machine you create the live usb:
 
    ```sh
+   # on other machine
    git clone https://github.com/aMOPel/dotfiles-nix.git
    cd dotfiles-nix
    ```
@@ -21,6 +22,7 @@ the hardware changes, the `disko.nix` needs to be adapted
 2. run this to create the live-usb
 
    ```sh
+   # on other machine
    ./nixos/scripts/1-create-live-usb.sh
    ```
 
@@ -29,14 +31,21 @@ the hardware changes, the `disko.nix` needs to be adapted
 5. to use ssh
 
    ```sh
+   # on new machine
    sudo -i
    passwd
+   ```
+
+   ```sh
+   # on other machine
+   ssh root@192.168.1.196
    ```
 
 6. copy dotfiles repo to remote machine
 
    ```sh
-   rsync -aqz --progress ~/dev/dotfiles-nix/ root@192.168.1.196:/root/dotfiles-nix/
+   # on other machine
+   rsync -rqz --progress ~/dev/dotfiles-nix/ root@192.168.1.196:/root/dotfiles-nix/
    ```
 
 7. copy luks passphrase to clipboard, you're gonna need it for the next step
@@ -45,6 +54,7 @@ the hardware changes, the `disko.nix` needs to be adapted
    will ask for some inputs, including the luks passphrases for the disks
 
    ```sh
+   # on new machine
    /root/dotfiles-nix/nixos/scripts/new-install-server/3-partition-and-install-server.sh --local-dotfiles-repo /root/dotfiles-nix
    ```
 
