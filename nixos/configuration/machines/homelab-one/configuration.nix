@@ -22,6 +22,7 @@ in
     disko-nix.nixosModules.disko
     sops-nix.nixosModules.sops
     ./partitioning/disko.nix
+    ./ids.nix
   ];
 
   boot.loader.systemd-boot.enable = true;

@@ -10,35 +10,11 @@ in
 {
   options.myModules."${moduleName}" = {
     enable = lib.mkEnableOption "${moduleName}";
-    sambaGroup = lib.mkOption {
-      type = lib.types.str;
-      default = "samba-group";
-      example = "";
-      description = "the group of the samba user";
-    };
     allowedUsers = lib.mkOption {
       type = lib.types.str;
       default = "";
       example = "";
       description = "space separated list, only these user names can log in";
-    };
-    sambaUser = lib.mkOption {
-      type = lib.types.str;
-      default = "samba-user";
-      example = "";
-      description = "the samba user";
-    };
-    sambaUid = lib.mkOption {
-      type = lib.types.int;
-      default = 1001;
-      example = "";
-      description = "the uid of the samba user";
-    };
-    sambaGid = lib.mkOption {
-      type = lib.types.int;
-      default = 1001;
-      example = "";
-      description = "the gid of the samba group";
     };
     filePermissionMask = lib.mkOption {
       type = lib.types.str;
@@ -71,25 +47,27 @@ in
       # create this dir and hardlink it to `targetMountPoint`
       sambaDir = "${cfg.shareParentDir}/samba-share";
       shareDir = "${sambaDir}/${cfg.sambaShareName}";
+      sambaUser = "samba";
+      sambaGroup = "samba";
     in
     {
       # ensure the directories for samba exist after boot
       systemd.tmpfiles.rules = [
-        "d ${sambaDir} ${cfg.filePermissionMask} ${cfg.sambaUser} ${cfg.sambaGroup} -"
-        "d ${shareDir} ${cfg.filePermissionMask} ${cfg.sambaUser} ${cfg.sambaGroup} -"
+        "d ${sambaDir} ${cfg.filePermissionMask} ${builtins.toString config.ids.uids.samba} ${builtins.toString config.ids.gids.samba} -"
+        "d ${shareDir} ${cfg.filePermissionMask} ${builtins.toString config.ids.uids.samba} ${builtins.toString config.ids.gids.samba} -"
       ];
 
       users = {
         groups = {
-          "${cfg.sambaGroup}" = {
-            gid = cfg.sambaGid;
+          "${sambaGroup}" = {
+            gid = config.ids.gids.samba;
           };
         };
         extraUsers = {
-          "${cfg.sambaUser}" = {
+          "${sambaUser}" = {
             isSystemUser = true;
-            uid = cfg.sambaUid;
-            group = "${cfg.sambaGroup}";
+            uid = config.ids.uids.samba;
+            group = "${sambaGroup}";
           };
         };
       };

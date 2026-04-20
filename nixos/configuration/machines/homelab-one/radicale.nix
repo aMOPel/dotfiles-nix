@@ -54,15 +54,26 @@ in
       collectionsDir = "${dataDir}/collections";
     in
     {
+      users = {
+        users.radicale = {
+          isSystemUser = true;
+          group = "radicale";
+          uid = config.ids.uids.radicale;
+        };
+
+        groups.radicale = {
+          gid = config.ids.gids.radicale;
+        };
+      };
 
       # ensure the directories for radicale exist after boot
       systemd.tmpfiles.rules = [
-        "d ${dataDir} ${cfg.filePermissionMask} radicale radicale -"
-        "d ${collectionsDir} ${cfg.filePermissionMask} radicale radicale -"
+        "d ${dataDir} ${cfg.filePermissionMask} ${builtins.toString config.ids.uids.radicale} ${builtins.toString config.ids.gids.radicale} -"
+        "d ${collectionsDir} ${cfg.filePermissionMask} ${builtins.toString config.ids.uids.radicale} ${builtins.toString config.ids.gids.radicale} -"
       ];
 
       environment.systemPackages = with pkgs; [
-        apacheHttpd
+        apacheHttpd # for htpasswd
       ];
 
       services.radicale = {
