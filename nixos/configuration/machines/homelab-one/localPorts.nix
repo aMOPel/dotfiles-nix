@@ -19,6 +19,7 @@
       grafana = 3000;
       node-exporter = 9100;
       stepCa = 8443;
+      authelia = 9091;
     };
   };
 }

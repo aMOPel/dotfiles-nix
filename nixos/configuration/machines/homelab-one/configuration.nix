@@ -25,6 +25,7 @@ in
     ./ids.nix
     ./localPorts.nix
     ./extraLib.nix
+    ./auth.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -176,6 +177,11 @@ in
     enable = true;
     defaultDomain = "${config-values.nixos.hostname}";
     dataParentDir = "/snapraid/mergerfs";
+  };
+
+  myModules.auth = {
+    # enable = enableEndUserServices;
+    enable = true;
   };
 
   services.smartd = {
