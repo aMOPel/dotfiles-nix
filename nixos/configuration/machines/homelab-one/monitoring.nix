@@ -44,35 +44,30 @@ in
         deny all;
       '';
 
-      # dataDir = "${cfg.dataParentDir}/radicale";
-      # collectionsDir = "${dataDir}/collections";
-
-      localAddress = "127.0.0.1";
-      localUrl = "http://${localAddress}";
-      localAddressWithPort = port: "${localAddress}:${port}";
-      localUrlWithPort = port: "${localUrl}:${port}";
-      ports = {
-        prometheus = 9090;
-        grafana = 3000;
-        exporters.node = 9100;
-      };
       subdomains = {
         prometheus = "prometheus.${cfg.defaultDomain}";
         grafana = "grafana.${cfg.defaultDomain}";
       };
+      dataDir = "${cfg.dataParentDir}/grafana";
+      userGroups = {
+        grafana = "grafana";
+        prometheus = "prometheus";
+      };
     in
     {
+      users = config.extraLib.createSystemUserGroups (builtins.attrValues userGroups);
 
-      # # ensure the directories for radicale exist after boot
-      # systemd.tmpfiles.rules = [
-      #   "d ${dataDir} ${cfg.filePermissionMask} radicale radicale -"
-      #   "d ${collectionsDir} ${cfg.filePermissionMask} radicale radicale -"
-      # ];
+      systemd.tmpfiles.settings = config.extraLib.createDirs {
+        userGroup = userGroups.grafana;
+        dirs = [
+          dataDir
+        ];
+      };
 
       services.prometheus.exporters.node = {
         enable = true;
-        port = ports.exporters.node;
-        listenAddress = localAddress;
+        port = config.ports.node-exporter;
+        listenAddress = config.extraLib.localAddress;
         enabledCollectors = [
           "logind"
           "systemd"
@@ -83,16 +78,15 @@ in
 
       services.prometheus = {
         enable = true;
-        port = ports.prometheus;
-        listenAddress = localAddress;
-        stateDir = "${cfg.dataParentDir}/prometheus";
+        port = config.ports.prometheus;
+        listenAddress = config.extraLib.localAddress;
         scrapeConfigs = [
           {
             job_name = "node";
             static_configs = [
               {
                 targets = [
-                  (localAddressWithPort ports.exporters.node)
+                  (config.extraLib.localAddressWithPort config.ports.node-exporter)
                 ];
               }
             ];
@@ -101,12 +95,12 @@ in
       };
 
       services.grafana = {
-        enable = false;
-        dataDir = "${cfg.dataParentDir}/grafana";
+        enable = true;
+        dataDir = dataDir;
         settings = {
           server = {
-            http_addr = localAddress;
-            http_port = ports.grafana;
+            http_addr = config.extraLib.localAddress;
+            http_port = config.ports.grafana;
             domain = subdomains.grafana;
             root_url = "https://${subdomains.grafana}";
           };
@@ -129,7 +123,7 @@ in
                 {
                   name = "Prometheus";
                   type = "prometheus";
-                  url = localUrlWithPort ports.prometheus;
+                  url = config.extraLib.localUrlWithPort config.ports.prometheus;
                 }
               ];
             };
@@ -152,12 +146,12 @@ in
                   add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
                   add_header X-Content-Type-Options "nosniff" always;
                   proxy_set_header Host $host;
-                  proxy_pass        ${localUrlWithPort ports.prometheus};
+                  proxy_pass        ${config.extraLib.localUrlWithPort config.ports.prometheus};
                 '';
               };
             };
           };
-          "${subdomains.prometheus}" = {
+          "${subdomains.grafana}" = {
             # for acme
             enableACME = true;
             forceSSL = true;
@@ -170,7 +164,7 @@ in
                   add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
                   add_header X-Content-Type-Options "nosniff" always;
                   proxy_set_header Host $host;
-                  proxy_pass        ${localUrlWithPort ports.grafana};
+                  proxy_pass        ${config.extraLib.localUrlWithPort config.ports.grafana};
                 '';
               };
               # Proxy Grafana Live WebSocket connections.
@@ -180,7 +174,7 @@ in
                   proxy_set_header Upgrade $http_upgrade;
                   proxy_set_header Connection $connection_upgrade;
                   proxy_set_header Host $host;
-                  proxy_pass        ${localUrlWithPort ports.grafana};
+                  proxy_pass        ${config.extraLib.localUrlWithPort config.ports.grafana};
                 '';
               };
             };

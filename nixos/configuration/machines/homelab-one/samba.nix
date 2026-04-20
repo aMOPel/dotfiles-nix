@@ -20,7 +20,7 @@ in
       type = lib.types.str;
       default = "0770";
       example = "";
-      description = "umask for all samba share files and directories";
+      description = "umask for all grafana and prometheus files and directories";
     };
     shareParentDir = lib.mkOption {
       type = lib.types.str;
@@ -47,29 +47,21 @@ in
       # create this dir and hardlink it to `targetMountPoint`
       sambaDir = "${cfg.shareParentDir}/samba-share";
       shareDir = "${sambaDir}/${cfg.sambaShareName}";
-      sambaUser = "samba";
-      sambaGroup = "samba";
+      userGroup = "samba";
     in
     {
       # ensure the directories for samba exist after boot
-      systemd.tmpfiles.rules = [
-        "d ${sambaDir} ${cfg.filePermissionMask} ${builtins.toString config.ids.uids.samba} ${builtins.toString config.ids.gids.samba} -"
-        "d ${shareDir} ${cfg.filePermissionMask} ${builtins.toString config.ids.uids.samba} ${builtins.toString config.ids.gids.samba} -"
-      ];
+      systemd.tmpfiles.settings = config.extraLib.createDirs {
+        inherit userGroup;
+        mode = cfg.filePermissionMask;
+        dirs = [
+          sambaDir
+          shareDir
+        ];
+      };
 
-      users = {
-        groups = {
-          "${sambaGroup}" = {
-            gid = config.ids.gids.samba;
-          };
-        };
-        extraUsers = {
-          "${sambaUser}" = {
-            isSystemUser = true;
-            uid = config.ids.uids.samba;
-            group = "${sambaGroup}";
-          };
-        };
+      users = config.extraLib.createSystemUserGroup {
+        inherit userGroup;
       };
 
       services.samba = {
@@ -110,7 +102,7 @@ in
             "multicast dns register" = "no";
             # network
             # TODO: get the interface name from somewhere else
-            "interfaces" = "enp1s0 127.0.0.1";
+            "interfaces" = "enp1s0 ${config.extraLib.localAddress}";
             "bind interfaces only" = "yes";
             # tls
             "tls enabled" = "no"; # tls only used for ldap
@@ -125,16 +117,16 @@ in
             "browseable" = "no";
             # only allow local network access
             "hosts deny" = "ALL";
-            "hosts allow" = "192.168.1. 127.0.0.1";
+            "hosts allow" = "192.168.1. ${config.extraLib.localAddress}";
 
             path = "${shareDir}";
             writable = "yes";
             "directory mask" = "${cfg.filePermissionMask}";
             "create mask" = "${cfg.filePermissionMask}";
             # after smb login, regardless of who logged in, all file actions are performed as this user
-            "force user" = "${cfg.sambaUser}";
+            "force user" = "${userGroup}";
             # after smb login, regardless of who logged in, all file actions are performed as this group
-            "force group" = "${cfg.sambaGroup}";
+            "force group" = "${userGroup}";
           };
         };
       };

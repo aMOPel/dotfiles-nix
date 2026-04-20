@@ -16,12 +16,6 @@ in
       example = "";
       description = "radicale will be reachable under radicale.$${defaultDomain}";
     };
-    filePermissionMask = lib.mkOption {
-      type = lib.types.str;
-      default = "0770";
-      example = "";
-      description = "umask for all radicale files and directories";
-    };
     dataParentDir = lib.mkOption {
       type = lib.types.str;
       example = "";
@@ -52,25 +46,20 @@ in
 
       dataDir = "${cfg.dataParentDir}/radicale";
       collectionsDir = "${dataDir}/collections";
+      userGroup = "radicale";
     in
     {
-      users = {
-        users.radicale = {
-          isSystemUser = true;
-          group = "radicale";
-          uid = config.ids.uids.radicale;
-        };
-
-        groups.radicale = {
-          gid = config.ids.gids.radicale;
-        };
+      users = config.extraLib.createSystemUserGroup {
+        inherit userGroup;
       };
 
-      # ensure the directories for radicale exist after boot
-      systemd.tmpfiles.rules = [
-        "d ${dataDir} ${cfg.filePermissionMask} ${builtins.toString config.ids.uids.radicale} ${builtins.toString config.ids.gids.radicale} -"
-        "d ${collectionsDir} ${cfg.filePermissionMask} ${builtins.toString config.ids.uids.radicale} ${builtins.toString config.ids.gids.radicale} -"
-      ];
+      systemd.tmpfiles.settings = config.extraLib.createDirs {
+        inherit userGroup;
+        dirs = [
+          dataDir
+          collectionsDir
+        ];
+      };
 
       environment.systemPackages = with pkgs; [
         apacheHttpd # for htpasswd
@@ -81,7 +70,7 @@ in
         settings = {
           server = {
             hosts = [
-              "127.0.0.1:5232"
+              (config.extraLib.localAddressWithPort config.ports.radicale)
             ];
             max_connections = 20;
             max_content_length = 100000000; # 100 Megabyte
@@ -113,7 +102,7 @@ in
             locations = {
               "/" = {
                 extraConfig = ''
-                  proxy_pass        http://127.0.0.1:5232;
+                  proxy_pass        ${config.extraLib.localUrlWithPort config.ports.radicale};
                   proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
                   proxy_set_header  X-Forwarded-Host $host;
                   proxy_set_header  X-Forwarded-Port $server_port;

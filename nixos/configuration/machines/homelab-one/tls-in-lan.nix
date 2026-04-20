@@ -11,25 +11,15 @@ in
 {
   options.myModules."${moduleName}" = {
     enable = lib.mkEnableOption "${moduleName}";
-    stepCaPort = lib.mkOption {
-      type = lib.types.int;
-      default = 8443;
-      example = '''';
-      description = "step-ca serves acme-server endpoint on 127.0.0.1:\${cfg.stepCaPort}";
-    };
     rootCaCrtPath = lib.mkOption {
       type = lib.types.path;
-      example = ''./certificates/root-ca.crt'';
+      example = "./certificates/root-ca.crt";
       description = "path in repo to the root-ca.crt, clients should trust this";
     };
   };
 
   config = lib.mkIf cfg.enable (
     let
-      localHostname = "localhost";
-      localAddress = "127.0.0.1";
-      localHostnamePort = "${localHostname}:${builtins.toString cfg.stepCaPort}";
-      localAddressPort = "${localAddress}:${builtins.toString cfg.stepCaPort}";
       stepCaSecretConfig = {
         owner = "step-ca";
         # TODO: maybe restart more units that depend on this
@@ -82,19 +72,19 @@ in
         enable = true;
         openFirewall = false;
         # overrides config
-        address = localAddress;
-        port = cfg.stepCaPort;
+        address = config.extraLib.localAddress;
+        port = config.ports.stepCa;
         intermediatePasswordFile = "${secretsRuntimePath}/intermediate-ca/private-password";
         package = pkgs.step-ca;
         settings = {
           root = "${secretsRuntimePath}/root-ca/public-cert";
           crt = "${secretsRuntimePath}/intermediate-ca/public-cert";
           key = "${secretsRuntimePath}/intermediate-ca/private-key";
-          address = localAddressPort;
+          address = config.extraLib.localAddressWithPort config.ports.stepCa;
           # it seems the first name in the list decides which hostname has to be used
           # for the acme client setup (email, and server address)
           dnsNames = [
-            localHostname
+            config.extraLib.localHostname
           ];
           logger = {
             format = "text";
@@ -120,8 +110,8 @@ in
           policy = {
             x509 = {
               allow = {
-                dns = [ "localhost" ];
-                ip = [ "127.0.0.1" ];
+                dns = [ config.extraLib.localHostname ];
+                ip = [ config.extraLib.localAddress ];
               };
               deny = {
                 ip = [ "0.0.0.0/0" ];
@@ -152,8 +142,8 @@ in
         acceptTerms = true;
         # these need to hostnames and fit to the `dnsNames` used for the step-ca setup
         defaults = {
-          email = "admin@${localHostname}";
-          server = "https://${localHostnamePort}/acme/acme/directory";
+          email = "admin@${config.extraLib.localHostname}";
+          server = "https://${config.extraLib.localHostnameWithPort config.ports.stepCa}/acme/acme/directory";
         };
       };
     }

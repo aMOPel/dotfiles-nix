@@ -23,6 +23,8 @@ in
     sops-nix.nixosModules.sops
     ./partitioning/disko.nix
     ./ids.nix
+    ./localPorts.nix
+    ./extraLib.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
