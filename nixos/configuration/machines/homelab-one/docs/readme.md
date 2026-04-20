@@ -13,7 +13,7 @@
 
 - on server, set samba password for default user
   ```sh
-  ./nixos/scripts/new-install-server/5-init-samba.sh
+  ./nixos/scripts/new-install-server/7-init-samba.sh
   ```
 - after that, log into samba share
 
@@ -80,12 +80,12 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
    ```
    or
    ```sh
-   nix-shell -p age --run "./nixos/scripts/new-install-server/7-generate-age-key.sh"
+   nix-shell -p age --run "./nixos/scripts/new-install-server/5-generate-age-key.sh"
    ```
 2. insert the new public key into [.sops.yaml](https://github.com/getsops/sops)
    and reencrypt secrets
    ```sh
-   nix-shell -p sops --run "./nixos/scripts/new-install-server/8-update-age-key.sh"
+   nix-shell -p sops --run "./nixos/scripts/new-install-server/5-other-machine-update-age-key.sh"
    ```
 
 ### threat model
