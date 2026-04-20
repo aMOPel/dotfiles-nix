@@ -6,7 +6,7 @@
 }:
 let
   config-values = import ./config_values.nix;
-  enableEndUserServices = false;
+  enableEndUserServices = true;
 in
 {
   imports = [
@@ -79,7 +79,6 @@ in
     neovim
     cntr
     gnumake
-    apacheHttpd
     age
   ];
 
@@ -126,8 +125,6 @@ in
       "/snapraid/data-disk2"
     ];
     mergerfsMountpoint = "/snapraid/mergerfs";
-    user = config-values.username;
-    group = "users";
   };
 
   # ==========================
@@ -164,8 +161,9 @@ in
 
   myModules.radicale = {
     # enable = enableEndUserServices;
-    enable = false;
+    enable = true;
     defaultDomain = "${config-values.nixos.hostname}";
+    dataParentDir = "/snapraid/mergerfs";
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,

@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -12,8 +13,21 @@ in
     enable = lib.mkEnableOption "${moduleName}";
     defaultDomain = lib.mkOption {
       type = lib.types.str;
-      example = '''';
+      example = "";
       description = "radicale will be reachable under radicale.$${defaultDomain}";
+    };
+    filePermissionMask = lib.mkOption {
+      type = lib.types.str;
+      default = "0770";
+      example = "";
+      description = "umask for all radicale files and directories";
+    };
+    dataParentDir = lib.mkOption {
+      type = lib.types.str;
+      example = "";
+      description = ''
+        the parent directory of the data directory.
+              the data directory will be created inside that directory with the correct permissions.'';
     };
   };
 
@@ -35,8 +49,22 @@ in
         allow 192.168.1.0/24;
         deny all;
       '';
+
+      dataDir = "${cfg.dataParentDir}/radicale";
+      collectionsDir = "${dataDir}/collections";
     in
     {
+
+      # ensure the directories for radicale exist after boot
+      systemd.tmpfiles.rules = [
+        "d ${dataDir} ${cfg.filePermissionMask} radicale radicale -"
+        "d ${collectionsDir} ${cfg.filePermissionMask} radicale radicale -"
+      ];
+
+      environment.systemPackages = with pkgs; [
+        apacheHttpd
+      ];
+
       services.radicale = {
         enable = true;
         settings = {
@@ -56,7 +84,7 @@ in
             delay = 1; # Average delay after failed login attempts in seconds
           };
           storage = {
-            filesystem_folder = "/srv/radicale/collections";
+            filesystem_folder = "${collectionsDir}";
           };
         };
       };

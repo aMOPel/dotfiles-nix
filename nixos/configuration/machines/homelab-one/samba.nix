@@ -13,55 +13,55 @@ in
     sambaGroup = lib.mkOption {
       type = lib.types.str;
       default = "samba-group";
-      example = '''';
+      example = "";
       description = "the group of the samba user";
     };
     allowedUsers = lib.mkOption {
       type = lib.types.str;
       default = "";
-      example = '''';
+      example = "";
       description = "space separated list, only these user names can log in";
     };
     sambaUser = lib.mkOption {
       type = lib.types.str;
       default = "samba-user";
-      example = '''';
+      example = "";
       description = "the samba user";
     };
     sambaUid = lib.mkOption {
       type = lib.types.int;
       default = 1001;
-      example = '''';
+      example = "";
       description = "the uid of the samba user";
     };
     sambaGid = lib.mkOption {
       type = lib.types.int;
       default = 1001;
-      example = '''';
+      example = "";
       description = "the gid of the samba group";
     };
     filePermissionMask = lib.mkOption {
       type = lib.types.str;
-      default = "0775";
-      example = '''';
+      default = "0770";
+      example = "";
       description = "umask for all samba share files and directories";
     };
     shareParentDir = lib.mkOption {
       type = lib.types.str;
-      example = '''';
+      example = "";
       description = ''
         the parent directory of the share directory.
               the share directory will be created inside that directory with the correct permissions.'';
     };
     sambaServerName = lib.mkOption {
       type = lib.types.str;
-      example = '''';
+      example = "";
       description = "the name of the samba server (netbios, server string)";
     };
     sambaShareName = lib.mkOption {
       type = lib.types.str;
       default = "public";
-      example = '''';
+      example = "";
       description = "the name of the samba share, visible when logging in";
     };
   };
@@ -69,21 +69,15 @@ in
   config = lib.mkIf cfg.enable (
     let
       # create this dir and hardlink it to `targetMountPoint`
-      sourceMountPoint = "${cfg.shareParentDir}/samba-share";
-      targetMountPoint = "/srv/samba/${cfg.sambaShareName}";
+      sambaDir = "${cfg.shareParentDir}/samba-share";
+      shareDir = "${sambaDir}/${cfg.sambaShareName}";
     in
     {
       # ensure the directories for samba exist after boot
       systemd.tmpfiles.rules = [
-        "d ${sourceMountPoint} ${cfg.filePermissionMask} ${cfg.sambaUser} ${cfg.sambaGroup} -"
-        "d ${targetMountPoint} ${cfg.filePermissionMask} ${cfg.sambaUser} ${cfg.sambaGroup} -"
+        "d ${sambaDir} ${cfg.filePermissionMask} ${cfg.sambaUser} ${cfg.sambaGroup} -"
+        "d ${shareDir} ${cfg.filePermissionMask} ${cfg.sambaUser} ${cfg.sambaGroup} -"
       ];
-
-      # hardlink from `targetMountPoint` to `sourceMountPoint`
-      fileSystems."${targetMountPoint}" = {
-        device = "${sourceMountPoint}";
-        options = [ "bind" ];
-      };
 
       users = {
         groups = {
@@ -155,7 +149,7 @@ in
             "hosts deny" = "ALL";
             "hosts allow" = "192.168.1. 127.0.0.1";
 
-            path = "${targetMountPoint}";
+            path = "${shareDir}";
             writable = "yes";
             "directory mask" = "${cfg.filePermissionMask}";
             "create mask" = "${cfg.filePermissionMask}";

@@ -3,9 +3,8 @@
 - each service has its own user and group.
 - files and directories belonging to a service are owned by that service (this
   improves security, "least privilege")
-- web services serve their files from `/srv/*`
-- files can be hardlinked from `/home/$USERNAME/*` to `/srv/*`
-  - TODO: is this good?
+- important data should live in `/snapraid/mergerfs`, since only that mount is
+  protected by RAID
 
 ## samba
 
