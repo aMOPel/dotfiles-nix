@@ -24,24 +24,12 @@ in
     filePermissionMask = lib.mkOption {
       type = lib.types.str;
       default = "0775";
-      example = '''';
+      example = "";
       description = "umask for the mergerfs mountpoint";
-    };
-    group = lib.mkOption {
-      type = lib.types.str;
-      default = "root";
-      example = '''';
-      description = "the group that owns the mergerfs mountpoint";
-    };
-    user = lib.mkOption {
-      type = lib.types.str;
-      default = "root";
-      example = '''';
-      description = "the user that owns the mergerfs mountpoint";
     };
     mergerfsMountpoint = lib.mkOption {
       type = lib.types.str;
-      example = '''';
+      example = "";
       description = "where the mergerfs is mounted to";
     };
   };
@@ -57,19 +45,8 @@ in
           value = d;
         }) cfg.dataDisks
       );
-      mergerfsSourceDirPermissions = builtins.concatStringsSep "\n" (
-        builtins.map (d: ''
-          mkdir -p ${d}/data;
-          chown -R ${cfg.user}:${cfg.group} ${d}/data;
-          chmod -R ${cfg.filePermissionMask} ${d}/data;
-        '') cfg.dataDisks
-      );
-      mergerfsMountpointPermissions = ''
-        mkdir -p ${cfg.mergerfsMountpoint};
-        chown -R ${cfg.user}:${cfg.group} ${cfg.mergerfsMountpoint};
-        chmod -R ${cfg.filePermissionMask} ${cfg.mergerfsMountpoint};
-      '';
       mergerfsSourceDirs = builtins.concatStringsSep ":" (builtins.map (d: "${d}/data") cfg.dataDisks);
+      userGroup = "root";
     in
     {
       # https://github.com/amadvance/snapraid/blob/master/doc/snapraid.txt
@@ -93,9 +70,14 @@ in
         mergerfs
       ];
 
-      # set permissions
-      system.activationScripts.setDataPermissions.text =
-        mergerfsSourceDirPermissions + mergerfsMountpointPermissions;
+      systemd.tmpfiles.settings = config.extraLib.createDirs {
+        userGroup = userGroup;
+        priority = 0;
+        dirs = (builtins.map (v: "${v}/data") cfg.dataDisks) ++ [
+          cfg.mergerfsMountpoint
+        ];
+        mode = cfg.filePermissionMask;
+      };
 
       # WARNING: mergerfs does not support "remount", which `nixos-rebuild switch` uses to restart the service.
       # to restart with new options, comment out, `nixos-rebuild switch`, comment back in, `nixos-rebuild switch`

@@ -17,9 +17,10 @@ let
       userGroup,
       dirs,
       mode ? "0770",
+      priority ? 5,
     }:
     {
-      "0-${userGroup}" = builtins.foldl' (x: y: x // y) { } (
+      "${builtins.toString priority}-${userGroup}" = builtins.foldl' (x: y: x // y) { } (
         builtins.map (v: {
           "${v}" = {
             "d" = {
