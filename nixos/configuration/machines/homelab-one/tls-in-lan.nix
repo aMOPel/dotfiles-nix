@@ -77,11 +77,6 @@ in
       sops.secrets."intermediate-ca/private-password" = stepCaSecretConfig;
       sops.secrets."intermediate-ca/private-key" = stepCaSecretConfig;
 
-      systemd.services."acme-prometheus.homelab-one.lan" = {
-        after = [ "step-ca.service" ];
-        requires = [ "step-ca.service" ];
-      };
-
       services.step-ca = {
         enable = true;
         openFirewall = false;
@@ -143,8 +138,27 @@ in
           };
         };
       };
+      #
+      # systemd.services.step-ca.serviceConfig = hardenedSystemdConfig;
 
-      systemd.services.step-ca.serviceConfig = hardenedSystemdConfig;
+      # ensure that all acme services are started after step-ca
+      # this works by looking at service that have globals.subdomains and that are currently enabled
+      systemd.services = builtins.listToAttrs (
+        builtins.map
+          (service: {
+            name = "acme-${extraLib.domainFor service}";
+            value = {
+              after = [ "step-ca.service" ];
+              requires = [ "step-ca.service" ];
+            };
+          })
+          (
+            builtins.filter (
+              service:
+              (builtins.hasAttr "enable" config.services."${service}") && config.services."${service}".enable
+            ) (builtins.attrNames subdomains)
+          )
+      );
 
       # trust root cert on this machine
       security.pki.certificateFiles = [
