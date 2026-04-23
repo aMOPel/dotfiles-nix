@@ -11,18 +11,11 @@ in
 {
   options.myModules."${moduleName}" = {
     enable = lib.mkEnableOption "${moduleName}";
-    # defaultDomain = lib.mkOption {
-    #   type = lib.types.str;
-    #   example = "";
-    #   description = "radicale will be reachable under radicale.$${defaultDomain}";
-    # };
-    # dataParentDir = lib.mkOption {
-    #   type = lib.types.str;
-    #   example = "";
-    #   description = ''
-    #     the parent directory of the data directory.
-    #           the data directory will be created inside that directory with the correct permissions.'';
-    # };
+    defaultDomain = lib.mkOption {
+      type = lib.types.str;
+      example = "";
+      description = "radicale will be reachable under radicale.$${defaultDomain}";
+    };
   };
 
   config = lib.mkIf cfg.enable (

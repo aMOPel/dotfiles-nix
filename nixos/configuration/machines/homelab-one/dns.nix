@@ -10,6 +10,16 @@ in
 {
   options.myModules."${moduleName}" = {
     enable = lib.mkEnableOption "${moduleName}";
+    defaultDomain = lib.mkOption {
+      type = lib.types.str;
+      example = "";
+      description = "resolve this to the serverIpAddress";
+    };
+    serverIpAddress = lib.mkOption {
+      type = lib.types.str;
+      example = "";
+      description = "ip that the server has in the lan";
+    };
   };
 
   config = lib.mkIf cfg.enable (
@@ -45,7 +55,7 @@ in
           ];
           address = [
             # TODO: get hostname from somewhere else
-            "/homelab-one/192.168.1.196" # route all subdomains to same ip
+            "/${cfg.defaultDomain}/${cfg.serverIpAddress}" # route all subdomains to same ip
           ];
           cache-size = 1000;
           dns-forward-max = 150;
@@ -63,8 +73,8 @@ in
           # TODO: get interface name from somewhere else
           interface = "enp1s0";
           listen-address = [
-            "127.0.0.1"
-            "192.168.1.196"
+            config.extraLib.localAddress
+            cfg.serverIpAddress
           ];
           no-dhcp-interface = "enp1s0";
           bogus-priv = true;

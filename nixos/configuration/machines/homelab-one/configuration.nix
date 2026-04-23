@@ -7,6 +7,7 @@
 let
   config-values = import ./config_values.nix;
   enableEndUserServices = true;
+  defaultDomain = "${config-values.nixos.hostname}.lan";
 in
 {
   imports = [
@@ -158,30 +159,33 @@ in
 
   myModules.dns = {
     enable = enableEndUserServices;
+    inherit defaultDomain;
+    serverIpAddress = "192.168.1.196";
   };
 
   myModules.nginx = {
     enable = enableEndUserServices;
-    defaultDomain = "${config-values.nixos.hostname}";
+    inherit defaultDomain;
   };
 
   myModules.radicale = {
     # enable = enableEndUserServices;
     enable = true;
-    defaultDomain = "${config-values.nixos.hostname}";
+    inherit defaultDomain;
     dataParentDir = "/snapraid/mergerfs";
   };
 
   myModules.monitoring = {
     # enable = enableEndUserServices;
     enable = true;
-    defaultDomain = "${config-values.nixos.hostname}";
+    inherit defaultDomain;
     dataParentDir = "/snapraid/mergerfs";
   };
 
   myModules.auth = {
     # enable = enableEndUserServices;
     enable = true;
+    inherit defaultDomain;
   };
 
   services.smartd = {
