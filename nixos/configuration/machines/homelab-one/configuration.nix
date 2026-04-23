@@ -27,10 +27,6 @@ in
     ./auth.nix
   ];
 
-  globals = {
-    defaultDomain = "${config-values.nixos.hostname}.lan";
-  };
-
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -150,7 +146,6 @@ in
   myModules.samba = {
     enable = enableEndUserServices;
     shareParentDir = "/snapraid/mergerfs";
-    sambaServerName = "${config-values.nixos.hostname}";
     allowedUsers = "${config-values.username}";
   };
 

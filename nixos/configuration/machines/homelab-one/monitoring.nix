@@ -147,7 +147,7 @@ in
                     # Content Security Policy (CSP)
                     add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
                     add_header X-Content-Type-Options "nosniff" always;
-                    proxy_pass        ${extraLib.localUrlWithPortFor "prometheus"};
+                    proxy_pass ${extraLib.localUrlWithPortFor "prometheus"};
                   '';
               };
               "/internal/authelia/authz" = {

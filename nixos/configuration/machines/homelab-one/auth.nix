@@ -90,7 +90,7 @@ in
         autheliaLocation = ''
           ## Essential Proxy Configuration
           internal;
-          proxy_pass ${extraLib.domainAsUrl subdomain}/api/authz/auth-request;
+          proxy_pass ${extraLib.domainAsUrl (extraLib.domainFor "authelia")}/api/authz/auth-request;
 
           ## Headers
           ## The headers starting with X-* are required.
@@ -148,7 +148,7 @@ in
 
           ## Legacy Method: When there is a 401 response code from the authz endpoint redirect to the portal with the 'rd'
           ## URL parameter set to $target_url. This requires users update 'auth.example.com/' with their external authelia URL.
-          # error_page 401 =302 https://${subdomain}/?rd=$target_url;
+          # error_page 401 =302 https://subdomain/?rd=$target_url;
         '';
       };
 
@@ -156,12 +156,9 @@ in
 
       autheliaSecretConfig = {
         owner = userGroups.authelia;
-        # TODO: maybe restart more units that depend on this
         restartUnits = [ "authelia-${serviceInstance}.service" ];
         sopsFile = ../../../../secrets/authelia.yaml;
       };
-
-      subdomain = "authelia.${defaultDomain}";
 
       serviceInstance = "main";
       userDir = "/var/lib/authelia-${serviceInstance}";

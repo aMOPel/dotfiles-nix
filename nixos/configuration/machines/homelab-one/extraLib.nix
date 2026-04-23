@@ -10,9 +10,9 @@ let
   localAddressWithPort = port: "${localAddress}:${builtins.toString port}";
   localHostnameWithPort = port: "${localHostname}:${builtins.toString port}";
   localUrlWithPort = port: "${localUrl}:${builtins.toString port}";
-  localAddressWithPortFor = service: localAddressWithPort config.globals.port."${service}";
-  localHostnameWithPortFor = service: localHostnameWithPort config.globals.port."${service}";
-  localUrlWithPortFor = service: localUrlWithPort config.globals.port."${service}";
+  localAddressWithPortFor = service: localAddressWithPort config.globals.ports."${service}";
+  localHostnameWithPortFor = service: localHostnameWithPort config.globals.ports."${service}";
+  localUrlWithPortFor = service: localUrlWithPort config.globals.ports."${service}";
   domainAsUrl = domain: "https://${domain}";
   domainFor = service: "${config.globals.subdomains."${service}"}.${config.globals.defaultDomain}";
 

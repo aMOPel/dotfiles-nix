@@ -87,14 +87,14 @@ in
         openFirewall = false;
         # overrides config
         address = extraLib.localAddress;
-        port = ports.stepCa;
+        port = ports.step-ca;
         intermediatePasswordFile = "${secretsRuntimePath}/intermediate-ca/private-password";
         package = pkgs.step-ca;
         settings = {
           root = "${secretsRuntimePath}/root-ca/public-cert";
           crt = "${secretsRuntimePath}/intermediate-ca/public-cert";
           key = "${secretsRuntimePath}/intermediate-ca/private-key";
-          address = extraLib.localAddressWithPortFor "stepCa";
+          address = extraLib.localAddressWithPortFor "step-ca";
           # it seems the first name in the list decides which hostname has to be used
           # for the acme client setup (email, and server address)
           dnsNames = [
@@ -157,7 +157,7 @@ in
         # these need to hostnames and fit to the `dnsNames` used for the step-ca setup
         defaults = {
           email = "admin@${extraLib.localHostname}";
-          server = "https://${extraLib.localHostnameWithPortFor "stepCa"}/acme/acme/directory";
+          server = "https://${extraLib.localHostnameWithPortFor "step-ca"}/acme/acme/directory";
           reloadServices = [
             "nginx-config-reload"
             "nginx"

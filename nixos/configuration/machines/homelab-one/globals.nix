@@ -6,6 +6,7 @@
 let
   moduleName = "globals";
   cfg = config."${moduleName}";
+  config-values = import ./config_values.nix;
 in
 {
   options."${moduleName}" = {
@@ -37,7 +38,15 @@ in
       '';
       type = lib.types.attrsOf lib.types.str;
     };
+    userGroups = lib.mkOption {
+      internal = true;
+      description = ''
+        the names that serve as both username and groupname for services
+      '';
+      type = lib.types.attrsOf lib.types.str;
+    };
     defaultDomain = lib.mkOption {
+      internal = true;
       description = ''
         root domain under which all services are served
       '';
@@ -46,16 +55,17 @@ in
   };
 
   config."${moduleName}" = rec {
-    defaultDomain = cfg.defaultDomain;
+    defaultDomain = "${config-values.nixos.hostname}.lan";
     ports = {
       authelia = 9091;
       grafana = 3000;
       node-exporter = 9100;
       prometheus = 9090;
       radicale = 5232;
-      stepCa = 8443;
+      step-ca = 8443;
     };
     subdomains = {
+      # WARNING: the keys need to match actual service names in `config.services.`
       authelia = "authelia";
       grafana = "grafana";
       prometheus = "prometheus";
@@ -70,7 +80,6 @@ in
       samba = 5002;
     };
     gids = uids // {
-      grafana = config.ids.gids.grafana;
       prometheus = config.ids.gids.prometheus;
       root = config.ids.gids.root;
     };
