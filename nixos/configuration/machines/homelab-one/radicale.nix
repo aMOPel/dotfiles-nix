@@ -70,7 +70,7 @@ in
         settings = {
           server = {
             hosts = [
-              (config.extraLib.localAddressWithPort config.ports.radicale)
+              (config.extraLib.localAddressWithPortFor "radicale")
             ];
             max_connections = 20;
             max_content_length = 100000000; # 100 Megabyte
@@ -102,7 +102,7 @@ in
             locations = {
               "/" = {
                 extraConfig = ''
-                  proxy_pass        ${config.extraLib.localUrlWithPort config.ports.radicale};
+                  proxy_pass        ${config.extraLib.localUrlWithPortFor "radicale"};
                   proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
                   proxy_set_header  X-Forwarded-Host $host;
                   proxy_set_header  X-Forwarded-Port $server_port;

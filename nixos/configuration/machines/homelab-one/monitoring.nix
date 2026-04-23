@@ -44,10 +44,6 @@ in
         deny all;
       '';
 
-      subdomains = {
-        prometheus = "prometheus.${cfg.defaultDomain}";
-        grafana = "grafana.${cfg.defaultDomain}";
-      };
       dataDir = "${cfg.dataParentDir}/grafana";
       userGroups = {
         grafana = "grafana";
@@ -66,7 +62,7 @@ in
 
       services.prometheus.exporters.node = {
         enable = true;
-        port = config.ports.node-exporter;
+        port = config.globals.ports.node-exporter;
         listenAddress = config.extraLib.localAddress;
         enabledCollectors = [
           "logind"
@@ -78,7 +74,7 @@ in
 
       services.prometheus = {
         enable = true;
-        port = config.ports.prometheus;
+        port = config.globals.ports.prometheus;
         listenAddress = config.extraLib.localAddress;
         scrapeConfigs = [
           {
@@ -86,7 +82,7 @@ in
             static_configs = [
               {
                 targets = [
-                  (config.extraLib.localAddressWithPort config.ports.node-exporter)
+                  (config.extraLib.localAddressWithPortFor "node-exporter")
                 ];
               }
             ];
@@ -100,9 +96,9 @@ in
         settings = {
           server = {
             http_addr = config.extraLib.localAddress;
-            http_port = config.ports.grafana;
-            domain = subdomains.grafana;
-            root_url = "https://${subdomains.grafana}";
+            http_port = config.globals.ports.grafana;
+            domain = config.globals.subdomains.grafana;
+            root_url = "https://${config.globals.subdomains.grafana}";
           };
         };
         provision = {
@@ -123,7 +119,7 @@ in
                 {
                   name = "Prometheus";
                   type = "prometheus";
-                  url = config.extraLib.localUrlWithPort config.ports.prometheus;
+                  url = config.extraLib.localUrlWithPortFor "prometheus";
                 }
               ];
             };
@@ -133,7 +129,7 @@ in
 
       services.nginx = {
         virtualHosts = {
-          "${subdomains.prometheus}" = {
+          "${config.globals.subdomains.prometheus}" = {
             # for acme
             enableACME = true;
             forceSSL = true;
@@ -146,12 +142,12 @@ in
                   add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
                   add_header X-Content-Type-Options "nosniff" always;
                   proxy_set_header Host $host;
-                  proxy_pass        ${config.extraLib.localUrlWithPort config.ports.prometheus};
+                  proxy_pass        ${config.extraLib.localUrlWithPortFor "prometheus"};
                 '';
               };
             };
           };
-          "${subdomains.grafana}" = {
+          "${config.globals.subdomains.grafana}" = {
             # for acme
             enableACME = true;
             forceSSL = true;
@@ -164,7 +160,7 @@ in
                   add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
                   add_header X-Content-Type-Options "nosniff" always;
                   proxy_set_header Host $host;
-                  proxy_pass        ${config.extraLib.localUrlWithPort config.ports.grafana};
+                  proxy_pass        ${config.extraLib.localUrlWithPortFor "grafana"};
                 '';
               };
               # Proxy Grafana Live WebSocket connections.
@@ -174,7 +170,7 @@ in
                   proxy_set_header Upgrade $http_upgrade;
                   proxy_set_header Connection $connection_upgrade;
                   proxy_set_header Host $host;
-                  proxy_pass        ${config.extraLib.localUrlWithPort config.ports.grafana};
+                  proxy_pass        ${config.extraLib.localUrlWithPortFor "grafana"};
                 '';
               };
             };

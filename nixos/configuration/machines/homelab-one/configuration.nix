@@ -7,7 +7,6 @@
 let
   config-values = import ./config_values.nix;
   enableEndUserServices = true;
-  defaultDomain = "${config-values.nixos.hostname}.lan";
 in
 {
   imports = [
@@ -23,11 +22,14 @@ in
     disko-nix.nixosModules.disko
     sops-nix.nixosModules.sops
     ./partitioning/disko.nix
-    ./ids.nix
-    ./localPorts.nix
+    ./globals.nix
     ./extraLib.nix
     ./auth.nix
   ];
+
+  globals = {
+    defaultDomain = "${config-values.nixos.hostname}.lan";
+  };
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -159,33 +161,28 @@ in
 
   myModules.dns = {
     enable = enableEndUserServices;
-    inherit defaultDomain;
     serverIpAddress = "192.168.1.196";
   };
 
   myModules.nginx = {
     enable = enableEndUserServices;
-    inherit defaultDomain;
   };
 
   myModules.radicale = {
     # enable = enableEndUserServices;
     enable = true;
-    inherit defaultDomain;
     dataParentDir = "/snapraid/mergerfs";
   };
 
   myModules.monitoring = {
     # enable = enableEndUserServices;
     enable = true;
-    inherit defaultDomain;
     dataParentDir = "/snapraid/mergerfs";
   };
 
   myModules.auth = {
     # enable = enableEndUserServices;
     enable = true;
-    inherit defaultDomain;
   };
 
   services.smartd = {

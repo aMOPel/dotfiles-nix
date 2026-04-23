@@ -136,17 +136,17 @@ in
                   proxy_read_timeout 360;
                   proxy_send_timeout 360;
                   proxy_connect_timeout 360;
-                  proxy_pass ${config.extraLib.localUrlWithPort config.ports.authelia};
+                  proxy_pass ${config.extraLib.localUrlWithPortFor "authelia"};
                 '';
               };
               "/api/verify" = {
                 extraConfig = ''
-                  proxy_pass ${config.extraLib.localUrlWithPort config.ports.authelia};
+                  proxy_pass ${config.extraLib.localUrlWithPortFor "authelia"};
                 '';
               };
               "/api/authz" = {
                 extraConfig = ''
-                  proxy_pass ${config.extraLib.localUrlWithPort config.ports.authelia};
+                  proxy_pass ${config.extraLib.localUrlWithPortFor "authelia"};
                 '';
               };
             };

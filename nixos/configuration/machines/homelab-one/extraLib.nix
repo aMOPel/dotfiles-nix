@@ -10,7 +10,11 @@ let
   localAddressWithPort = port: "${localAddress}:${builtins.toString port}";
   localHostnameWithPort = port: "${localHostname}:${builtins.toString port}";
   localUrlWithPort = port: "${localUrl}:${builtins.toString port}";
+  localAddressWithPortFor = service: localAddressWithPort config.globals.port."${service}";
+  localHostnameWithPortFor = service: localHostnameWithPort config.globals.port."${service}";
+  localUrlWithPortFor = service: localUrlWithPort config.globals.port."${service}";
   domainAsUrl = domain: "https://${domain}";
+  domainFor = service: "${config.globals.subdomains."${service}"}.${config.globals.defaultDomain}";
 
   createDirs =
     {
@@ -25,8 +29,8 @@ let
           "${v}" = {
             "d" = {
               inherit mode;
-              user = builtins.toString config.myIds.uids."${userGroup}";
-              group = builtins.toString config.myIds.gids."${userGroup}";
+              user = builtins.toString config.globals.uids."${userGroup}";
+              group = builtins.toString config.globals.gids."${userGroup}";
             };
           };
         }) dirs
@@ -40,13 +44,13 @@ let
     {
       groups = {
         "${userGroup}" = {
-          gid = lib.mkForce config.myIds.gids."${userGroup}";
+          gid = lib.mkForce config.globals.gids."${userGroup}";
         };
       };
       extraUsers = {
         "${userGroup}" = {
           isSystemUser = lib.mkForce true;
-          uid = lib.mkForce config.myIds.uids."${userGroup}";
+          uid = lib.mkForce config.globals.uids."${userGroup}";
           group = lib.mkForce "${userGroup}";
         };
       };
@@ -85,10 +89,14 @@ in
         localAddressWithPort
         localHostnameWithPort
         localUrlWithPort
+        localAddressWithPortFor
+        localHostnameWithPortFor
+        localUrlWithPortFor
         domainAsUrl
         createDirs
         createSystemUserGroup
         createSystemUserGroups
+        domainFor
         ;
     };
   };
