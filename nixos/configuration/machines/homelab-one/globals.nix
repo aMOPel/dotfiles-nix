@@ -48,37 +48,39 @@ in
   config."${moduleName}" = rec {
     defaultDomain = cfg.defaultDomain;
     ports = {
-      radicale = 5232;
-      prometheus = 9090;
+      authelia = 9091;
       grafana = 3000;
       node-exporter = 9100;
+      prometheus = 9090;
+      radicale = 5232;
       stepCa = 8443;
-      authelia = 9091;
     };
     subdomains = {
-      radicale = "radicale";
-      prometheus = "prometheus";
-      grafana = "grafana";
       authelia = "authelia";
+      grafana = "grafana";
+      prometheus = "prometheus";
+      radicale = "radicale";
     };
     uids = {
-      root = config.ids.uids.root;
-      radicale = 5001;
-      samba = 5002;
+      authelia = 5003;
       grafana = config.ids.uids.grafana;
       prometheus = config.ids.uids.prometheus;
-      authelia = 5003;
+      radicale = 5001;
+      root = config.ids.uids.root;
+      samba = 5002;
     };
     gids = uids // {
-      root = config.ids.gids.root;
       grafana = config.ids.gids.grafana;
       prometheus = config.ids.gids.prometheus;
+      root = config.ids.gids.root;
     };
     userGroups = {
+      authelia = "authelia";
       grafana = "grafana";
       prometheus = "prometheus";
       radicale = "radicale";
-      authelia = "authelia";
+      root = "root";
+      samba = "samba";
     };
   };
 }

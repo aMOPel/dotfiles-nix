@@ -7,15 +7,19 @@
 let
   moduleName = "monitoring";
   cfg = config.myModules."${moduleName}";
+  inherit (config.globals)
+    ports
+    subdomains
+    uids
+    gids
+    userGroups
+    defaultDomain
+    ;
+  inherit (config) extraLib;
 in
 {
   options.myModules."${moduleName}" = {
     enable = lib.mkEnableOption "${moduleName}";
-    defaultDomain = lib.mkOption {
-      type = lib.types.str;
-      example = "";
-      description = "grafana and prometheus will be reachable under grafana.$${defaultDomain} and prometheus.$${defaultDomain}";
-    };
     dataParentDir = lib.mkOption {
       type = lib.types.str;
       example = "";
@@ -45,15 +49,14 @@ in
       '';
 
       dataDir = "${cfg.dataParentDir}/grafana";
-      userGroups = {
-        grafana = "grafana";
-        prometheus = "prometheus";
-      };
     in
     {
-      users = config.extraLib.createSystemUserGroups (builtins.attrValues userGroups);
+      users = extraLib.createSystemUserGroups [
+        userGroups.grafana
+        userGroups.prometheus
+      ];
 
-      systemd.tmpfiles.settings = config.extraLib.createDirs {
+      systemd.tmpfiles.settings = extraLib.createDirs {
         userGroup = userGroups.grafana;
         dirs = [
           dataDir
@@ -62,8 +65,8 @@ in
 
       services.prometheus.exporters.node = {
         enable = true;
-        port = config.globals.ports.node-exporter;
-        listenAddress = config.extraLib.localAddress;
+        port = ports.node-exporter;
+        listenAddress = extraLib.localAddress;
         enabledCollectors = [
           "logind"
           "systemd"
@@ -74,15 +77,15 @@ in
 
       services.prometheus = {
         enable = true;
-        port = config.globals.ports.prometheus;
-        listenAddress = config.extraLib.localAddress;
+        port = ports.prometheus;
+        listenAddress = extraLib.localAddress;
         scrapeConfigs = [
           {
             job_name = "node";
             static_configs = [
               {
                 targets = [
-                  (config.extraLib.localAddressWithPortFor "node-exporter")
+                  (extraLib.localAddressWithPortFor "node-exporter")
                 ];
               }
             ];
@@ -95,10 +98,10 @@ in
         dataDir = dataDir;
         settings = {
           server = {
-            http_addr = config.extraLib.localAddress;
-            http_port = config.globals.ports.grafana;
-            domain = config.globals.subdomains.grafana;
-            root_url = "https://${config.globals.subdomains.grafana}";
+            http_addr = extraLib.localAddress;
+            http_port = ports.grafana;
+            domain = extraLib.domainFor "grafana";
+            root_url = extraLib.domainAsUrl (extraLib.domainFor "grafana");
           };
         };
         provision = {
@@ -119,7 +122,7 @@ in
                 {
                   name = "Prometheus";
                   type = "prometheus";
-                  url = config.extraLib.localUrlWithPortFor "prometheus";
+                  url = extraLib.localUrlWithPortFor "prometheus";
                 }
               ];
             };
@@ -129,7 +132,7 @@ in
 
       services.nginx = {
         virtualHosts = {
-          "${config.globals.subdomains.prometheus}" = {
+          "${extraLib.domainFor "prometheus"}" = {
             # for acme
             enableACME = true;
             forceSSL = true;
@@ -144,7 +147,7 @@ in
                     # Content Security Policy (CSP)
                     add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
                     add_header X-Content-Type-Options "nosniff" always;
-                    proxy_pass        ${config.extraLib.localUrlWithPortFor "prometheus"};
+                    proxy_pass        ${extraLib.localUrlWithPortFor "prometheus"};
                   '';
               };
               "/internal/authelia/authz" = {
@@ -152,7 +155,7 @@ in
               };
             };
           };
-          "${config.globals.subdomains.grafana}" = {
+          "${extraLib.domainFor "grafana"}" = {
             # for acme
             enableACME = true;
             forceSSL = true;
@@ -165,7 +168,7 @@ in
                   add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
                   add_header X-Content-Type-Options "nosniff" always;
                   proxy_set_header Host $host;
-                  proxy_pass        ${config.extraLib.localUrlWithPortFor "grafana"};
+                  proxy_pass        ${extraLib.localUrlWithPortFor "grafana"};
                 '';
               };
               # Proxy Grafana Live WebSocket connections.
@@ -175,7 +178,7 @@ in
                   proxy_set_header Upgrade $http_upgrade;
                   proxy_set_header Connection $connection_upgrade;
                   proxy_set_header Host $host;
-                  proxy_pass        ${config.extraLib.localUrlWithPortFor "grafana"};
+                  proxy_pass        ${extraLib.localUrlWithPortFor "grafana"};
                 '';
               };
             };

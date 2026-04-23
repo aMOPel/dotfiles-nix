@@ -6,6 +6,15 @@
 let
   moduleName = "samba";
   cfg = config.myModules."${moduleName}";
+  inherit (config.globals)
+    ports
+    subdomains
+    uids
+    gids
+    userGroups
+    defaultDomain
+    ;
+  inherit (config) extraLib;
 in
 {
   options.myModules."${moduleName}" = {
@@ -29,11 +38,6 @@ in
         the parent directory of the share directory.
               the share directory will be created inside that directory with the correct permissions.'';
     };
-    sambaServerName = lib.mkOption {
-      type = lib.types.str;
-      example = "";
-      description = "the name of the samba server (netbios, server string)";
-    };
     sambaShareName = lib.mkOption {
       type = lib.types.str;
       default = "public";
@@ -47,12 +51,11 @@ in
       # create this dir and hardlink it to `targetMountPoint`
       sambaDir = "${cfg.shareParentDir}/samba-share";
       shareDir = "${sambaDir}/${cfg.sambaShareName}";
-      userGroup = "samba";
     in
     {
       # ensure the directories for samba exist after boot
-      systemd.tmpfiles.settings = config.extraLib.createDirs {
-        inherit userGroup;
+      systemd.tmpfiles.settings = extraLib.createDirs {
+        userGroup = userGroups.samba;
         mode = cfg.filePermissionMask;
         dirs = [
           sambaDir
@@ -60,8 +63,8 @@ in
         ];
       };
 
-      users = config.extraLib.createSystemUserGroup {
-        inherit userGroup;
+      users = extraLib.createSystemUserGroup {
+        userGroup = userGroups.samba;
       };
 
       services.samba = {
@@ -73,8 +76,8 @@ in
             # for debugging
             # "log level" = "3 auth:5 passdb:5";
 
-            "server string" = "samba-${cfg.sambaServerName}";
-            "netbios name" = builtins.substring 0 15 "${cfg.sambaServerName}"; # 15 chat limit
+            "server string" = "samba-${defaultDomain}";
+            "netbios name" = builtins.substring 0 15 "${defaultDomain}"; # 15 char limit
             "passwd program" = "/run/wrappers/bin/passwd %u";
             # use simple password based authentication
             "security" = "user";
@@ -102,7 +105,7 @@ in
             "multicast dns register" = "no";
             # network
             # TODO: get the interface name from somewhere else
-            "interfaces" = "enp1s0 ${config.extraLib.localAddress}";
+            "interfaces" = "enp1s0 ${extraLib.localAddress}";
             "bind interfaces only" = "yes";
             # tls
             "tls enabled" = "no"; # tls only used for ldap
@@ -117,16 +120,16 @@ in
             "browseable" = "no";
             # only allow local network access
             "hosts deny" = "ALL";
-            "hosts allow" = "192.168.1. ${config.extraLib.localAddress}";
+            "hosts allow" = "192.168.1. ${extraLib.localAddress}";
 
             path = "${shareDir}";
             writable = "yes";
             "directory mask" = "${cfg.filePermissionMask}";
             "create mask" = "${cfg.filePermissionMask}";
             # after smb login, regardless of who logged in, all file actions are performed as this user
-            "force user" = "${userGroup}";
+            "force user" = "${userGroups.samba}";
             # after smb login, regardless of who logged in, all file actions are performed as this group
-            "force group" = "${userGroup}";
+            "force group" = "${userGroups.samba}";
           };
         };
       };

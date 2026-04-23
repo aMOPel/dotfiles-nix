@@ -7,15 +7,19 @@
 let
   moduleName = "radicale";
   cfg = config.myModules."${moduleName}";
+  inherit (config.globals)
+    ports
+    subdomains
+    uids
+    gids
+    userGroups
+    defaultDomain
+    ;
+  inherit (config) extraLib;
 in
 {
   options.myModules."${moduleName}" = {
     enable = lib.mkEnableOption "${moduleName}";
-    defaultDomain = lib.mkOption {
-      type = lib.types.str;
-      example = "";
-      description = "radicale will be reachable under radicale.$${defaultDomain}";
-    };
     dataParentDir = lib.mkOption {
       type = lib.types.str;
       example = "";
@@ -46,15 +50,14 @@ in
 
       dataDir = "${cfg.dataParentDir}/radicale";
       collectionsDir = "${dataDir}/collections";
-      userGroup = "radicale";
     in
     {
       users = config.extraLib.createSystemUserGroup {
-        inherit userGroup;
+        userGroup = userGroups.radicale;
       };
 
       systemd.tmpfiles.settings = config.extraLib.createDirs {
-        inherit userGroup;
+        userGroup = userGroups.radicale;
         dirs = [
           dataDir
           collectionsDir
@@ -91,7 +94,7 @@ in
 
       services.nginx = {
         virtualHosts = {
-          "radicale.${cfg.defaultDomain}" = {
+          "${extraLib.domainFor "radicale"}" = {
             # for acme
             enableACME = true;
             forceSSL = true;

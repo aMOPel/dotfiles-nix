@@ -7,6 +7,15 @@
 let
   moduleName = "tls-in-lan";
   cfg = config.myModules."${moduleName}";
+  inherit (config.globals)
+    ports
+    subdomains
+    uids
+    gids
+    userGroups
+    defaultDomain
+    ;
+  inherit (config) extraLib;
 in
 {
   options.myModules."${moduleName}" = {
@@ -77,19 +86,19 @@ in
         enable = true;
         openFirewall = false;
         # overrides config
-        address = config.extraLib.localAddress;
-        port = config.globals.ports.stepCa;
+        address = extraLib.localAddress;
+        port = ports.stepCa;
         intermediatePasswordFile = "${secretsRuntimePath}/intermediate-ca/private-password";
         package = pkgs.step-ca;
         settings = {
           root = "${secretsRuntimePath}/root-ca/public-cert";
           crt = "${secretsRuntimePath}/intermediate-ca/public-cert";
           key = "${secretsRuntimePath}/intermediate-ca/private-key";
-          address = config.extraLib.localAddressWithPortFor "stepCa";
+          address = extraLib.localAddressWithPortFor "stepCa";
           # it seems the first name in the list decides which hostname has to be used
           # for the acme client setup (email, and server address)
           dnsNames = [
-            config.extraLib.localHostname
+            extraLib.localHostname
           ];
           logger = {
             format = "text";
@@ -115,8 +124,8 @@ in
           policy = {
             x509 = {
               allow = {
-                dns = [ config.extraLib.localHostname ];
-                ip = [ config.extraLib.localAddress ];
+                dns = [ extraLib.localHostname ];
+                ip = [ extraLib.localAddress ];
               };
               deny = {
                 ip = [ "0.0.0.0/0" ];
@@ -147,8 +156,8 @@ in
         acceptTerms = true;
         # these need to hostnames and fit to the `dnsNames` used for the step-ca setup
         defaults = {
-          email = "admin@${config.extraLib.localHostname}";
-          server = "https://${config.extraLib.localHostnameWithPortFor "stepCa"}/acme/acme/directory";
+          email = "admin@${extraLib.localHostname}";
+          server = "https://${extraLib.localHostnameWithPortFor "stepCa"}/acme/acme/directory";
           reloadServices = [
             "nginx-config-reload"
             "nginx"

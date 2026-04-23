@@ -7,15 +7,19 @@
 let
   moduleName = "auth";
   cfg = config.myModules."${moduleName}";
+  inherit (config.globals)
+    ports
+    subdomains
+    uids
+    gids
+    userGroups
+    defaultDomain
+    ;
+  inherit (config) extraLib;
 in
 {
   options.myModules."${moduleName}" = {
     enable = lib.mkEnableOption "${moduleName}";
-    defaultDomain = lib.mkOption {
-      type = lib.types.str;
-      example = "";
-      description = "radicale will be reachable under radicale.$${defaultDomain}";
-    };
   };
   options = {
     nginxConfs = lib.mkOption {
@@ -86,7 +90,7 @@ in
         autheliaLocation = ''
           ## Essential Proxy Configuration
           internal;
-          proxy_pass ${config.extraLib.domainAsUrl subdomain}/api/authz/auth-request;
+          proxy_pass ${extraLib.domainAsUrl subdomain}/api/authz/auth-request;
 
           ## Headers
           ## The headers starting with X-* are required.
@@ -148,21 +152,19 @@ in
         '';
       };
 
-      userGroup = "authelia";
-
       secretsRuntimePath = "/run/secrets";
 
       autheliaSecretConfig = {
-        owner = userGroup;
+        owner = userGroups.authelia;
         # TODO: maybe restart more units that depend on this
         restartUnits = [ "authelia-${serviceInstance}.service" ];
         sopsFile = ../../../../secrets/authelia.yaml;
       };
 
-      subdomain = "authelia.${cfg.defaultDomain}";
+      subdomain = "authelia.${defaultDomain}";
 
-      userDir = "/var/lib/authelia-main";
       serviceInstance = "main";
+      userDir = "/var/lib/authelia-${serviceInstance}";
     in
     {
       inherit nginxConfs;
@@ -171,15 +173,15 @@ in
       sops.secrets."authelia/storage/encryption_key" = autheliaSecretConfig;
       sops.secrets."authelia/session/secret" = autheliaSecretConfig;
 
-      users = config.extraLib.createSystemUserGroup {
-        inherit userGroup;
+      users = extraLib.createSystemUserGroup {
+        userGroup = userGroups.authelia;
       };
 
       services.authelia.instances = {
         "${serviceInstance}" = {
           enable = true;
-          user = userGroup;
-          group = userGroup;
+          user = userGroups.authelia;
+          group = userGroups.authelia;
           secrets = {
             storageEncryptionKeyFile = "${secretsRuntimePath}/authelia/storage/encryption_key";
             jwtSecretFile = "${secretsRuntimePath}/authelia/jwt_secret";
@@ -187,7 +189,7 @@ in
           };
           settings = {
             server = {
-              address = "tcp://${config.extraLib.localAddress}:${builtins.toString config.globals.ports.authelia}";
+              address = "tcp://${extraLib.localAddressWithPortFor "authelia"}";
               endpoints = {
                 authz = {
                   auth-request = {
@@ -204,9 +206,9 @@ in
             session = {
               cookies = [
                 {
-                  domain = cfg.defaultDomain;
-                  authelia_url = config.extraLib.domainAsUrl subdomain;
-                  default_redirection_url = config.extraLib.domainAsUrl cfg.defaultDomain;
+                  domain = defaultDomain;
+                  authelia_url = extraLib.domainAsUrl (extraLib.domainFor "authelia");
+                  default_redirection_url = extraLib.domainAsUrl defaultDomain;
                 }
               ];
             };
@@ -225,7 +227,7 @@ in
               default_policy = "deny";
               rules = [
                 {
-                  domain = "*.${cfg.defaultDomain}";
+                  domain = "*.${defaultDomain}";
                   policy = "one_factor";
                 }
               ];
@@ -239,7 +241,7 @@ in
 
       services.nginx = {
         virtualHosts = {
-          "${subdomain}" = {
+          "${extraLib.domainFor "authelia"}" = {
             # for acme
             enableACME = true;
             forceSSL = true;
@@ -250,17 +252,17 @@ in
             locations = {
               "/" = {
                 extraConfig = nginxConfs.proxy + ''
-                  proxy_pass ${config.extraLib.localUrlWithPortFor "authelia"};
+                  proxy_pass ${extraLib.localUrlWithPortFor "authelia"};
                 '';
               };
               "/api/verify" = {
                 extraConfig = ''
-                  proxy_pass ${config.extraLib.localUrlWithPortFor "authelia"};
+                  proxy_pass ${extraLib.localUrlWithPortFor "authelia"};
                 '';
               };
               "/api/authz" = {
                 extraConfig = ''
-                  proxy_pass ${config.extraLib.localUrlWithPortFor "authelia"};
+                  proxy_pass ${extraLib.localUrlWithPortFor "authelia"};
                 '';
               };
             };

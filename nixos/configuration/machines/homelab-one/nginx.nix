@@ -6,6 +6,15 @@
 let
   moduleName = "nginx";
   cfg = config.myModules."${moduleName}";
+  inherit (config.globals)
+    ports
+    subdomains
+    uids
+    gids
+    userGroups
+    defaultDomain
+    ;
+  inherit (config) extraLib;
 in
 {
   options.myModules."${moduleName}" = {
@@ -66,7 +75,7 @@ in
           add_header X-Content-Type-Options "nosniff" always;
           add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
           # CORS
-          # add_header Access-Control-Allow-Origin "https://${cfg.defaultDomain}" always;
+          # add_header Access-Control-Allow-Origin "https://${defaultDomain}" always;
           add_header Cross-Origin-Opener-Policy "same-origin" always;
           add_header Cross-Origin-Resource-Policy "same-site" always;
           add_header Cross-Origin-Embedder-Policy "unsafe-none" always;
@@ -76,7 +85,7 @@ in
         '';
 
         virtualHosts = {
-          "${cfg.defaultDomain}" = {
+          "${defaultDomain}" = {
             root = "/srv/www/";
 
             # for acme

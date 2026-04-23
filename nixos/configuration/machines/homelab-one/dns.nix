@@ -6,15 +6,19 @@
 let
   moduleName = "dns";
   cfg = config.myModules."${moduleName}";
+  inherit (config.globals)
+    ports
+    subdomains
+    uids
+    gids
+    userGroups
+    defaultDomain
+    ;
+  inherit (config) extraLib;
 in
 {
   options.myModules."${moduleName}" = {
     enable = lib.mkEnableOption "${moduleName}";
-    defaultDomain = lib.mkOption {
-      type = lib.types.str;
-      example = "";
-      description = "resolve this to the serverIpAddress";
-    };
     serverIpAddress = lib.mkOption {
       type = lib.types.str;
       example = "";
@@ -55,7 +59,7 @@ in
           ];
           address = [
             # TODO: get hostname from somewhere else
-            "/${cfg.defaultDomain}/${cfg.serverIpAddress}" # route all subdomains to same ip
+            "/${defaultDomain}/${cfg.serverIpAddress}" # route all subdomains to same ip
           ];
           cache-size = 1000;
           dns-forward-max = 150;

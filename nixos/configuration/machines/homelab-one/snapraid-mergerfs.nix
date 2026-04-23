@@ -7,6 +7,15 @@
 let
   moduleName = "snapraid-mergerfs";
   cfg = config.myModules."${moduleName}";
+  inherit (config.globals)
+    ports
+    subdomains
+    uids
+    gids
+    userGroups
+    defaultDomain
+    ;
+  inherit (config) extraLib;
 in
 {
   options.myModules."${moduleName}" = {
@@ -46,7 +55,6 @@ in
         }) cfg.dataDisks
       );
       mergerfsSourceDirs = builtins.concatStringsSep ":" (builtins.map (d: "${d}/data") cfg.dataDisks);
-      userGroup = "root";
     in
     {
       # https://github.com/amadvance/snapraid/blob/master/doc/snapraid.txt
@@ -71,7 +79,7 @@ in
       ];
 
       systemd.tmpfiles.settings = config.extraLib.createDirs {
-        userGroup = userGroup;
+        userGroup = userGroups.root;
         priority = 0;
         dirs = (builtins.map (v: "${v}/data") cfg.dataDisks) ++ [
           cfg.mergerfsMountpoint
