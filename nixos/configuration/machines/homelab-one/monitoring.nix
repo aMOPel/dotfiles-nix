@@ -137,13 +137,18 @@ in
             # extraConfig = hardenedServerExtraConfig;
             locations = {
               "/" = {
-                extraConfig = ''
-                  # Content Security Policy (CSP)
-                  add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
-                  add_header X-Content-Type-Options "nosniff" always;
-                  proxy_set_header Host $host;
-                  proxy_pass        ${config.extraLib.localUrlWithPortFor "prometheus"};
-                '';
+                extraConfig =
+                  config.nginxConfs.proxy
+                  + config.nginxConfs.autheliaAuthrequest
+                  + ''
+                    # Content Security Policy (CSP)
+                    add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
+                    add_header X-Content-Type-Options "nosniff" always;
+                    proxy_pass        ${config.extraLib.localUrlWithPortFor "prometheus"};
+                  '';
+              };
+              "/internal/authelia/authz" = {
+                extraConfig = config.nginxConfs.autheliaLocation;
               };
             };
           };
