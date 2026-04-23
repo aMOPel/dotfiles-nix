@@ -115,6 +115,15 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
       public-key:
   ```
 
+### issues
+
+- sometimes the acme service will not fetch the certs from step-ca due to a race
+  condition and instead rather serve a selfsigned cert to nginx. a restart of
+  the respective acme service does the trick:
+  ```sh
+  systemctl restart acme-prometheus.homelab-one.lan.service
+  ```
+
 ### after new setup
 
 - ca is generated with:

@@ -68,6 +68,11 @@ in
       sops.secrets."intermediate-ca/private-password" = stepCaSecretConfig;
       sops.secrets."intermediate-ca/private-key" = stepCaSecretConfig;
 
+      systemd.services."acme-prometheus.homelab-one.lan" = {
+        after = [ "step-ca.service" ];
+        requires = [ "step-ca.service" ];
+      };
+
       services.step-ca = {
         enable = true;
         openFirewall = false;
@@ -144,6 +149,10 @@ in
         defaults = {
           email = "admin@${config.extraLib.localHostname}";
           server = "https://${config.extraLib.localHostnameWithPortFor "stepCa"}/acme/acme/directory";
+          reloadServices = [
+            "nginx-config-reload"
+            "nginx"
+          ];
         };
       };
     }
