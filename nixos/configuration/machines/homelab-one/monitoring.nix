@@ -56,6 +56,17 @@ in
         sopsFile = ../../../../secrets/grafana.yaml;
       };
 
+      dashboards = {
+        node-exporter = "${
+          pkgs.fetchFromGitHub {
+            owner = "rfmoz";
+            repo = "grafana-dashboards";
+            rev = "fa9f41fa3efed31d5c2de73cd332a340797c0ec7";
+            sha256 = "sha256-phqtDu/oLwqB+R+Dn9WyHyYbNcKR43uIy+F3BrAvwg4=";
+          }
+        }/prometheus/node-exporter-full.json";
+      };
+
     in
     {
       users = extraLib.createSystemUserGroups [
@@ -130,11 +141,11 @@ in
           dashboards.settings = {
             apiVersion = 1;
             providers = [
-              # {
-              #   name = "node-exporter";
-              #   options.path = ./test.json;
-              #   type = "file";
-              # }
+              {
+                name = "node-exporter";
+                options.path = dashboards.node-exporter;
+                type = "file";
+              }
             ];
           };
           datasources = {
