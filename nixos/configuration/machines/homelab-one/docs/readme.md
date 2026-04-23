@@ -29,15 +29,15 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
 
 ## radicale
 
-### after new setup
-
-- on server, set radicale password for default user
+- caldav and carddav server
+- users are handled in `secrets/radicale-users.yaml`, to edit:
   ```sh
-  ./nixos/scripts/new-install-server/8-init-radicale.sh
+  nix-shell -p sops --run "sops edit secrets/authelia-users.yaml"
   ```
-- after that, log into
-
-  <https://radicale.homelab-one/.web/>
+  - to generate new entry:
+  ```sh
+  nix-shell -p apacheHttpd --run "htpasswd -n $USER"
+  ```
 
 ## secrets
 
@@ -207,7 +207,20 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
 
 ## authelia
 
-- OIDC provider
+- authentication layer for services
+- supports oidc and ldap (but neither is used)
+- currently used in "Forwarded Authentication" mode, where nginx is configured
+  to redirect to authelia if a session cookie is missing
+- users are handled in `secrets/authelia-users.yaml`, to edit:
+  ```sh
+  nix-shell -p sops --run "sops edit secrets/authelia-users.yaml"
+  ```
+  generate pw hash with
+  ```sh
+  nix-shell -p authelia --run "authelia crypto hash generate argon2"
+  ```
+- **IMPORTANT** services are not protected by default, their nginx config needs
+  to be adapted to be protected
 
 ### after new setup
 
@@ -218,6 +231,15 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
       SOPS_DIR=./secrets \
       SOPS_FILE=authelia.yaml \
       ./nixos/scripts/new-install-server/9-init-authelia.sh"
+  ```
+
+## grafana
+
+- protected by authelia
+- allows for anonymous login with less privileges or admin login full privileges
+- users are handled in `secrets/grafana.yaml`, to edit:
+  ```sh
+  nix-shell -p sops --run "sops edit secrets/grafana.yaml"
   ```
 
 ## disk formatting/partitions/filesystem

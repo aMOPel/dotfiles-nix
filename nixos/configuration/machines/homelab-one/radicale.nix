@@ -48,10 +48,20 @@ in
         deny all;
       '';
 
+      secretsRuntimePath = "/run/secrets";
+
+      secretConfig = {
+        owner = userGroups.radicale;
+        restartUnits = [ "radicale.service" ];
+        sopsFile = ../../../../secrets/radicale-users.yaml;
+      };
+
       dataDir = "${cfg.dataParentDir}/radicale";
       collectionsDir = "${dataDir}/collections";
     in
     {
+      sops.secrets."radicale/users" = secretConfig;
+
       users = config.extraLib.createSystemUserGroup {
         userGroup = userGroups.radicale;
       };
@@ -82,7 +92,7 @@ in
           auth = {
             # type = "none";
             type = "htpasswd";
-            htpasswd_filename = "/var/lib/radicale/users";
+            htpasswd_filename = "${secretsRuntimePath}/radicale/users";
             htpasswd_encryption = "autodetect";
             delay = 1; # Average delay after failed login attempts in seconds
           };

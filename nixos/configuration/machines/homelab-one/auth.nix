@@ -169,6 +169,9 @@ in
       sops.secrets."authelia/jwt_secret" = autheliaSecretConfig;
       sops.secrets."authelia/storage/encryption_key" = autheliaSecretConfig;
       sops.secrets."authelia/session/secret" = autheliaSecretConfig;
+      sops.secrets."authelia/users.yaml" = autheliaSecretConfig // {
+        sopsFile = ../../../../secrets/authelia-users.yaml;
+      };
 
       users = extraLib.createSystemUserGroup {
         userGroup = userGroups.authelia;
@@ -217,7 +220,7 @@ in
             };
             authentication_backend = {
               file = {
-                path = "${userDir}/auth_backend.yaml";
+                path = "${secretsRuntimePath}/authelia/users.yaml";
               };
             };
             access_control = {

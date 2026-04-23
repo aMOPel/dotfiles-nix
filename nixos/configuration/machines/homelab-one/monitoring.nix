@@ -49,12 +49,22 @@ in
       '';
 
       dataDir = "${cfg.dataParentDir}/grafana";
+      secretsRuntimePath = "/run/secrets";
+      secretConfig = {
+        owner = userGroups.grafana;
+        restartUnits = [ "grafana.service" ];
+        sopsFile = ../../../../secrets/grafana.yaml;
+      };
+
     in
     {
       users = extraLib.createSystemUserGroups [
         userGroups.grafana
         userGroups.prometheus
       ];
+
+      sops.secrets."grafana/security/admin_user" = secretConfig;
+      sops.secrets."grafana/security/admin_password" = secretConfig;
 
       systemd.tmpfiles.settings = extraLib.createDirs {
         userGroup = userGroups.grafana;
@@ -102,6 +112,18 @@ in
             http_port = ports.grafana;
             domain = extraLib.domainFor "grafana";
             root_url = extraLib.domainAsUrl (extraLib.domainFor "grafana");
+          };
+          # allow login without credentials
+          "auth.anonymous" = {
+            enabled = true;
+            org_name = "Main Org.";
+            org_role = "Admin";
+            device_limit = 1;
+          };
+          # real admin has still more privilges than anonymous
+          security = {
+            admin_user = "$__file{${secretsRuntimePath}/grafana/security/admin_user}";
+            admin_password = "$__file{${secretsRuntimePath}/grafana/security/admin_password}";
           };
         };
         provision = {
@@ -163,23 +185,29 @@ in
             # extraConfig = hardenedServerExtraConfig;
             locations = {
               "/" = {
-                extraConfig = ''
-                  # Content Security Policy (CSP)
-                  add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
-                  add_header X-Content-Type-Options "nosniff" always;
-                  proxy_set_header Host $host;
-                  proxy_pass        ${extraLib.localUrlWithPortFor "grafana"};
-                '';
+                extraConfig =
+                  config.nginxConfs.proxy
+                  + config.nginxConfs.autheliaAuthrequest
+                  + ''
+                    # Content Security Policy (CSP)
+                    add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
+                    add_header X-Content-Type-Options "nosniff" always;
+                    proxy_pass ${extraLib.localUrlWithPortFor "grafana"};
+                  '';
               };
               # Proxy Grafana Live WebSocket connections.
               "/api/live/" = {
-                extraConfig = ''
-                  proxy_http_version 1.1;
-                  proxy_set_header Upgrade $http_upgrade;
-                  proxy_set_header Connection $connection_upgrade;
-                  proxy_set_header Host $host;
-                  proxy_pass        ${extraLib.localUrlWithPortFor "grafana"};
-                '';
+                extraConfig =
+                  config.nginxConfs.proxy
+                  + config.nginxConfs.autheliaAuthrequest
+                  + ''
+                    proxy_set_header Upgrade $http_upgrade;
+                    proxy_set_header Connection $connection_upgrade;
+                    proxy_pass ${extraLib.localUrlWithPortFor "grafana"};
+                  '';
+              };
+              "/internal/authelia/authz" = {
+                extraConfig = config.nginxConfs.autheliaLocation;
               };
             };
           };
