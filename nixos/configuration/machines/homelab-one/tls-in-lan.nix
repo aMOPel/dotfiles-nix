@@ -30,7 +30,7 @@ in
   config = lib.mkIf cfg.enable (
     let
       stepCaSecretConfig = {
-        owner = "step-ca";
+        owner = userGroups.step-ca;
         # TODO: maybe restart more units that depend on this
         restartUnits = [ "step-ca.service" ];
         sopsFile = ../../../../secrets/step-ca.yaml;

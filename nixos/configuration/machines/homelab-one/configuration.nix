@@ -2,6 +2,7 @@
   pkgs,
   sops-nix,
   disko-nix,
+  config,
   ...
 }:
 let
@@ -65,8 +66,8 @@ in
   # system hardening
   security.sudo.wheelNeedsPassword = true;
   security.apparmor = {
-    enable = true;
-    killUnconfinedConfinables = true;
+    enable = false;
+    killUnconfinedConfinables = false;
   };
 
   networking.networkmanager.enable = true;
@@ -144,23 +145,27 @@ in
   };
 
   myModules.samba = {
-    enable = enableEndUserServices;
+    # enable = enableEndUserServices;
+    enable = true;
     shareParentDir = "/snapraid/mergerfs";
     allowedUsers = "${config-values.username}";
   };
 
   myModules.tls-in-lan = {
-    enable = enableEndUserServices;
+    # enable = enableEndUserServices;
+    enable = true;
     rootCaCrtPath = ./certificates/root-ca.crt;
   };
 
   myModules.dns = {
-    enable = enableEndUserServices;
+    # enable = enableEndUserServices;
+    enable = true;
     serverIpAddress = "192.168.1.196";
   };
 
   myModules.nginx = {
-    enable = enableEndUserServices;
+    # enable = enableEndUserServices;
+    enable = true;
   };
 
   myModules.radicale = {
@@ -178,18 +183,6 @@ in
   myModules.auth = {
     # enable = enableEndUserServices;
     enable = true;
-  };
-
-  services.smartd = {
-    enable = true;
-    autodetect = true;
-    # TODO :
-    # notifications.test = true;
-    # notifications.mail = {
-    #   enable = true;
-    #   sender = "smartd@homelab-one";
-    #   recipient = "";
-    # };
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,

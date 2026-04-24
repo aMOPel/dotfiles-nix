@@ -84,6 +84,8 @@ in
           limit_req_zone $binary_remote_addr zone=global:10m rate=10r/s;
         '';
 
+        statusPage = true; # for prometheus nginx exporter
+
         virtualHosts = {
           "${defaultDomain}" = {
             root = "/srv/www/";

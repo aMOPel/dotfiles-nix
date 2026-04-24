@@ -56,15 +56,110 @@ in
         sopsFile = ../../../../secrets/grafana.yaml;
       };
 
+      # make sure dashboard file names end in `.json` or grafana won't detect them
       dashboards = {
         node-exporter = "${
           pkgs.fetchFromGitHub {
+            name = "grafana-dashboard-node-exporter";
             owner = "rfmoz";
             repo = "grafana-dashboards";
             rev = "fa9f41fa3efed31d5c2de73cd332a340797c0ec7";
             sha256 = "sha256-phqtDu/oLwqB+R+Dn9WyHyYbNcKR43uIy+F3BrAvwg4=";
           }
         }/prometheus/node-exporter-full.json";
+        smartctl-exporter = pkgs.stdenvNoCC.mkDerivation {
+          name = "grafana-dashboard-smartctl-exporter-patched.json";
+          unpackCmd = ''
+            mkdir -p ./src
+            cp $curSrc ./src/file.json
+          '';
+          src = pkgs.fetchurl {
+            name = "grafana-dashboard-smartctl-exporter.json";
+            url = "https://grafana.com/api/dashboards/22604/revisions/2/download";
+            hash = "sha256-ci8WE23fZ+ltEKFoUdNNVXsUIV0jqtas79ia2lYIo88=";
+          };
+          nativeBuildInputs = with pkgs; [
+            jq
+          ];
+          # some dashboards don't autodetect the datasource, and thus won't work. this adds autodetection
+          buildPhase = ''
+            jq '.templating.list += [{"current": {}, "includeAll": false, "label": "Datasource", "name": "DS_PROMETHEUS", "options": [], "query": "prometheus", "refresh": 1, "regex": "", "type": "datasource"}]' file.json > file2.json
+          '';
+          installPhase = ''
+            cp file2.json $out
+          '';
+        };
+        nginx-exporter = pkgs.stdenvNoCC.mkDerivation {
+          name = "grafana-dashboard-nginx-exporter-patched.json";
+          unpackCmd = ''
+            mkdir -p ./src
+            cp $curSrc ./src/file.json
+          '';
+          src = pkgs.fetchurl {
+            name = "grafana-dashboard-nginx-exporter.json";
+            url = "https://grafana.com/api/dashboards/11199/revisions/1/download";
+            hash = "sha256-RtMI3aMbxqwIqdIIbaj71jr/twtrnY/r/Y5ghoRvu1M=";
+          };
+          nativeBuildInputs = with pkgs; [
+            jq
+          ];
+          # some dashboards don't autodetect the datasource, and thus won't work. this adds autodetection
+          buildPhase = ''
+            jq '.templating.list += [{"current": {}, "includeAll": false, "label": "Datasource", "name": "DS_PROMETHEUS", "options": [], "query": "prometheus", "refresh": 1, "regex": "", "type": "datasource"}]' file.json > file2.json
+          '';
+          installPhase = ''
+            cp file2.json $out
+          '';
+        };
+
+        dnsmasq-exporter = pkgs.stdenvNoCC.mkDerivation {
+          name = "grafana-dashboard-dnsmasq-exporter-patched.json";
+          unpackCmd = ''
+            mkdir -p ./src
+            cp $curSrc ./src/file.json
+          '';
+          src = pkgs.fetchurl {
+            name = "grafana-dashboard-dnsmasq-exporter.json";
+            url = "https://grafana.com/api/dashboards/18796/revisions/1/download";
+            hash = "sha256-QoHeeu08Ct8NTyED6G+zRg4XTToh06oXI03gg9e2xNo=";
+          };
+          nativeBuildInputs = with pkgs; [
+            jq
+          ];
+          # some dashboards don't autodetect the datasource, and thus won't work. this adds autodetection
+          buildPhase = ''
+            jq 'del(.templating.list[] | select(.query == "prometheus" and .type == "datasource"))' file.json > file2.json
+            jq '.templating.list += [{"current": {}, "includeAll": false, "label": "Datasource", "name": "DS_PROMETHEUS", "options": [], "query": "prometheus", "refresh": 1, "regex": "", "type": "datasource"}]' file2.json > file3.json
+          '';
+          installPhase = ''
+            cp file3.json $out
+          '';
+        };
+
+        systemd-exporter = pkgs.stdenvNoCC.mkDerivation {
+          name = "grafana-dashboard-systemd-exporter-patched.json";
+          unpackCmd = ''
+            mkdir -p ./src
+            cp $curSrc ./src/file.json
+          '';
+          src = pkgs.fetchurl {
+            name = "grafana-dashboard-systemd-exporter.json";
+            url = "https://grafana.com/api/dashboards/22872/revisions/1/download";
+            hash = "sha256-ZlvD6Gt5dJsv2ud4f0t1AuAIMImL9I9zxoE0Rx9yvzM=";
+          };
+          nativeBuildInputs = with pkgs; [
+            jq
+          ];
+          # some dashboards don't autodetect the datasource, and thus won't work. this adds autodetection
+          buildPhase = ''
+            jq 'del(.templating.list[] | select(.query == "prometheus" and .type == "datasource"))' file.json > file2.json
+            jq '.templating.list += [{"current": {}, "includeAll": false, "label": "Datasource", "name": "DS_PROMETHEUS", "options": [], "query": "prometheus", "refresh": 1, "regex": "", "type": "datasource"}]' file2.json > file3.json
+          '';
+          installPhase = ''
+            cp file3.json $out
+          '';
+        };
+
       };
 
     in
@@ -72,6 +167,7 @@ in
       users = extraLib.createSystemUserGroups [
         userGroups.grafana
         userGroups.prometheus
+        userGroups.systemd-exporter
       ];
 
       sops.secrets."grafana/security/admin_user" = secretConfig;
@@ -84,22 +180,71 @@ in
         ];
       };
 
-      services.prometheus.exporters.node = {
-        enable = true;
-        port = ports.node-exporter;
-        listenAddress = extraLib.localAddress;
-        enabledCollectors = [
-          "logind"
-          "systemd"
-        ];
-        disabledCollectors = [ "textfile" ];
-        openFirewall = false;
+      services.prometheus.exporters = {
+        node = {
+          enable = true;
+          port = ports.node-exporter;
+          listenAddress = extraLib.localAddress;
+          enabledCollectors = [
+            "logind"
+            "systemd"
+          ];
+          disabledCollectors = [ "textfile" ];
+          openFirewall = false;
+        };
+        smartctl = {
+          enable = true;
+          port = ports.smartctl-exporter;
+          listenAddress = extraLib.localAddress;
+          openFirewall = false;
+          devices = [
+            config.disko.devices.disk.disk0.device
+            config.disko.devices.disk.disk1.device
+            config.disko.devices.disk.disk2.device
+          ];
+        };
+        nginx = {
+          enable = true;
+          port = ports.nginx-exporter;
+          listenAddress = extraLib.localAddress;
+          openFirewall = false;
+          scrapeUri = "${extraLib.localUrl}/nginx_status";
+        };
+        dnsmasq = {
+          enable = true;
+          port = ports.dnsmasq-exporter;
+          listenAddress = extraLib.localAddress;
+          openFirewall = false;
+          dnsmasqListenAddress = extraLib.localHostnameWithPortFor "dnsmasq";
+        };
+        systemd = {
+          enable = true;
+          port = ports.systemd-exporter;
+          listenAddress = extraLib.localAddress;
+          openFirewall = false;
+          extraFlags = [
+            "--systemd.collector.enable-ip-accounting"
+            "--systemd.collector.enable-restart-count"
+          ];
+        };
+      };
+
+      systemd.services = {
+        "prometheus-systemd-exporter" = {
+          serviceConfig = {
+            DynamicUser = false; # `= true` breaks the exporter
+          };
+        };
       };
 
       services.prometheus = {
         enable = true;
         port = ports.prometheus;
         listenAddress = extraLib.localAddress;
+        retentionTime = "30d";
+        globalConfig = {
+          scrape_interval = "30s";
+        };
         scrapeConfigs = [
           {
             job_name = "node";
@@ -107,6 +252,47 @@ in
               {
                 targets = [
                   (extraLib.localAddressWithPortFor "node-exporter")
+                ];
+              }
+            ];
+          }
+          {
+            job_name = "smartctl";
+            static_configs = [
+              {
+                targets = [
+                  (extraLib.localAddressWithPortFor "smartctl-exporter")
+                ];
+              }
+            ];
+          }
+          {
+            job_name = "nginx";
+            static_configs = [
+              {
+                targets = [
+                  (extraLib.localAddressWithPortFor "nginx-exporter")
+                ];
+              }
+            ];
+          }
+          {
+            job_name = "dnsmasq";
+            static_configs = [
+              {
+                targets = [
+                  (extraLib.localAddressWithPortFor "dnsmasq-exporter")
+                ];
+              }
+            ];
+          }
+          {
+            job_name = "systemd";
+            scrape_interval = "9s";
+            static_configs = [
+              {
+                targets = [
+                  (extraLib.localAddressWithPortFor "systemd-exporter")
                 ];
               }
             ];
@@ -144,6 +330,26 @@ in
               {
                 name = "node-exporter";
                 options.path = dashboards.node-exporter;
+                type = "file";
+              }
+              {
+                name = "smartctl-exporter";
+                options.path = dashboards.smartctl-exporter;
+                type = "file";
+              }
+              {
+                name = "nginx-exporter";
+                options.path = dashboards.nginx-exporter;
+                type = "file";
+              }
+              {
+                name = "dnsmasq-exporter";
+                options.path = dashboards.dnsmasq-exporter;
+                type = "file";
+              }
+              {
+                name = "systemd-exporter";
+                options.path = dashboards.systemd-exporter;
                 type = "file";
               }
             ];
@@ -201,7 +407,7 @@ in
                   + config.nginxConfs.autheliaAuthrequest
                   + ''
                     # Content Security Policy (CSP)
-                    add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
+                    add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
                     add_header X-Content-Type-Options "nosniff" always;
                     proxy_pass ${extraLib.localUrlWithPortFor "grafana"};
                   '';

@@ -58,11 +58,16 @@ in
     defaultDomain = "${config-values.nixos.hostname}.lan";
     ports = {
       authelia = 9091;
+      dnsmasq = 53;
+      dnsmasq-exporter = 9103;
       grafana = 3000;
+      nginx-exporter = 9102;
       node-exporter = 9100;
       prometheus = 9090;
       radicale = 5232;
+      smartctl-exporter = 9101;
       step-ca = 8443;
+      systemd-exporter = 9104;
     };
     subdomains = {
       # WARNING: the keys need to match actual service names in `config.services.`
@@ -78,6 +83,7 @@ in
       radicale = 5001;
       root = config.ids.uids.root;
       samba = 5002;
+      systemd-exporter = 5004;
     };
     gids = uids // {
       prometheus = config.ids.gids.prometheus;
@@ -90,6 +96,8 @@ in
       radicale = "radicale";
       root = "root";
       samba = "samba";
+      step-ca = "step-ca";
+      systemd-exporter = "systemd-exporter";
     };
   };
 }
