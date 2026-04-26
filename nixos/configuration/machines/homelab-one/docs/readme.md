@@ -242,6 +242,21 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
   nix-shell -p sops --run "sops edit secrets/grafana.yaml"
   ```
 
+## forgejo
+
+- protected by authelia
+
+### after new setup
+
+- regenerate secrets
+  ```sh
+  nix-shell -p sops -p yq-go --run \
+    "OUTDIR=./temp \
+    SOPS_DIR=./secrets \
+    SOPS_FILE=forgejo.yaml \
+    ./nixos/scripts/new-install-server/8-init-forgejo.sh"
+  ```
+
 ## disk formatting/partitions/filesystem
 
 TODO:

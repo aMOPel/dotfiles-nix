@@ -60,6 +60,7 @@ in
       authelia = 9091;
       dnsmasq = 53;
       dnsmasq-exporter = 9103;
+      forgejo = 9106;
       grafana = 3000;
       nginx-exporter = 9102;
       node-exporter = 9100;
@@ -73,12 +74,14 @@ in
     subdomains = {
       # WARNING: the keys need to match actual service names in `config.services.`
       authelia = "authelia";
+      forgejo = "forgejo";
       grafana = "grafana";
       prometheus = "prometheus";
       radicale = "radicale";
     };
     uids = {
       authelia = 5003;
+      forgejo = 5005;
       grafana = config.ids.uids.grafana;
       prometheus = config.ids.uids.prometheus;
       radicale = 5001;
@@ -92,6 +95,7 @@ in
     };
     userGroups = {
       authelia = "authelia";
+      forgejo = "forgejo";
       grafana = "grafana";
       prometheus = "prometheus";
       radicale = "radicale";

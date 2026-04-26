@@ -26,6 +26,7 @@ in
     ./globals.nix
     ./extraLib.nix
     ./auth.nix
+    ./forgejo.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -183,6 +184,12 @@ in
   myModules.auth = {
     # enable = enableEndUserServices;
     enable = true;
+  };
+
+  myModules.forgejo = {
+    # enable = enableEndUserServices;
+    enable = true;
+    dataParentDir = "/snapraid/mergerfs";
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
