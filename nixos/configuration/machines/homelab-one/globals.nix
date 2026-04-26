@@ -63,6 +63,7 @@ in
       grafana = 3000;
       nginx-exporter = 9102;
       node-exporter = 9100;
+      process-exporter = 9105;
       prometheus = 9090;
       radicale = 5232;
       smartctl-exporter = 9101;

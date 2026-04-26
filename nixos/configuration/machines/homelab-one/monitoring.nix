@@ -160,6 +160,32 @@ in
           '';
         };
 
+        # "read bytes" and "write bytes" charts are broken, they require root access
+        process-exporter = pkgs.stdenvNoCC.mkDerivation {
+          name = "grafana-dashboard-process-exporter-patched.json";
+          unpackCmd = ''
+            mkdir -p ./src
+            cp $curSrc ./src/file.json
+          '';
+          src = pkgs.fetchurl {
+            name = "grafana-dashboard-process-exporter.json";
+            url = "https://grafana.com/api/dashboards/13882/revisions/10/download";
+            hash = "sha256-W1vhd51DpCJzWVUNRHY/duWrInme5Opyw2d40Sfx4ZQ=";
+          };
+          nativeBuildInputs = with pkgs; [
+            jq
+          ];
+          buildPhase = ''
+            # `proportionalResident` requires root access, which we don't give the process exporter
+            # `resident` double counts memory of shared libs, so might overcount
+            sed -i 's/proportionalResident/resident/g' file.json
+            sed -i 's/proportional resident/resident/g' file.json
+          '';
+          installPhase = ''
+            cp file.json $out
+          '';
+        };
+
       };
 
     in
@@ -226,6 +252,20 @@ in
             "--systemd.collector.enable-ip-accounting"
             "--systemd.collector.enable-restart-count"
           ];
+        };
+        process = {
+          enable = true;
+          port = ports.process-exporter;
+          listenAddress = extraLib.localAddress;
+          openFirewall = false;
+          settings = {
+            process_names = [
+              {
+                name = "{{.Comm}}";
+                cmdline = [ ".+" ];
+              }
+            ];
+          };
         };
       };
 
@@ -297,6 +337,16 @@ in
               }
             ];
           }
+          {
+            job_name = "process";
+            static_configs = [
+              {
+                targets = [
+                  (extraLib.localAddressWithPortFor "process-exporter")
+                ];
+              }
+            ];
+          }
         ];
       };
 
@@ -350,6 +400,11 @@ in
               {
                 name = "systemd-exporter";
                 options.path = dashboards.systemd-exporter;
+                type = "file";
+              }
+              {
+                name = "process-exporter";
+                options.path = dashboards.process-exporter;
                 type = "file";
               }
             ];
