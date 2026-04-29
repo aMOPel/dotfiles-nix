@@ -25,7 +25,6 @@ cache_dir = "${HOME}/.cache/yazi/previews"
 image_delay = 30
 image_filter = "triangle"
 image_quality = 75
-sixel_fraction = 15
 ueberzug_scale = 1
 ueberzug_offset = [0, 0, 0, 0]
 
@@ -49,7 +48,7 @@ extract = [
 [open]
 rules = [
   # Folder
-  { name = "*/", use = [
+  { url = "*/", use = [
     "edit",
     "open",
     "reveal",
@@ -96,7 +95,7 @@ rules = [
     "reveal",
   ] },
   # Fallback
-  { name = "*", use = [
+  { url = "*", use = [
     "open",
     "reveal",
   ] },
@@ -113,13 +112,15 @@ suppress_preload = false
 [plugin]
 
 fetchers = [
-  { id = "git", name = "*", run = "git" },
-  { id = "git", name = "*/", run = "git" },
+  { id = "git", url = "*", run = "git" },
+  { id = "git", url = "*/", run = "git" },
   # Mimetype
-  { id = "mime", name = "*", run = "mime", if = "!mime", prio = "high" },
+  { id = "mime", url = "*/", run = "mime.dir", prio = "high" },
+  { id = "mime", url = "local://*", run = "mime.local", prio = "high" },
+  { id = "mime", url = "remote://*", run = "mime.remote", prio = "high" },
 ]
 spotters = [
-  { name = "*/", run = "folder" },
+  { url = "*/", run = "folder" },
   # Code
   { mime = "text/*", run = "code" },
   { mime = "*/{xml,javascript,wine-extension-ini}", run = "code" },
@@ -129,7 +130,7 @@ spotters = [
   # Video
   { mime = "video/*", run = "video" },
   # Fallback
-  { name = "*", run = "file" },
+  { url = "*", run = "file" },
 ]
 preloaders = [
   # Image
@@ -144,7 +145,7 @@ preloaders = [
   { mime = "application/ms-opentype", run = "font" },
 ]
 previewers = [
-  { name = "*/", run = "folder", sync = true },
+  { url = "*/", run = "folder", sync = true },
   # Code
   { mime = "text/*", run = "code" },
   { mime = "*/{xml,javascript,wine-extension-ini}", run = "code" },
@@ -160,18 +161,18 @@ previewers = [
   # Archive
   { mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*,octet-stream}", run = "archive" },
   { mime = "application/{debian*-package,redhat-package-manager,rpm,android.package-archive}", run = "archive" },
-  { name = "*.{AppImage,appimage}", run = "archive" },
+  { url = "*.{AppImage,appimage}", run = "archive" },
   # Virtual Disk / Disk Image
   { mime = "application/{iso9660-image,qemu-disk,ms-wim,apple-diskimage}", run = "archive" },
   { mime = "application/virtualbox-{vhd,vhdx}", run = "archive" },
-  { name = "*.{img,fat,ext,ext2,ext3,ext4,squashfs,ntfs,hfs,hfsx}", run = "archive" },
+  { url = "*.{img,fat,ext,ext2,ext3,ext4,squashfs,ntfs,hfs,hfsx}", run = "archive" },
   # Font
   { mime = "font/*", run = "font" },
   { mime = "application/ms-opentype", run = "font" },
   # Empty file
   { mime = "inode/empty", run = "empty" },
   # Fallback
-  { name = "*", run = "file" },
+  { url = "*", run = "file" },
 ]
 
 [input]
@@ -225,13 +226,13 @@ delete_offset = [0, 0, 70, 20]
 
 # overwrite
 overwrite_title = "Overwrite file?"
-overwrite_content = "Will overwrite the following file:"
+overwrite_body = "Will overwrite the following file:"
 overwrite_origin = "center"
 overwrite_offset = [0, 0, 50, 15]
 
 # quit
 quit_title = "Quit?"
-quit_content = "The following task is still running, are you sure you want to quit?"
+quit_body = "The following task is still running, are you sure you want to quit?"
 quit_origin = "center"
 quit_offset = [0, 0, 50, 15]
 

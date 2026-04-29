@@ -21,8 +21,6 @@ light = ""
 cwd = { fg = "cyan" }
 
 # Hovered
-hovered = { reversed = true }
-preview_hovered = { underline = true }
 
 # Find
 find_keyword = { fg = "yellow", bold = true, italic = true, underline = true }
@@ -33,11 +31,6 @@ marker_copied = { fg = "lightgreen", bg = "lightgreen" }
 marker_cut = { fg = "lightred", bg = "lightred" }
 marker_marked = { fg = "lightcyan", bg = "lightcyan" }
 marker_selected = { fg = "lightyellow", bg = "lightyellow" }
-
-# Tab
-tab_active = { reversed = true }
-tab_inactive = {}
-tab_width = 1
 
 # Count
 count_copied = { fg = "white", bg = "green" }
@@ -127,10 +120,23 @@ btn_labels = ["  [Y]es  ", "  (N)o  "]
 
 # : }}}
 
+[indicator]
+parent = { reversed = true }
+current = { reversed = true }
+preview = { underline = true }
+padding = { open = "", close = "" }
+
+[tabs]
+active = { bg = "blue", bold = true }
+inactive = { fg = "blue", bg = "gray" }
+
+# Separator
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
 
 # : Completion {{{
 
-[completion]
+[cmp]
 border = { fg = "blue" }
 active = { reversed = true }
 inactive = {}
@@ -215,18 +221,18 @@ rules = [
   # { mime = "inode/empty", fg = "red" },
 
   # Special files
-  { name = "*", is = "orphan", fg = "cyan", crossed = true },
-  { name = "*", is = "exec", fg = "green" },
-  { name = "*", is = "link", fg = "cyan" },
-  { name = "*/", is = "link", fg = "cyan" },
+  { url = "*", is = "orphan", fg = "cyan", crossed = true },
+  { url = "*", is = "exec", fg = "green" },
+  { url = "*", is = "link", fg = "cyan" },
+  { url = "*/", is = "link", fg = "cyan" },
 
   # Dummy files
-  { name = "*", is = "dummy", bg = "red" },
-  { name = "*/", is = "dummy", bg = "red" },
+  { url = "*", is = "dummy", bg = "red" },
+  { url = "*/", is = "dummy", bg = "red" },
 
   # Fallback
-  { name = "*", fg = "white" },
-  { name = "*/", fg = "blue" },
+  { url = "*", fg = "white" },
+  { url = "*/", fg = "blue" },
 ]
 
 # : }}}
