@@ -11,14 +11,14 @@ utils.addTable(g.lsp.fts, {
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
-  denols = function(on_attach, capabilities)
-    local lspconfig = require("lspconfig")
-    return {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      root_markers = { "deno.json", "deno.jsonc" },
-    }
-  end,
+  -- denols = function(on_attach, capabilities)
+  --   local lspconfig = require("lspconfig")
+  --   return {
+  --     capabilities = capabilities,
+  --     on_attach = on_attach,
+  --     root_markers = { "deno.json", "deno.jsonc" },
+  --   }
+  -- end,
   ts_ls = function(on_attach, capabilities)
     local lspconfig = require("lspconfig")
     return {

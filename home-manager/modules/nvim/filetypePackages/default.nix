@@ -121,12 +121,12 @@ let
           plugin = vim-godot;
           config = ''
             vim.filetype.add({
-            	pattern = {
-            		["*.tscn"] = "dosini",
-            		["*.tres"] = "dosini",
-            		["*.import"] = "dosini",
-            		["*.godot"] = "dosini",
-            	},
+              pattern = {
+                ["*.tscn"] = "dosini",
+                ["*.tres"] = "dosini",
+                ["*.import"] = "dosini",
+                ["*.godot"] = "dosini",
+              },
             })
           '';
         }
@@ -324,7 +324,7 @@ let
         jsdoc
       ];
       lsps = [ nodePackages.typescript-language-server ];
-      linters = [ eslint_d ];
+      linters = [ pkgs_latest.eslint_d ];
       # TODO:
       # debuggers = [ ];
       ftplugins = with vimPlugins; [
