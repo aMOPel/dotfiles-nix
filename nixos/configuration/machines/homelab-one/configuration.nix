@@ -1,5 +1,10 @@
 {
+  pkgs_latest,
+  pkgs_for_nvim,
   pkgs,
+  lib,
+  home-manager,
+  hmlib,
   sops-nix,
   disko-nix,
   config,
@@ -27,7 +32,19 @@ in
     ./extraLib.nix
     ./auth.nix
     ./forgejo.nix
+    home-manager.nixosModules.home-manager
   ];
+
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = false;
+    backupFileExtension = "backup";
+    users.root = ../../../../home-manager/home.nix;
+    extraSpecialArgs = {
+      inherit pkgs_for_nvim pkgs_latest hmlib;
+      config-values-path = ./config_values.nix;
+    };
+  };
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -38,17 +55,6 @@ in
   sops.age.keyFile = "/root/.config/sops/age/keys.txt";
 
   networking.hostName = config-values.nixos.hostname;
-
-  users.users."${config-values.username}" = {
-    isNormalUser = true;
-    extraGroups = [
-      "docker"
-      "libvirtd"
-      # TODO: check if this is necessary
-      "samba-group" # can log into samba share
-    ];
-    openssh.authorizedKeys.keys = config-values.nixos.authorizedKeys.keys;
-  };
 
   users.users.root = {
     openssh.authorizedKeys.keys = config-values.nixos.authorizedKeys.keys;
@@ -82,11 +88,12 @@ in
   };
 
   environment.systemPackages = with pkgs; [
-    neovim
     cntr
     gnumake
     age
     smartmontools
+    systemctl-tui
+    lazyjournal
   ];
 
   environment.variables = {
@@ -118,7 +125,6 @@ in
     enable = true;
     allowUsers = [
       "root"
-      "${config-values.username}"
     ];
   };
 
@@ -149,7 +155,7 @@ in
     # enable = enableEndUserServices;
     enable = true;
     shareParentDir = "/snapraid/mergerfs";
-    allowedUsers = "${config-values.username}";
+    allowedUsers = config-values.samba.allowedUsers;
   };
 
   myModules.tls-in-lan = {
