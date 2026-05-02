@@ -113,6 +113,14 @@ in
         lib
         ;
     })
+    (import ./modules/lazyjournal {
+      inherit
+        config
+        pkgs_latest
+        pkgs
+        lib
+        ;
+    })
   ];
 
   # uninstall = true;

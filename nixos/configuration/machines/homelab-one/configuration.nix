@@ -93,7 +93,6 @@ in
     age
     smartmontools
     systemctl-tui
-    lazyjournal
   ];
 
   environment.variables = {
