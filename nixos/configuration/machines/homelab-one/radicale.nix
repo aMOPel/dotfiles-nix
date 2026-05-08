@@ -12,6 +12,7 @@ let
     subdomains
     uids
     gids
+    ldap
     userGroups
     defaultDomain
     ;
@@ -60,7 +61,15 @@ in
       collectionsDir = "${dataDir}/collections";
     in
     {
-      sops.secrets."radicale/users" = secretConfig;
+
+      sops.secrets."ldap/services/radicale/password" = {
+        owner = "radicale";
+        restartUnits = [
+          "openldap.service"
+          "radicale.service"
+        ];
+        sopsFile = ../../../../secrets/ldap-service-users.yaml;
+      };
 
       users = config.extraLib.createSystemUserGroup {
         userGroup = userGroups.radicale;
@@ -83,17 +92,24 @@ in
         settings = {
           server = {
             hosts = [
-              (config.extraLib.localAddressWithPortFor "radicale")
+              (extraLib.localAddressWithPortFor "radicale")
             ];
             max_connections = 20;
             max_content_length = 100000000; # 100 Megabyte
             timeout = 30; # 30 seconds
           };
           auth = {
-            # type = "none";
-            type = "htpasswd";
-            htpasswd_filename = "${secretsRuntimePath}/radicale/users";
-            htpasswd_encryption = "autodetect";
+            type = "ldap";
+            ldap_uri = extraLib.localLdapWithPortFor "openldap";
+            ldap_base = ldap.DNs.defaultDomain;
+            ldap_reader_dn = ldap.DNs.services.radicale;
+            ldap_secret_file = config.sops.secrets."ldap/services/radicale/password".path;
+            ldap_filter = "(&(uid={0})(objectClass=inetOrgPerson))";
+            ldap_user_attribute = "uid";
+            ldap_security = "none";
+            ldap_groups_attribute = "cn";
+            ldap_group_members_attribute = "member";
+            ldap_group_base = ldap.DNs.groups.root;
             delay = 1; # Average delay after failed login attempts in seconds
           };
           storage = {

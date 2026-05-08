@@ -30,14 +30,7 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
 ## radicale
 
 - caldav and carddav server
-- users are handled in `secrets/radicale-users.yaml`, to edit:
-  ```sh
-  nix-shell -p sops --run "sops edit secrets/authelia-users.yaml"
-  ```
-  - to generate new entry:
-  ```sh
-  nix-shell -p apacheHttpd --run "htpasswd -n $USER"
-  ```
+- users are handled by ldap
 
 ## secrets
 

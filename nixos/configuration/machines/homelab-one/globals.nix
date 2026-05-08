@@ -133,6 +133,7 @@ in
           root = "${attributes.services},${defaultDomain}";
           authelia = "uid=authelia,${root}";
           grafana = "uid=grafana,${root}";
+          radicale = "uid=radicale,${root}";
         };
       };
     };
