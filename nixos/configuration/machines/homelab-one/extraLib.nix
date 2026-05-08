@@ -7,12 +7,15 @@ let
   localHostname = "localhost";
   localAddress = "127.0.0.1";
   localUrl = "http://${localAddress}";
+  localLdap = "ldap://${localAddress}";
   localAddressWithPort = port: "${localAddress}:${builtins.toString port}";
   localHostnameWithPort = port: "${localHostname}:${builtins.toString port}";
   localUrlWithPort = port: "${localUrl}:${builtins.toString port}";
+  localLdapWithPort = port: "${localLdap}:${builtins.toString port}";
   localAddressWithPortFor = service: localAddressWithPort config.globals.ports."${service}";
   localHostnameWithPortFor = service: localHostnameWithPort config.globals.ports."${service}";
   localUrlWithPortFor = service: localUrlWithPort config.globals.ports."${service}";
+  localLdapWithPortFor = service: localLdapWithPort config.globals.ports."${service}";
   domainAsUrl = domain: "https://${domain}";
   domainFor = service: "${config.globals.subdomains."${service}"}.${config.globals.defaultDomain}";
 
@@ -86,12 +89,15 @@ in
         localHostname
         localAddress
         localUrl
+        localLdap
         localAddressWithPort
         localHostnameWithPort
         localUrlWithPort
+        localLdapWithPort
         localAddressWithPortFor
         localHostnameWithPortFor
         localUrlWithPortFor
+        localLdapWithPortFor
         domainAsUrl
         createDirs
         createSystemUserGroup

@@ -13,6 +13,7 @@ let
     uids
     gids
     userGroups
+    ldap
     defaultDomain
     ;
   inherit (config) extraLib;
@@ -49,12 +50,6 @@ in
       '';
 
       dataDir = "${cfg.dataParentDir}/grafana";
-      secretsRuntimePath = "/run/secrets";
-      secretConfig = {
-        owner = userGroups.grafana;
-        restartUnits = [ "grafana.service" ];
-        sopsFile = ../../../../secrets/grafana.yaml;
-      };
 
       # make sure dashboard file names end in `.json` or grafana won't detect them
       dashboards = {
@@ -196,8 +191,14 @@ in
         userGroups.systemd-exporter
       ];
 
-      sops.secrets."grafana/security/admin_user" = secretConfig;
-      sops.secrets."grafana/security/admin_password" = secretConfig;
+      sops.secrets."ldap/services/grafana/password" = {
+        owner = "grafana";
+        restartUnits = [
+          "openldap.service"
+          "grafana.service"
+        ];
+        sopsFile = ../../../../secrets/ldap-service-users.yaml;
+      };
 
       systemd.tmpfiles.settings = extraLib.createDirs {
         userGroup = userGroups.grafana;
@@ -360,17 +361,51 @@ in
             domain = extraLib.domainFor "grafana";
             root_url = extraLib.domainAsUrl (extraLib.domainFor "grafana");
           };
-          # allow login without credentials
-          "auth.anonymous" = {
+          "auth.ldap" = {
             enabled = true;
-            org_name = "Main Org.";
-            org_role = "Admin";
-            device_limit = 1;
-          };
-          # real admin has still more privilges than anonymous
-          security = {
-            admin_user = "$__file{${secretsRuntimePath}/grafana/security/admin_user}";
-            admin_password = "$__file{${secretsRuntimePath}/grafana/security/admin_password}";
+            config_file = "${pkgs.writeTextFile {
+              name = "grafana-ldap.toml";
+              text = ''
+                [[servers]]
+                # Ldap server host (specify multiple hosts space separated)
+                host = "${extraLib.localAddress}"
+                # Default port is 389 or 636 if use_ssl = true
+                port = ${builtins.toString ports.openldap}
+                # Set to true if LDAP server should use an encrypted TLS connection (either with STARTTLS or LDAPS)
+                use_ssl = false
+
+                # Search user bind dn
+                bind_dn = "${ldap.DNs.services.grafana}"
+                # Search user bind password
+                bind_password = '$__file{${config.sops.secrets."ldap/services/grafana/password".path}}'
+
+                # Timeout in seconds. Applies to each host specified in the 'host' entry (space separated).
+                timeout = 10
+
+                search_filter = "(&(uid=%s)(objectClass=inetOrgPerson))"
+
+                # An array of base dns to search through
+                search_base_dns = ["${ldap.DNs.defaultDomain}"]
+
+                group_search_filter = "(&(member=%s)(objectClass=groupOfNames))"
+                group_search_filter_user_attribute = "dn"
+                group_search_base_dns = ["${ldap.DNs.groups.root}"]
+
+                [[servers.group_mappings]]
+                group_dn = "${ldap.DNs.groups.admin}"
+                org_role = "Admin"
+                grafana_admin = true
+
+                # Specify names of the LDAP attributes your LDAP uses
+                [servers.attributes]
+                email = "mail"
+                name = "givenName"
+                surname = "sn"
+                username = "uid"
+              '';
+            }}";
+            allow_sign_up = true;
+            skip_org_role_sync = false;
           };
         };
         provision = {
@@ -457,29 +492,20 @@ in
             # extraConfig = hardenedServerExtraConfig;
             locations = {
               "/" = {
-                extraConfig =
-                  config.nginxConfs.proxy
-                  + config.nginxConfs.autheliaAuthrequest
-                  + ''
-                    # Content Security Policy (CSP)
-                    add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
-                    add_header X-Content-Type-Options "nosniff" always;
-                    proxy_pass ${extraLib.localUrlWithPortFor "grafana"};
-                  '';
+                extraConfig = ''
+                  # Content Security Policy (CSP)
+                  add_header Content-Security-Policy "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
+                  add_header X-Content-Type-Options "nosniff" always;
+                  proxy_pass ${extraLib.localUrlWithPortFor "grafana"};
+                '';
               };
               # Proxy Grafana Live WebSocket connections.
               "/api/live/" = {
-                extraConfig =
-                  config.nginxConfs.proxy
-                  + config.nginxConfs.autheliaAuthrequest
-                  + ''
-                    proxy_set_header Upgrade $http_upgrade;
-                    proxy_set_header Connection $connection_upgrade;
-                    proxy_pass ${extraLib.localUrlWithPortFor "grafana"};
-                  '';
-              };
-              "/internal/authelia/authz" = {
-                extraConfig = config.nginxConfs.autheliaLocation;
+                extraConfig = ''
+                  proxy_set_header Upgrade $http_upgrade;
+                  proxy_set_header Connection $connection_upgrade;
+                  proxy_pass ${extraLib.localUrlWithPortFor "grafana"};
+                '';
               };
             };
           };

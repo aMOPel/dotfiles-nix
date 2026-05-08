@@ -1,0 +1,56 @@
+[[servers]]
+# Ldap server host (specify multiple hosts space separated)
+host = "127.0.0.1"
+# Default port is 389 or 636 if use_ssl = true
+port = 389
+# Set to true if LDAP server should use an encrypted TLS connection (either with STARTTLS or LDAPS)
+use_ssl = false
+# If set to true, use LDAP with STARTTLS instead of LDAPS
+start_tls = false
+# The value of an accepted TLS cipher. By default, this value is empty. Example value: ["TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"])
+# For a complete list of supported ciphers and TLS versions, refer to: https://go.dev/src/crypto/tls/cipher_suites.go
+# Starting with Grafana v11.0 only ciphers with ECDHE support are accepted for TLS 1.2 connections.
+tls_ciphers = []
+# This is the minimum TLS version allowed. By default, this value is empty. Accepted values are: TLS1.1 (only for Grafana v10.4 or earlier), TLS1.2, TLS1.3.
+min_tls_version = ""
+# set to true if you want to skip SSL cert validation
+ssl_skip_verify = false
+# set to the path to your root CA certificate or leave unset to use system defaults
+# root_ca_cert = "/path/to/certificate.crt"
+# Authentication against LDAP servers requiring client certificates
+# client_cert = "/path/to/client.crt"
+# client_key = "/path/to/client.key"
+
+# Search user bind dn
+bind_dn = "uid=grafana,ou=services,dc=homelab-one,dc=lan"
+# Search user bind password
+# If the password contains # or ; you have to wrap it with triple quotes. Ex """#password;"""
+bind_password = '$__file{/run/secrets/ldap/services/grafana/password}'
+# We recommend using variable expansion for the bind_password, for more info https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#variable-expansion
+# bind_password = '$__env{LDAP_BIND_PASSWORD}'
+
+# Timeout in seconds. Applies to each host specified in the 'host' entry (space separated).
+timeout = 10
+
+# User search filter, for example "(cn=%s)" or "(sAMAccountName=%s)" or "(uid=%s)"
+# Allow login from email or username, example "(|(sAMAccountName=%s)(userPrincipalName=%s))"
+search_filter = "(&(uid=%s)(objectClass=inetOrgPerson))"
+
+# An array of base dns to search through
+search_base_dns = ["dc=homelab-one,dc=lan"]
+
+group_search_filter = "(&(member=%s)(objectClass=groupOfNames))"
+group_search_filter_user_attribute = "dn"
+group_search_base_dns = ["ou=groups,dc=homelab-one,dc=lan"]
+
+[[servers.group_mappings]]
+group_dn = "cn=admin,ou=groups,dc=homelab-one,dc=lan"
+org_role = "Admin"
+grafana_admin = true
+
+# Specify names of the LDAP attributes your LDAP uses
+[servers.attributes]
+email = "mail"
+name = "givenName"
+surname = "sn"
+username = "uid"

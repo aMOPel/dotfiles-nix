@@ -52,6 +52,13 @@ in
       '';
       type = lib.types.str;
     };
+    ldap = lib.mkOption {
+      internal = true;
+      description = ''
+        ldap definitions
+      '';
+      type = lib.types.attrs;
+    };
   };
 
   config."${moduleName}" = rec {
@@ -105,6 +112,29 @@ in
       samba = "samba";
       step-ca = "step-ca";
       systemd-exporter = "systemd-exporter";
+    };
+    ldap = rec {
+      attributes = {
+        groups = "ou=groups";
+        people = "ou=people";
+        services = "ou=services";
+      };
+      DNs = rec {
+        defaultDomain = "dc=homelab-one,dc=lan";
+        rootAdmin = "cn=admin,${defaultDomain}";
+        groups = rec {
+          root = "${attributes.groups},${defaultDomain}";
+          admin = "cn=admin,${root}";
+        };
+        people = rec {
+          root = "${attributes.people},${defaultDomain}";
+        };
+        services = rec {
+          root = "${attributes.services},${defaultDomain}";
+          authelia = "uid=authelia,${root}";
+          grafana = "uid=grafana,${root}";
+        };
+      };
     };
   };
 }

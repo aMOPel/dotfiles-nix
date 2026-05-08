@@ -51,7 +51,8 @@ sops_pre_setup() {
 
 sops_setup() {
   setup_service "authelia"
-  setup_service "radiale"
+  setup_service "radicale"
+  setup_service "grafana"
 
   yq eval '.ldap."service-users.ldif" = load_str("'"$OUTDIR"'/service-users.ldif")' -i "$TEMP_SOPS_FILE"
 }

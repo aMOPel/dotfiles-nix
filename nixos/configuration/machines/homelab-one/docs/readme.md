@@ -248,12 +248,7 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
 
 ## grafana
 
-- protected by authelia
-- allows for anonymous login with less privileges or admin login full privileges
-- users are handled in `secrets/grafana.yaml`, to edit:
-  ```sh
-  nix-shell -p sops --run "sops edit secrets/grafana.yaml"
-  ```
+- uses ldap as source for truth for user accounts
 
 ## forgejo
 

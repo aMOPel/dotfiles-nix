@@ -12,6 +12,7 @@ let
     subdomains
     uids
     gids
+    ldap
     userGroups
     defaultDomain
     ;
@@ -170,14 +171,6 @@ in
       serviceInstance = "main";
       userDir = "/var/lib/authelia-${serviceInstance}";
 
-      ldap = rec {
-        dataDir = "/var/lib/openldap";
-        domain = "dc=homelab-one,dc=lan";
-        groups = "ou=groups,${domain}";
-        people = "ou=people,${domain}";
-        services = "ou=services,${domain}";
-        rootDN = "cn=admin,${domain}";
-      };
     in
     {
       inherit nginxConfs;
@@ -210,7 +203,7 @@ in
 
       services.openldap = {
         enable = true;
-        urlList = [ "ldap://${extraLib.localAddressWithPortFor "openldap"}/" ];
+        urlList = [ (extraLib.localLdapWithPortFor "openldap") ];
         settings = {
           children = {
             "cn=schema".includes = [
@@ -226,12 +219,12 @@ in
               ];
 
               olcDatabase = "{1}mdb";
-              olcDbDirectory = "${ldap.dataDir}/data";
+              olcDbDirectory = "/var/lib/openldap/data";
 
-              olcSuffix = ldap.domain;
+              olcSuffix = ldap.DNs.defaultDomain;
 
               # your admin account, do not use writeText on a production system
-              olcRootDN = ldap.rootDN;
+              olcRootDN = ldap.DNs.rootAdmin;
               olcRootPW.path = config.sops.secrets."ldap/admin_password".path;
               olcAccess = [
                 # custom access rules for userPassword attributes
@@ -243,23 +236,23 @@ in
           };
         };
         declarativeContents = {
-          "${ldap.domain}" = ''
-            dn: ${ldap.domain}
+          "${ldap.DNs.defaultDomain}" = ''
+            dn: ${ldap.DNs.defaultDomain}
             objectClass: top
             objectClass: dcObject
             objectClass: organization
             o: Homelab One
             dc: homelab-one
 
-            dn: ${ldap.people}
+            dn: ${ldap.DNs.people.root}
             objectClass: organizationalUnit
             ou: people
 
-            dn: ${ldap.groups}
+            dn: ${ldap.DNs.groups.root}
             objectClass: organizationalUnit
             ou: groups
 
-            dn: ${ldap.services}
+            dn: ${ldap.DNs.services.root}
             objectClass: organizationalUnit
             ou: services
           '';
@@ -276,12 +269,12 @@ in
 
         script = ''
           ${pkgs.openldap}/bin/ldapadd -x \
-            -D "${ldap.rootDN}" \
+            -D "${ldap.DNs.rootAdmin}" \
             -y "${config.sops.secrets."ldap/admin_password".path}" \
             -f "${config.sops.secrets."ldap/users.ldif".path}" || true
 
           ${pkgs.openldap}/bin/ldapadd -x \
-            -D "${ldap.rootDN}" \
+            -D "${ldap.DNs.rootAdmin}" \
             -y "${config.sops.secrets."ldap/admin_password".path}" \
             -f "${config.sops.secrets."ldap/service-users.ldif".path}" || true
         '';
@@ -340,11 +333,11 @@ in
                 disable = true;
               };
               ldap = {
-                address = "ldap://${extraLib.localAddressWithPortFor "openldap"}/";
-                base_dn = ldap.domain;
-                additional_users_dn = "ou=people";
-                additional_groups_dn = "ou=groups";
-                user = "uid=authelia,${ldap.services}";
+                address = extraLib.localLdapWithPortFor "openldap";
+                base_dn = ldap.DNs.defaultDomain;
+                additional_users_dn = ldap.attributes.people;
+                additional_groups_dn = ldap.attributes.groups;
+                user = ldap.DNs.services.authelia;
                 users_filter = "(&({username_attribute}={input})(objectClass=inetOrgPerson))";
                 groups_filter = "(&(member={dn})(objectClass=groupOfNames))";
                 attributes = {
