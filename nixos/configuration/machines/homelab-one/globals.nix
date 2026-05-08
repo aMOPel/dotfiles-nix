@@ -64,6 +64,7 @@ in
       grafana = 3000;
       nginx-exporter = 9102;
       node-exporter = 9100;
+      openldap = 389;
       process-exporter = 9105;
       prometheus = 9090;
       radicale = 5232;
@@ -97,6 +98,7 @@ in
       authelia = "authelia";
       forgejo = "forgejo";
       grafana = "grafana";
+      openldap = "openldap";
       prometheus = "prometheus";
       radicale = "radicale";
       root = "root";

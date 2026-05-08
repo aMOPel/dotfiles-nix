@@ -91,6 +91,7 @@ in
     cntr
     gnumake
     age
+    git
     smartmontools
     systemctl-tui
   ];
@@ -193,7 +194,7 @@ in
 
   myModules.forgejo = {
     # enable = enableEndUserServices;
-    enable = true;
+    enable = false;
     dataParentDir = "/snapraid/mergerfs";
   };
 

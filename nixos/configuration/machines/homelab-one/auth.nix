@@ -152,16 +152,32 @@ in
         '';
       };
 
-      secretsRuntimePath = "/run/secrets";
-
       autheliaSecretConfig = {
         owner = userGroups.authelia;
         restartUnits = [ "authelia-${serviceInstance}.service" ];
         sopsFile = ../../../../secrets/authelia.yaml;
       };
 
+      ldapSecretConfig = {
+        owner = "openldap";
+        restartUnits = [
+          "openldap.service"
+          "ldap-user-provisioning.service"
+        ];
+        sopsFile = ../../../../secrets/ldap-users.yaml;
+      };
+
       serviceInstance = "main";
       userDir = "/var/lib/authelia-${serviceInstance}";
+
+      ldap = rec {
+        dataDir = "/var/lib/openldap";
+        domain = "dc=homelab-one,dc=lan";
+        groups = "ou=groups,${domain}";
+        people = "ou=people,${domain}";
+        services = "ou=services,${domain}";
+        rootDN = "cn=admin,${domain}";
+      };
     in
     {
       inherit nginxConfs;
@@ -169,12 +185,106 @@ in
       sops.secrets."authelia/jwt_secret" = autheliaSecretConfig;
       sops.secrets."authelia/storage/encryption_key" = autheliaSecretConfig;
       sops.secrets."authelia/session/secret" = autheliaSecretConfig;
-      sops.secrets."authelia/users.yaml" = autheliaSecretConfig // {
-        sopsFile = ../../../../secrets/authelia-users.yaml;
+      sops.secrets."ldap/services/authelia/password" = {
+        owner = "authelia";
+        restartUnits = [
+          "openldap.service"
+          "authelia-${serviceInstance}.service"
+        ];
+        sopsFile = ../../../../secrets/ldap-service-users.yaml;
       };
+      sops.secrets."ldap/service-users.ldif" = {
+        owner = "openldap";
+        restartUnits = [
+          "openldap.service"
+          "authelia-${serviceInstance}.service"
+        ];
+        sopsFile = ../../../../secrets/ldap-service-users.yaml;
+      };
+      sops.secrets."ldap/users.ldif" = ldapSecretConfig;
+      sops.secrets."ldap/admin_password" = ldapSecretConfig;
 
       users = extraLib.createSystemUserGroup {
         userGroup = userGroups.authelia;
+      };
+
+      services.openldap = {
+        enable = true;
+        urlList = [ "ldap://${extraLib.localAddressWithPortFor "openldap"}/" ];
+        settings = {
+          children = {
+            "cn=schema".includes = [
+              "${pkgs.openldap}/etc/schema/core.ldif"
+              "${pkgs.openldap}/etc/schema/cosine.ldif"
+              "${pkgs.openldap}/etc/schema/inetorgperson.ldif"
+            ];
+
+            "olcDatabase={1}mdb".attrs = {
+              objectClass = [
+                "olcDatabaseConfig"
+                "olcMdbConfig"
+              ];
+
+              olcDatabase = "{1}mdb";
+              olcDbDirectory = "${ldap.dataDir}/data";
+
+              olcSuffix = ldap.domain;
+
+              # your admin account, do not use writeText on a production system
+              olcRootDN = ldap.rootDN;
+              olcRootPW.path = config.sops.secrets."ldap/admin_password".path;
+              olcAccess = [
+                # custom access rules for userPassword attributes
+                "{0}to attrs=userPassword by anonymous auth by * none"
+                # allow read on anything else
+                "{1}to * by * read"
+              ];
+            };
+          };
+        };
+        declarativeContents = {
+          "${ldap.domain}" = ''
+            dn: ${ldap.domain}
+            objectClass: top
+            objectClass: dcObject
+            objectClass: organization
+            o: Homelab One
+            dc: homelab-one
+
+            dn: ${ldap.people}
+            objectClass: organizationalUnit
+            ou: people
+
+            dn: ${ldap.groups}
+            objectClass: organizationalUnit
+            ou: groups
+
+            dn: ${ldap.services}
+            objectClass: organizationalUnit
+            ou: services
+          '';
+        };
+      };
+
+      # need to provision dynamically to inject secrets into ldap db
+      systemd.services.ldap-user-provisioning = {
+        wantedBy = [ "multi-user.target" ];
+        after = [ "openldap.service" ];
+        before = [ "authelia-${serviceInstance}.service" ];
+
+        serviceConfig.Type = "oneshot";
+
+        script = ''
+          ${pkgs.openldap}/bin/ldapadd -x \
+            -D "${ldap.rootDN}" \
+            -y "${config.sops.secrets."ldap/admin_password".path}" \
+            -f "${config.sops.secrets."ldap/users.ldif".path}" || true
+
+          ${pkgs.openldap}/bin/ldapadd -x \
+            -D "${ldap.rootDN}" \
+            -y "${config.sops.secrets."ldap/admin_password".path}" \
+            -f "${config.sops.secrets."ldap/service-users.ldif".path}" || true
+        '';
       };
 
       services.authelia.instances = {
@@ -183,9 +293,13 @@ in
           user = userGroups.authelia;
           group = userGroups.authelia;
           secrets = {
-            storageEncryptionKeyFile = "${secretsRuntimePath}/authelia/storage/encryption_key";
-            jwtSecretFile = "${secretsRuntimePath}/authelia/jwt_secret";
-            sessionSecretFile = "${secretsRuntimePath}/authelia/jwt_secret";
+            storageEncryptionKeyFile = config.sops.secrets."authelia/storage/encryption_key".path;
+            jwtSecretFile = config.sops.secrets."authelia/jwt_secret".path;
+            sessionSecretFile = config.sops.secrets."authelia/session/secret".path;
+          };
+          environmentVariables = {
+            AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE =
+              config.sops.secrets."ldap/services/authelia/password".path;
           };
           settings = {
             server = {
@@ -219,8 +333,28 @@ in
               };
             };
             authentication_backend = {
-              file = {
-                path = "${secretsRuntimePath}/authelia/users.yaml";
+              password_reset = {
+                disable = true;
+              };
+              password_change = {
+                disable = true;
+              };
+              ldap = {
+                address = "ldap://${extraLib.localAddressWithPortFor "openldap"}/";
+                base_dn = ldap.domain;
+                additional_users_dn = "ou=people";
+                additional_groups_dn = "ou=groups";
+                user = "uid=authelia,${ldap.services}";
+                users_filter = "(&({username_attribute}={input})(objectClass=inetOrgPerson))";
+                groups_filter = "(&(member={dn})(objectClass=groupOfNames))";
+                attributes = {
+                  username = "uid";
+                  display_name = "displayName";
+                  family_name = "sn";
+                  given_name = "givenName";
+                  mail = "mail";
+                  group_name = "cn";
+                };
               };
             };
             access_control = {

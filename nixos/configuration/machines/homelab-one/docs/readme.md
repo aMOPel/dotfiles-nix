@@ -205,20 +205,33 @@ nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
   intra-lan dns traffic will be routed from the router to the selfhosted dnsmasq
   instance, only be routed back again)
 
+## ldap
+
+- serves as source of truth for user accounts
+- used by various services like authelia
+- db admin password and user accounts are manually managed with
+  ```sh
+  nix-shell -p sops --run "sops edit ./secrets/ldap-users.yaml"
+  ```
+
+### after new setup
+
+- service accounts are generated with
+  ```sh
+  nix-shell -p sops -p yq-go --run \
+      'OUTDIR=./temp \
+      SOPS_DIR=./secrets \
+      SOPS_FILE=ldap-service-users.yaml \
+      ./nixos/scripts/new-install-server/10-init-ldap-service-users.sh'
+  ```
+
 ## authelia
 
 - authentication layer for services
-- supports oidc and ldap (but neither is used)
-- currently used in "Forwarded Authentication" mode, where nginx is configured
+- uses ldap as source for truth for user accounts
+- is oidc provider for services if possible
+- otherwise used in "Forwarded Authentication" mode, where nginx is configured
   to redirect to authelia if a session cookie is missing
-- users are handled in `secrets/authelia-users.yaml`, to edit:
-  ```sh
-  nix-shell -p sops --run "sops edit secrets/authelia-users.yaml"
-  ```
-  generate pw hash with
-  ```sh
-  nix-shell -p authelia --run "authelia crypto hash generate argon2"
-  ```
 - **IMPORTANT** services are not protected by default, their nginx config needs
   to be adapted to be protected
 
