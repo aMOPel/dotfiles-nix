@@ -99,12 +99,13 @@ in
           awk '
           BEGIN { RS="" }
           match($0, /uid: ([^\n]+)/, u) &&
+          match($0, /uidNumber: ([^\n]+)/, i) &&
           match($0, /userPassword: ([^\n]+)/, p) {
-            print u[1], p[1]
+            print u[1], p[1], i[1]
           }
           ' "${config.sops.secrets."ldap/users.ldif".path}" |
-          while read -r user pass; do
-            useradd --no-create-home --no-user-group "$user" || true;
+          while read -r user pass uid; do
+            useradd --no-create-home --no-user-group --uid "$uid" "$user" || true;
             printf '%s\n%s\n' "$pass" "$pass" | smbpasswd -a -s "$user";
           done
         '';

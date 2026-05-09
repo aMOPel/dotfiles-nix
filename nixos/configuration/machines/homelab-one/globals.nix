@@ -89,7 +89,7 @@ in
     };
     uids = {
       authelia = 5003;
-      forgejo = 5006;
+      forgejo = 5005;
       grafana = config.ids.uids.grafana;
       prometheus = config.ids.uids.prometheus;
       radicale = 5001;
@@ -134,6 +134,7 @@ in
           authelia = "uid=authelia,${root}";
           grafana = "uid=grafana,${root}";
           radicale = "uid=radicale,${root}";
+          forgejo = "uid=forgejo,${root}";
         };
       };
     };
