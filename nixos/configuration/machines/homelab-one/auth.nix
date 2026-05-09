@@ -183,6 +183,8 @@ in
       sops.secrets."authelia/jwt_secret" = autheliaSecretConfig;
       sops.secrets."authelia/storage/encryption_key" = autheliaSecretConfig;
       sops.secrets."authelia/session/secret" = autheliaSecretConfig;
+      sops.secrets."authelia/oidc/jwk_secret" = autheliaSecretConfig;
+      sops.secrets."authelia/oidc/hmac_secret" = autheliaSecretConfig;
       sops.secrets."ldap/services/authelia/password" = {
         owner = "authelia";
         restartUnits = [
@@ -294,6 +296,8 @@ in
             storageEncryptionKeyFile = config.sops.secrets."authelia/storage/encryption_key".path;
             jwtSecretFile = config.sops.secrets."authelia/jwt_secret".path;
             sessionSecretFile = config.sops.secrets."authelia/session/secret".path;
+            oidcHmacSecretFile = config.sops.secrets."authelia/oidc/hmac_secret".path;
+            oidcIssuerPrivateKeyFile = config.sops.secrets."authelia/oidc/jwk_secret".path;
           };
           environmentVariables = {
             AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE =
@@ -367,6 +371,36 @@ in
             theme = "light";
             default_2fa_method = "totp";
             log.level = "debug";
+            identity_providers = {
+              oidc = {
+                clients = [
+                  {
+                    client_id = subdomains.forgejo;
+                    client_name = "Forgejo";
+                    # TODO: is there a way to get this value from `secrets/forgejo.yaml .forgejo.oidc.hash`
+                    client_secret = "$pbkdf2-sha512$310000$hHDJuGCmZLnU/ssgkbG26g$GLL./MukR8mbO71Dj31fzB3WQm0RqNTYZklxl95Sm03JHRcMn7A2D3N/kJiQpHZgHP7Q0h8xEgO3j/70rOtA3w";
+                    public = false;
+                    authorization_policy = "one_factor";
+                    require_pkce = true;
+                    pkce_challenge_method = "S256";
+                    redirect_uris = [
+                      "${extraLib.domainAsUrl (extraLib.domainFor "forgejo")}/user/oauth2/authelia/callback"
+                    ];
+                    scopes = [
+                      "openid"
+                      "email"
+                      "profile"
+                      "groups"
+                    ];
+                    response_types = [ "code" ];
+                    grant_types = [ "authorization_code" ];
+                    access_token_signed_response_alg = "none";
+                    userinfo_signed_response_alg = "none";
+                    token_endpoint_auth_method = "client_secret_basic";
+                  }
+                ];
+              };
+            };
           };
         };
       };

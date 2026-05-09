@@ -213,7 +213,7 @@ in
 
   myModules.forgejo = {
     # enable = enableEndUserServices;
-    enable = false;
+    enable = true;
     dataParentDir = "/snapraid/mergerfs";
   };
 

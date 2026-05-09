@@ -53,8 +53,16 @@ in
         restartUnits = [ "forgejo.service" ];
         sopsFile = ../../../../secrets/forgejo.yaml;
       };
+      userSecretConfig = {
+        owner = userGroups.forgejo;
+        restartUnits = [ "forgejo.service" ];
+        sopsFile = ../../../../secrets/forgejo-users.yaml;
+      };
 
       dataDir = "${cfg.dataParentDir}/forgejo";
+      stateDir = "/var/lib/forgejo";
+      customDir = "${stateDir}/custom";
+
     in
     {
       myModules.nginx = {
@@ -65,6 +73,9 @@ in
       };
 
       sops.secrets."forgejo/db_password" = secretConfig;
+      sops.secrets."forgejo/oidc/secret" = secretConfig;
+      sops.secrets."forgejo/admin/username" = userSecretConfig;
+      sops.secrets."forgejo/admin/password" = userSecretConfig;
 
       users = config.extraLib.createSystemUserGroup {
         userGroup = userGroups.forgejo;
@@ -77,8 +88,37 @@ in
         ];
       };
 
+      systemd.services = {
+        forgejo.preStart =
+          let
+            fromFile = file: "$(tr -d '\n' < ${file})";
+            forgejoCmd = "${pkgs.forgejo}/bin/forgejo -w ${stateDir} -c ${customDir}/conf/app.ini";
+          in
+          ''
+            ${forgejoCmd} admin user create --admin \
+            --email "${fromFile config.sops.secrets."forgejo/admin/username".path}@${defaultDomain}" \
+            --username "${fromFile config.sops.secrets."forgejo/admin/username".path}" \
+            --password "${fromFile config.sops.secrets."forgejo/admin/password".path}" \
+            || true;
+
+            ${forgejoCmd} admin auth add-oauth \
+            --provider=openidConnect \
+            --name=authelia \
+            --key=forgejo \
+            --secret="${fromFile config.sops.secrets."forgejo/oidc/secret".path}" \
+            --auto-discover-url=${extraLib.domainAsUrl (extraLib.domainFor "authelia")}/.well-known/openid-configuration \
+            --scopes='openid email profile groups' \
+            || true;
+          '';
+      };
+
+      # TODO: forgejo start broken
       services.forgejo = {
         enable = true;
+        # inherit
+        #   stateDir
+        #   customDir
+        #   ;
         repositoryRoot = "${dataDir}/repositories";
         lfs = {
           enable = true;
@@ -99,10 +139,18 @@ in
           server = {
             HTTP_ADDR = extraLib.localAddress;
             HTTP_PORT = ports.forgejo;
+            ROOT_URL = extraLib.domainAsUrl (extraLib.domainFor "forgejo");
           };
-          # indexers = {
-          #   ISSUE_INDEXER_TYPE = "db";
-          # };
+          openid = {
+            ENABLE_OPENID_SIGNIN = false;
+            ENABLE_OPENID_SIGNUP = true;
+            WHITELISTED_URIS = extraLib.domainFor "authelia";
+          };
+          service = {
+            DISABLE_REGISTRATION = false;
+            ALLOW_ONLY_EXTERNAL_REGISTRATION = true;
+            SHOW_REGISTRATION_BUTTON = false;
+          };
           # cache = {
           #   # recommended for small instance
           #   ADAPTER = "twoqueue";
@@ -112,9 +160,6 @@ in
           #   LOGIN_REMEMBER_DAYS = 7;
           #   REVERSE_PROXY_TRUSTED_PROXIES = extraLib.localAddress;
           #   DISABLE_WEBHOOKS = true;
-          #   # REVERSE_PROXY_AUTHENTICATION_USER: X-WEBAUTH-USER: Header name for reverse proxy authentication.
-          #   # REVERSE_PROXY_AUTHENTICATION_EMAIL: X-WEBAUTH-EMAIL: Header name for reverse proxy authentication provided email.
-          #   # REVERSE_PROXY_AUTHENTICATION_FULL_NAME: X-WEBAUTH-FULLNAME: Header name for reverse proxy authentication provided full name.
           # };
           # repository = {
           #   DISABLE_HTTP_GIT = true;
@@ -141,16 +186,6 @@ in
           # actions = {
           #   ENABLED = false;
           # };
-          # openid = {
-          #   ENABLE_OPENID_SIGNIN = false;
-          #   ENABLE_OPENID_SIGNUP = false;
-          # };
-          # service = {
-          #   DISABLE_REGISTRATION = true;
-          #   # ENABLE_REVERSE_PROXY_AUTHENTICATION: false
-          #   # ENABLE_REVERSE_PROXY_AUTHENTICATION_API: false
-          #   # ENABLE_REVERSE_PROXY_AUTO_REGISTRATION: false
-          # };
           # webhook = {
           #   ALLOWED_HOST_LIST = "private";
           # };
@@ -170,6 +205,9 @@ in
             locations = {
               "/" = {
                 extraConfig = ''
+                  add_header Content-Security-Policy "frame-ancestors 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self';" always;
+                  add_header X-Content-Type-Options "nosniff" always;
+
                   proxy_pass        ${config.extraLib.localUrlWithPortFor "forgejo"};
                   proxy_set_header Connection $http_connection;
                   proxy_set_header Upgrade $http_upgrade;

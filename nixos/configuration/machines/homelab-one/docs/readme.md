@@ -226,7 +226,7 @@
 
 - regenerate secrets
   ```sh
-  nix-shell -p sops -p yq-go --run \
+  nix-shell -p sops -p yq-go -p authelia --run \
       "OUTDIR=./temp \
       SOPS_DIR=./secrets \
       SOPS_FILE=authelia.yaml \
@@ -243,13 +243,13 @@
 
 ## forgejo
 
-- protected by authelia
+- uses authelia as oidc provider
 
 ### after new setup
 
 - regenerate secrets
   ```sh
-  nix-shell -p sops -p yq-go --run \
+  nix-shell -p sops -p authelia -p yq-go --run \
     "OUTDIR=./temp \
     SOPS_DIR=./secrets \
     SOPS_FILE=forgejo.yaml \

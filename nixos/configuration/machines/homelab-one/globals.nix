@@ -89,7 +89,7 @@ in
     };
     uids = {
       authelia = 5003;
-      forgejo = 5005;
+      forgejo = 5006;
       grafana = config.ids.uids.grafana;
       prometheus = config.ids.uids.prometheus;
       radicale = 5001;

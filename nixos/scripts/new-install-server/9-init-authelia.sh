@@ -26,6 +26,15 @@ session_secret_setup() {
   tr -cd '[:alnum:]' </dev/urandom | fold -w "${LENGTH}" | head -n 1 | tr -d '\n' >"$OUTDIR"/session.key
 }
 
+hmac_secret_setup() {
+  LENGTH=128
+  tr -cd '[:alnum:]' </dev/urandom | fold -w "${LENGTH}" | head -n 1 | tr -d '\n' >"$OUTDIR"/hmac.key
+}
+
+jwk_secret_setup() {
+  authelia crypto pair rsa generate --file.private-key "$OUTDIR"/jwk.key --file.public-key "$OUTDIR"/jwk.pub
+}
+
 sops_pre_setup() {
   mkdir -p "$SOPS_DIR"
   touch "$TEMP_SOPS_FILE"
@@ -35,6 +44,9 @@ sops_setup() {
   yq eval '.authelia.jwt_secret = load_str("'"$OUTDIR"'/jwt.key")' -i "$TEMP_SOPS_FILE"
   yq eval '.authelia.storage.encryption_key = load_str("'"$OUTDIR"'/storage.key")' -i "$TEMP_SOPS_FILE"
   yq eval '.authelia.session.secret = load_str("'"$OUTDIR"'/session.key")' -i "$TEMP_SOPS_FILE"
+  yq eval '.authelia.oidc.hmac_secret = load_str("'"$OUTDIR"'/hmac.key")' -i "$TEMP_SOPS_FILE"
+  yq eval '.authelia.oidc.jwk_secret = load_str("'"$OUTDIR"'/jwk.key")' -i "$TEMP_SOPS_FILE"
+  yq eval '.authelia.oidc.jwk_public = load_str("'"$OUTDIR"'/jwk.pub")' -i "$TEMP_SOPS_FILE"
 }
 
 sops_encrypt() {
@@ -50,6 +62,8 @@ pre_setup
 jwt_secret_setup
 storage_encryption_key_setup
 session_secret_setup
+hmac_secret_setup
+jwk_secret_setup
 sops_pre_setup
 sops_setup
 sops_encrypt
