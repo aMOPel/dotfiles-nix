@@ -23,7 +23,7 @@ in
     ./ssh.nix
     ./nginx.nix
     ./radicale.nix
-    ./monitoring.nix
+    ./monitoring/default.nix
     ./snapraid-mergerfs.nix
     disko-nix.nixosModules.disko
     sops-nix.nixosModules.sops
@@ -184,6 +184,26 @@ in
     # enable = enableEndUserServices;
     enable = true;
     dataParentDir = "/snapraid/mergerfs";
+    exporters = {
+      dnsmasq = {
+        enable = true;
+      };
+      systemd = {
+        enable = true;
+      };
+      process = {
+        enable = true;
+      };
+      node = {
+        enable = true;
+      };
+      smartctl = {
+        enable = true;
+      };
+      nginx = {
+        enable = true;
+      };
+    };
   };
 
   myModules.auth = {

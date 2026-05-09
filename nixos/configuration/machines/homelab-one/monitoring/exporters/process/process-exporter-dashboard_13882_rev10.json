@@ -95,7 +95,7 @@
           "datasource": {
             "uid": "$PROMETHEUS_DS"
           },
-          "expr": "sum(namedprocess_namegroup_memory_bytes{instance=~\"$instance\", memtype=\"proportionalResident\"} > 0) by (groupname)",
+          "expr": "sum(namedprocess_namegroup_memory_bytes{instance=~\"$instance\", memtype=\"resident\"} > 0) by (groupname)",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -103,7 +103,7 @@
           "refId": "A"
         }
       ],
-      "title": "proportional resident memory map",
+      "title": "resident memory map",
       "type": "marcusolsson-treemap-panel"
     },
     {
@@ -247,14 +247,14 @@
           "datasource": {
             "uid": "$PROMETHEUS_DS"
           },
-          "expr": "namedprocess_namegroup_memory_bytes{instance=~\"$instance\", memtype=\"proportionalResident\"} > 0",
+          "expr": "namedprocess_namegroup_memory_bytes{instance=~\"$instance\", memtype=\"resident\"} > 0",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{groupname}}",
           "refId": "A"
         }
       ],
-      "title": "proportional resident memory",
+      "title": "resident memory",
       "type": "timeseries"
     },
     {
@@ -1384,20 +1384,14 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "grafanacloud-egmc-prom",
-          "value": "grafanacloud-prom"
-        },
-        "hide": 1,
+        "current": {},
         "includeAll": false,
-        "multi": false,
+        "label": "Datasource",
         "name": "PROMETHEUS_DS",
         "options": [],
         "query": "prometheus",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {

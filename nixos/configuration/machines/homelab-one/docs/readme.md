@@ -233,6 +233,10 @@
       ./nixos/scripts/new-install-server/9-init-authelia.sh"
   ```
 
+## prometheus
+
+- uses authelia proxy forward authentication
+
 ## grafana
 
 - uses ldap as source for truth for user accounts
