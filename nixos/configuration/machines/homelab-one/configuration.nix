@@ -155,7 +155,6 @@ in
     # enable = enableEndUserServices;
     enable = true;
     shareParentDir = "/snapraid/mergerfs";
-    allowedUsers = config-values.samba.allowedUsers;
   };
 
   myModules.tls-in-lan = {

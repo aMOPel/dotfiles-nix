@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -19,12 +20,6 @@ in
 {
   options.myModules."${moduleName}" = {
     enable = lib.mkEnableOption "${moduleName}";
-    allowedUsers = lib.mkOption {
-      type = lib.types.str;
-      default = "";
-      example = "";
-      description = "space separated list, only these user names can log in";
-    };
     filePermissionMask = lib.mkOption {
       type = lib.types.str;
       default = "0770";
@@ -65,6 +60,42 @@ in
 
       users = extraLib.createSystemUserGroup {
         userGroup = userGroups.samba;
+      };
+
+      # we cheat here, not using actual ldap as auth backend, since that is too complicated
+      # instead we inject the ldap users into the smb user db on startup
+      systemd.services.samba-user-provisioning = {
+        wantedBy = [ "multi-user.target" ];
+        after = [ "openldap.service" ];
+        before = [ "samba.service" ];
+
+        serviceConfig.Type = "oneshot";
+
+        path = with pkgs; [
+          shadow
+          gawk
+          samba
+        ];
+        script = ''
+          # delete all entries
+          pdbedit -L | awk -F: '{print $1}' |
+          while read -r user; do
+            smbpasswd -x "$user" && (userdel "$user" || true);
+          done
+
+          # create entries from ldap users
+          awk '
+          BEGIN { RS="" }
+          match($0, /uid: ([^\n]+)/, u) &&
+          match($0, /userPassword: ([^\n]+)/, p) {
+            print u[1], p[1]
+          }
+          ' "${config.sops.secrets."ldap/users.ldif".path}" |
+          while read -r user pass; do
+            useradd --no-create-home --no-user-group "$user" || true;
+            printf '%s\n%s\n' "$pass" "$pass" | smbpasswd -a -s "$user";
+          done
+        '';
       };
 
       services.samba = {
@@ -115,7 +146,6 @@ in
 
             # harden
             "guest ok" = "no";
-            "valid users" = "${cfg.allowedUsers}";
             # whether the share is discoverable on the network
             "browseable" = "no";
             # only allow local network access

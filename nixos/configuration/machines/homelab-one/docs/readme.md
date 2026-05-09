@@ -8,24 +8,18 @@
 
 ## samba
 
-### after new setup
-
-- on server, set samba password for default user
-  ```sh
-  ./nixos/scripts/new-install-server/7-init-samba.sh
+- users are extracted from `./secrets/ldap-users.yaml` and injected into smb
+  user db
+- log into samba share
   ```
-- after that, log into samba share
-
-```
-WORKGROUP: WORKGROUP
-HOSTNAME: homelab-one
-SHARE: public
-USER: default user
-```
-
-```sh
-nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
-```
+  WORKGROUP: WORKGROUP
+  HOSTNAME: homelab-one
+  SHARE: public
+  USER: default user
+  ```
+  ```sh
+  nix-shell -p samba --run "smbclient //homelab-one/public -U $USER -c ls"
+  ```
 
 ## radicale
 
