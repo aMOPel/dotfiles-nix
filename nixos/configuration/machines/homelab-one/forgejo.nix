@@ -12,6 +12,7 @@ let
     subdomains
     uids
     gids
+    ldap
     userGroups
     defaultDomain
     ;
@@ -73,9 +74,14 @@ in
       };
 
       sops.secrets."forgejo/db_password" = secretConfig;
-      sops.secrets."forgejo/oidc/secret" = secretConfig;
-      sops.secrets."forgejo/admin/username" = userSecretConfig;
-      sops.secrets."forgejo/admin/password" = userSecretConfig;
+      sops.secrets."ldap/services/forgejo/password" = {
+        owner = "forgejo";
+        restartUnits = [
+          "openldap.service"
+          "forgejo.service"
+        ];
+        sopsFile = ../../../../secrets/ldap-service-users.yaml;
+      };
 
       users = config.extraLib.createSystemUserGroup {
         userGroup = userGroups.forgejo;
@@ -95,20 +101,22 @@ in
             forgejoCmd = "${pkgs.forgejo}/bin/forgejo -w ${stateDir} -c ${customDir}/conf/app.ini";
           in
           ''
-            ${forgejoCmd} admin user create --admin \
-            --email "${fromFile config.sops.secrets."forgejo/admin/username".path}@${defaultDomain}" \
-            --username "${fromFile config.sops.secrets."forgejo/admin/username".path}" \
-            --password "${fromFile config.sops.secrets."forgejo/admin/password".path}" \
-            || true;
-
-            ${forgejoCmd} admin auth add-oauth \
-            --provider=openidConnect \
-            --name=authelia \
-            --key=forgejo \
-            --secret="${fromFile config.sops.secrets."forgejo/oidc/secret".path}" \
-            --auto-discover-url=${extraLib.domainAsUrl (extraLib.domainFor "authelia")}/.well-known/openid-configuration \
-            --scopes='openid email profile groups' \
-            || true;
+            echo "init ldap auth";
+            ${forgejoCmd} admin auth add-ldap \
+              --name 'openldap' \
+              --security-protocol 'Unencrypted' \
+              --host "${extraLib.localAddress}" \
+              --port "${builtins.toString ports.openldap}" \
+              --user-search-base "${ldap.DNs.people.root}" \
+              --user-filter '(&(uid=%[1]s)(objectClass=inetOrgPerson))' \
+              --admin-filter '(cn=admin)' \
+              --bind-dn "${ldap.DNs.services.forgejo}" \
+              --bind-password "${fromFile config.sops.secrets."ldap/services/forgejo/password".path}" \
+              --username-attribute 'uid' \
+              --firstname-attribute 'givenName' \
+              --surname-attribute 'sn' \
+              --email-attribute 'mail' \
+              || true;
           '';
       };
 
@@ -140,11 +148,6 @@ in
             HTTP_ADDR = extraLib.localAddress;
             HTTP_PORT = ports.forgejo;
             ROOT_URL = extraLib.domainAsUrl (extraLib.domainFor "forgejo");
-          };
-          openid = {
-            ENABLE_OPENID_SIGNIN = false;
-            ENABLE_OPENID_SIGNUP = true;
-            WHITELISTED_URIS = extraLib.domainFor "authelia";
           };
           service = {
             DISABLE_REGISTRATION = false;
