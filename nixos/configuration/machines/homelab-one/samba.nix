@@ -48,6 +48,10 @@ in
       shareDir = "${sambaDir}/${cfg.sambaShareName}";
     in
     {
+      myModules.auth = {
+        enable = true;
+      };
+
       # ensure the directories for samba exist after boot
       systemd.tmpfiles.settings = extraLib.createDirs {
         userGroup = userGroups.samba;
@@ -60,6 +64,12 @@ in
 
       users = extraLib.createSystemUserGroup {
         userGroup = userGroups.samba;
+      };
+
+      sops.secrets."ldap/users.ldif" = {
+        restartUnits = lib.mkAfter [
+          "samba-user-provisioning.service"
+        ];
       };
 
       # we cheat here, not using actual ldap as auth backend, since that is too complicated
@@ -78,6 +88,8 @@ in
         ];
         script = ''
           # delete all entries
+          # WARNING: if usernames have collision with other users on system like service users,
+          # deleting could cause issues
           pdbedit -L | awk -F: '{print $1}' |
           while read -r user; do
             smbpasswd -x "$user" && (userdel "$user" || true);

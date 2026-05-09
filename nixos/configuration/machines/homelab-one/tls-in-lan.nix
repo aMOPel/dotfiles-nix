@@ -35,7 +35,6 @@ in
         restartUnits = [ "step-ca.service" ];
         sopsFile = ../../../../secrets/step-ca.yaml;
       };
-      secretsRuntimePath = "/run/secrets";
       # test with `systemd-analyze security step-ca.service`
       hardenedSystemdConfig = {
         AmbientCapabilities = "";
@@ -83,12 +82,12 @@ in
         # overrides config
         address = extraLib.localAddress;
         port = ports.step-ca;
-        intermediatePasswordFile = "${secretsRuntimePath}/intermediate-ca/private-password";
+        intermediatePasswordFile = config.sops.secrets."intermediate-ca/private-password".path;
         package = pkgs.step-ca;
         settings = {
-          root = "${secretsRuntimePath}/root-ca/public-cert";
-          crt = "${secretsRuntimePath}/intermediate-ca/public-cert";
-          key = "${secretsRuntimePath}/intermediate-ca/private-key";
+          root = config.sops.secrets."root-ca/public-cert".path;
+          crt = config.sops.secrets."intermediate-ca/public-cert".path;
+          key = config.sops.secrets."intermediate-ca/private-key".path;
           address = extraLib.localAddressWithPortFor "step-ca";
           # it seems the first name in the list decides which hostname has to be used
           # for the acme client setup (email, and server address)

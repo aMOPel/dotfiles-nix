@@ -48,8 +48,6 @@ in
         deny all;
       '';
 
-      secretsRuntimePath = "/run/secrets";
-
       secretConfig = {
         owner = userGroups.forgejo;
         restartUnits = [ "forgejo.service" ];
@@ -59,6 +57,13 @@ in
       dataDir = "${cfg.dataParentDir}/forgejo";
     in
     {
+      myModules.nginx = {
+        enable = true;
+      };
+      myModules.auth = {
+        enable = true;
+      };
+
       sops.secrets."forgejo/db_password" = secretConfig;
 
       users = config.extraLib.createSystemUserGroup {
@@ -81,7 +86,7 @@ in
         };
         database = {
           type = "sqlite3";
-          passwordFile = "${secretsRuntimePath}/forgejo/db_password";
+          passwordFile = config.sops.secrets."forgejo/db_password".path;
         };
         user = userGroups.forgejo;
         group = userGroups.forgejo;

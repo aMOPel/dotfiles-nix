@@ -185,6 +185,13 @@ in
 
     in
     {
+      myModules.auth = {
+        enable = true;
+      };
+      myModules.nginx = {
+        enable = true;
+      };
+
       users = extraLib.createSystemUserGroups [
         userGroups.grafana
         userGroups.prometheus

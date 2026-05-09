@@ -173,6 +173,11 @@ in
 
     in
     {
+      myModules.nginx = {
+        enable = true;
+      };
+
+      # use these to protect services with no builtin auth
       inherit nginxConfs;
 
       sops.secrets."authelia/jwt_secret" = autheliaSecretConfig;

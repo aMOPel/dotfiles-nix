@@ -49,18 +49,16 @@ in
         deny all;
       '';
 
-      secretsRuntimePath = "/run/secrets";
-
-      secretConfig = {
-        owner = userGroups.radicale;
-        restartUnits = [ "radicale.service" ];
-        sopsFile = ../../../../secrets/radicale-users.yaml;
-      };
-
       dataDir = "${cfg.dataParentDir}/radicale";
       collectionsDir = "${dataDir}/collections";
     in
     {
+      myModules.auth = {
+        enable = true;
+      };
+      myModules.nginx = {
+        enable = true;
+      };
 
       sops.secrets."ldap/services/radicale/password" = {
         owner = "radicale";
