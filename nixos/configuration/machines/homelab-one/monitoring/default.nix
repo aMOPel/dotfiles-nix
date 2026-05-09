@@ -151,6 +151,11 @@ in
                 org_role = "Admin"
                 grafana_admin = true
 
+                [[servers.group_mappings]]
+                group_dn = "${ldap.DNs.groups.users}"
+                org_role = "Viewer"
+                grafana_admin = false
+
                 # Specify names of the LDAP attributes your LDAP uses
                 [servers.attributes]
                 email = "mail"

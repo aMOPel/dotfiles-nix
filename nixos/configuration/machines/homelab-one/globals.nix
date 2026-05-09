@@ -125,6 +125,7 @@ in
         groups = rec {
           root = "${attributes.groups},${defaultDomain}";
           admin = "cn=admin,${root}";
+          users = "cn=users,${root}";
         };
         people = rec {
           root = "${attributes.people},${defaultDomain}";
