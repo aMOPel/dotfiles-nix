@@ -187,7 +187,9 @@
             shellHook = ''
               ${pre-commit.pre-commit-check.shellHook}
             '';
-            buildInputs = pre-commit.pre-commit-check.enabledPackages;
+            buildInputs =
+              # filter default treefmt package, so it doesn't override global
+              builtins.filter (e: e.name != "treefmt") pre-commit.pre-commit-check.enabledPackages;
           };
           hmShell = pkgs.mkShellNoCC {
             packages = [

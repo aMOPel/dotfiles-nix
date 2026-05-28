@@ -16,9 +16,6 @@ utils.addTable(g.formatter.filetype, {
     function()
       return {
         exe = "treefmt",
-        args = {
-          "--tree-root-file=treefmt.toml",
-        },
       }
     end,
   },

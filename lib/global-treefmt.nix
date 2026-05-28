@@ -95,5 +95,28 @@ let
     };
   };
 
+  # https://github.com/numtide/treefmt-nix/blob/790751ff7fd3801feeaf96d7dc416a8d581265ba/module-options.nix#L229
+  # NOTE: adapt the wrapper script to use local treefmt.toml if available
+  code =
+    config:
+    # bash
+    ''
+      set -euo pipefail;
+      unset PRJ_ROOT;
+      config_file="${config.build.configFile}";
+      set +e;
+      config_file_git_root="$(git rev-parse --show-toplevel 2>/dev/null)/treefmt.toml";
+      set -e;
+      if [[ -f "$config_file_git_root" ]]; then
+        config_file="$config_file_git_root";
+      elif [[ -f "./treefmt.toml" ]]; then
+        config_file="./treefmt.toml";
+      fi
+      echo "INFO: using config $config_file";
+      exec ${config.package}/bin/treefmt \
+        --config-file="$config_file" \
+        --tree-root-file="${config.projectRootFile}" \
+        "$@"
+    '';
 in
-global-treefmt.config.build.wrapper
+pkgs.writeShellScriptBin "treefmt" (code global-treefmt.config)
