@@ -69,6 +69,21 @@ in
           }
         ]) cfg.conditionalConfig
       );
+      iniContent = {
+        core = {
+          pager = "delta";
+        };
+        interactive = {
+          diffFilter = "delta --color-only";
+        };
+        delta = {
+          navigate = true;
+          dark = true;
+        };
+        merge = {
+          conflictStyle = "zdiff3";
+        };
+      };
       lfs = {
         enable = true;
       };
@@ -97,6 +112,10 @@ in
         };
         git = {
           overrideGpg = true;
+          paging = {
+            colorArg = "always";
+            pager = "delta --dark --paging=never";
+          };
         };
       };
     };
@@ -104,6 +123,7 @@ in
     home.packages = with pkgs; [
       git-crypt
       git-bug
+      delta
     ];
   };
 
