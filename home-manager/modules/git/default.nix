@@ -81,8 +81,41 @@ in
           diffFilter = "delta --color-only";
         };
         delta = {
-          navigate = true;
+          # TODO: increase context window (--context-lines) in new delta version
           dark = true;
+          right-arrow = "⟶  ";
+          syntax-theme = "base16-256";
+          # -- git
+          commit-decoration-style = "none";
+          commit-style = "magenta";
+          # -- diff
+          keep-plus-minus-markers = false;
+          line-numbers = true;
+          line-numbers-minus-style = "#4b5263";
+          line-numbers-plus-style = "#4b5263";
+          line-numbers-left-style = "#4b5263";
+          line-numbers-left-format = "{nm:>5}│";
+          line-numbers-right-style = "#4b5263";
+          line-numbers-right-format = "{np:>5}│";
+          line-numbers-zero-style = "#4b5263";
+          minus-emph-style = "syntax #542426";
+          minus-empty-line-marker-style = "syntax #25171C";
+          minus-style = "syntax #25171C";
+          plus-emph-style = "syntax #1C4428";
+          plus-empty-line-marker-style = "syntax #12261E";
+          plus-style = "syntax #12261E";
+          whitespace-error-style = "black white";
+          zero-style = "syntax";
+          # -- decorations
+          file-decoration-style = "brightwhite overline";
+          file-added-label = "[A]";
+          file-copied-label = "[*]";
+          file-modified-label = "[M]";
+          file-removed-label = "[D]";
+          file-renamed-label = "[R]";
+          file-style = "brightblack bold";
+          hunk-header-style = "omit";
+          tabs = 4;
         };
         merge = {
           conflictStyle = "zdiff3";
@@ -131,7 +164,7 @@ in
     home.packages = with pkgs; [
       git-crypt
       git-bug
-      delta
+      pkgs_latest.delta
     ];
   };
 
