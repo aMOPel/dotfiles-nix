@@ -106,6 +106,7 @@ in
     programs.lazygit = lib.mkIf cfg.enableLazygit {
       enable = true;
       # https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
+      package = pkgs_latest.lazygit;
       settings = {
         gui = {
           theme = {
@@ -116,10 +117,13 @@ in
         };
         git = {
           overrideGpg = true;
-          paging = {
-            colorArg = "always";
-            pager = "delta --dark --paging=never";
-          };
+          autoFetch = false;
+          pagers = [
+            {
+              colorArg = "always";
+              pager = "delta --dark --paging=never";
+            }
+          ];
         };
       };
     };

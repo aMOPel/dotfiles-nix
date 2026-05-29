@@ -46,11 +46,11 @@
     fzf = {
       enable = true;
       enableBashIntegration = true;
-      changeDirWidgetCommand = ''fd --type d'';
-      changeDirWidgetOptions = [ ''--preview 'tree -C {}' '' ];
-      fileWidgetCommand = ''fd --type f'';
-      fileWidgetOptions = [ ''--preview 'bat -n --color=always {}' '' ];
-      historyWidgetOptions = [ ''--preview 'echo {}' --preview-window up:3:hidden:wrap'' ];
+      changeDirWidgetCommand = "fd --type d";
+      changeDirWidgetOptions = [ "--preview 'tree -C {}' " ];
+      fileWidgetCommand = "fd --type f";
+      fileWidgetOptions = [ "--preview 'bat -n --color=always {}' " ];
+      historyWidgetOptions = [ "--preview 'echo {}' --preview-window up:3:hidden:wrap" ];
       colors = {
         "bg+" = "#353b45";
         "bg" = "#282c34";

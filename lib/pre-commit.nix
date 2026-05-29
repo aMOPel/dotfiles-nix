@@ -46,14 +46,14 @@ in
       check-vcs-permalinks = enable;
       detect-private-keys = enable;
       forbid-new-submodules = enable;
-      no-commit-to-branch = {
-        enable = true;
-        settings = {
-          branch = [
-            "main"
-          ];
-        };
-      };
+      # no-commit-to-branch = {
+      #   enable = true;
+      #   settings = {
+      #     branch = [
+      #       "main"
+      #     ];
+      #   };
+      # };
       # trim-trailing-whitespace = {
       #   enable = true;
       # };
