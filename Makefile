@@ -29,7 +29,7 @@ clean-boot-entries:
 	sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 	sudo nix-env --delete-generations --profile /nix/var/nix/profiles/system +4
 	sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
-	nixos-rebuild switch --use-remote-sudo --fast --flake '.#'$$(cat /etc/hostname)
+	nixos-rebuild switch --sudo --no-reexec --flake '.#'$$(cat /etc/hostname)
 
 .PHONY: homelab-one-nixos-switch
 homelab-one-nixos-switch:
