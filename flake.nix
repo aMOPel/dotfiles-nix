@@ -31,7 +31,6 @@
   };
 
   inputs."treefmt-nix" = {
-    ref = "6b9214fffbcf3f1e608efa15044431651635ca83";
     owner = "numtide";
     repo = "treefmt-nix";
     type = "github";
@@ -50,7 +49,6 @@
   };
 
   inputs.git-hooks-nix = {
-    ref = "84255025dee4c8701a99fbff65ac3c9095952f99";
     type = "github";
     owner = "cachix";
     repo = "git-hooks.nix";
