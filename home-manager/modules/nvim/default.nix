@@ -45,6 +45,8 @@ in
         };
       in
       {
+        withRuby = false;
+        withPython3 = false;
         package = pkgs.neovim-unwrapped;
         enable = true;
         defaultEditor = true;
@@ -53,7 +55,7 @@ in
         vimdiffAlias = true;
         plugins = filetypePackages.plugins ++ plugins.plugins;
         extraPackages = filetypePackages.packages;
-        extraLuaConfig = lua.extraConfig + filetypePackages.extraConfig + plugins.extraConfig;
+        initLua = lua.extraConfig + filetypePackages.extraConfig + plugins.extraConfig;
       };
   };
 }

@@ -3,7 +3,7 @@
     type = "github";
     owner = "nix-community";
     repo = "home-manager";
-    ref = "release-25.11";
+    ref = "release-26.05";
     inputs.nixpkgs.follows = "nixpkgs2";
   };
 
@@ -24,7 +24,7 @@
   # NOTE: calling it "nixpkgs", creates a collision with inputs for other flakes,
   # for which we don't explicitly define inputs
   inputs."nixpkgs2" = {
-    ref = "nixos-25.11";
+    ref = "nixos-26.05";
     owner = "NixOS";
     repo = "nixpkgs";
     type = "github";
