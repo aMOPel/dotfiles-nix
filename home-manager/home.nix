@@ -121,6 +121,14 @@ in
         lib
         ;
     })
+    (import ./modules/zathura {
+      inherit
+        config
+        pkgs_latest
+        pkgs
+        lib
+        ;
+    })
   ];
 
   # uninstall = true;
