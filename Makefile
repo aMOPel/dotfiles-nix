@@ -16,7 +16,7 @@ hm-switch:
 
 .PHONY: nixos-switch
 nixos-switch:
-	nixos-rebuild switch --sudo --no-reexec --flake '.#'$$(cat /etc/hostname)
+	nixos-rebuild switch --builders "" --sudo --no-reexec --flake '.#'$$(cat /etc/hostname)
 
 .PHONY: nixos-upgrade
 nixos-upgrade:

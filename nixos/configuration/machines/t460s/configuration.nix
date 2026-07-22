@@ -19,6 +19,7 @@ in
     ./hardware-configuration.nix
     ../../common/common.nix
     ../../common/yubikey-support.nix
+    ./remote-builders.nix
     home-manager.nixosModules.home-manager
     # udev-rule
     yubikey-disc-encryption
