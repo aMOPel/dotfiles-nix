@@ -3,6 +3,7 @@
   pkgs_for_nvim,
   pkgs,
   lib,
+  sops-nix,
   home-manager,
   hmlib,
   ...
@@ -21,6 +22,7 @@ in
     ../../common/yubikey-support.nix
     ./remote-builders.nix
     home-manager.nixosModules.home-manager
+    sops-nix.nixosModules.sops
     # udev-rule
     yubikey-disc-encryption
   ];
@@ -35,6 +37,11 @@ in
       config-values-path = ./config_values.nix;
     };
   };
+
+  sops.age.sshKeyPaths = [ ];
+  sops.gnupg.sshKeyPaths = [ ];
+  sops.age.generateKey = false;
+  sops.gnupg.home = "/home/${config-values.username}/.gnupg";
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
