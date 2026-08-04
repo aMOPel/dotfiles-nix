@@ -25,6 +25,10 @@ in
     yubikey-disc-encryption
   ];
 
+  nix.settings = {
+    download-buffer-size = 524288000; # 500 MiB
+  };
+
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = false;
