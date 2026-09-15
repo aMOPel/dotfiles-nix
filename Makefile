@@ -16,12 +16,12 @@ hm-switch:
 
 .PHONY: nixos-switch
 nixos-switch:
-	nixos-rebuild switch --builders "" --sudo --no-reexec --flake '.#'$$(cat /etc/hostname)
+	nixos-rebuild switch --builders "" --option substituters "https://cache.nixos.org/" --sudo --no-reexec --flake '.#'$$(cat /etc/hostname)
 
 .PHONY: nixos-upgrade
 nixos-upgrade:
 	nix flake update
-	nixos-rebuild boot --sudo --no-reexec --flake '.#'$$(cat /etc/hostname)
+	nixos-rebuild boot --builders "" --option substituters "https://cache.nixos.org/" --sudo --no-reexec --flake '.#'$$(cat /etc/hostname)
 	sudo reboot
 
 .PHONY: clean-boot-entries
@@ -29,8 +29,13 @@ clean-boot-entries:
 	sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 	sudo nix-env --delete-generations --profile /nix/var/nix/profiles/system +4
 	sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
-	nixos-rebuild switch --sudo --no-reexec --flake '.#'$$(cat /etc/hostname)
+	nixos-rebuild switch --builders "" --option substituters "https://cache.nixos.org/" --sudo --no-reexec --flake '.#'$$(cat /etc/hostname)
 
 .PHONY: homelab-one-nixos-switch
 homelab-one-nixos-switch:
-	nixos-rebuild switch --sudo --no-reexec --flake '.#homelab-one' --target-host root@homelab-one
+	nixos-rebuild switch --builders "" --option substituters "https://cache.nixos.org/" --sudo --no-reexec --flake '.#homelab-one' --target-host root@homelab-one
+
+.PHONY: nixos-option
+nixos-option:
+	echo "but can copy and modify"
+	echo "nixos-option -F $HOME'/dotfiles-nix#'$(cat /etc/hostname) some.option"

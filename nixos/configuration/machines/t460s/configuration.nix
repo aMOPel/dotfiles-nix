@@ -54,7 +54,6 @@ in
   };
   programs.virt-manager.enable = true;
 
-  services.gnome.gnome-keyring.enable = lib.mkForce false;
   networking.hostName = config-values.nixos.hostname;
 
   programs.ssh.knownHosts = config-values.nixos.knownHosts;
