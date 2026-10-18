@@ -13,6 +13,7 @@ let
     package = treefmt;
     projectRootFile = ".git/config";
     programs = {
+      air = enable;
       deno = enable;
       clang-format = enable;
       nixfmt = enable;
@@ -91,7 +92,7 @@ let
         "Dockerfile.*"
       ];
       taplo.includes = [ ".toml" ];
-
+      air.includes = [ ".r" ];
     };
   };
 

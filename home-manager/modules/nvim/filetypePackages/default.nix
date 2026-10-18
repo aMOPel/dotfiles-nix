@@ -6,6 +6,35 @@
   ...
 }:
 let
+  # this plugin tries to compile the lang server c binary on first startup inside the nix store.
+  # here we do this during the nix build of the vim plugin already
+  # additionally, we need to build the R package "nvimcom" contained in the vim plugin with nix
+  #
+  # nvimcom = pkgs.rPackages.buildRPackage {
+  #   name = "nvimcom";
+  #   src = "${pkgs.vimPlugins.R-nvim}/nvimcom";
+  #   nativeBuildInputs = [
+  #     pkgs.gcc
+  #     pkgs.gnumake
+  #   ];
+  # };
+  #
+  # and inject it into the R project's environment for each project (in the shell.nix)
+  # test with `requireNamespace("nvimcom")` inside the R shell
+  custom-R-nvim = pkgs_latest.vimPlugins.R-nvim.overrideAttrs (
+    finalAttrs: previousAttrs: {
+      nativeBuildInputs =
+        previousAttrs.nativeBuildInputs
+        ++ (with pkgs; [
+          gcc
+        ]);
+      preInstall = ''
+        pushd rnvimserver;
+        make;
+        popd;
+      '';
+    }
+  );
 
   vim-grip = pkgs.vimUtils.buildVimPlugin {
     pname = "vim-grip";
@@ -341,6 +370,16 @@ let
     deno = {
       # use the deno binary from path
       # lsps = [ deno ];
+    };
+
+    r = {
+      tsParsers = with vimPlugins.nvim-treesitter-parsers; [
+        r
+        csv
+      ];
+      ftplugins = with vimPlugins; [
+        custom-R-nvim
+      ];
     };
 
     vim = {
