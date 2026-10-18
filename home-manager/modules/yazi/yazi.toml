@@ -1,4 +1,4 @@
-"$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
+#:schema https://yazi-rs.github.io/schemas/yazi.json
 
 [mgr]
 show_hidden = true
@@ -10,8 +10,8 @@ cache_dir = "${HOME}/.cache/yazi/previews"
 
 [plugin]
 prepend_fetchers = [
-  { id = "git", url = "*", run = "git" },  # for plugin: git
-  { id = "git", url = "*/", run = "git" }, # for plugin: git
+  { id = "git", url = "*", run = "git", group = "git" },  # for plugin: git
+  { id = "git", url = "*/", run = "git", group = "git" }, # for plugin: git
 ]
 
 prepend_preloaders = [
