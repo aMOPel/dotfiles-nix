@@ -62,4 +62,8 @@ in
       # "wireshark"
     ];
   };
+
+  security.pki.certificateFiles = [
+    ../homelab-one/certificates/root-ca.crt
+  ];
 }
