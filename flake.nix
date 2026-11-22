@@ -80,7 +80,7 @@
         hostname:
         let
           config_values = import (machinesPath + "/${hostname}/config_values.nix");
-          path = ./nixos/configuration/machines + "/${hostname}/configuration.nix";
+          path = machinesPath + "/${hostname}/configuration.nix";
           system = config_values.nixos.system;
         in
         (nixpkgs2.lib.nixosSystem {
@@ -88,32 +88,6 @@
           specialArgs = makeInputsForSystem inputs system;
           modules = [ path ];
         });
-
-      nonNixosMachinesPath = ./home-manager/non-nixos-machines;
-      nonNixosHmConfigurations =
-        let
-          hostnames = (builtins.attrNames (builtins.readDir nonNixosMachinesPath));
-        in
-        builtins.listToAttrs (builtins.map (hostname: makeNonNixosHmConfiguration hostname) hostnames);
-      makeNonNixosHmConfiguration = (
-        hostname:
-        let
-          inputs' = makeInputsForSystem inputs system;
-          config_values = import (nonNixosMachinesPath + "/${hostname}/config_values.nix");
-          system = config_values.nixos.system;
-        in
-        {
-          name = config_values.username;
-          value = home-manager.lib.homeManagerConfiguration {
-            inherit (inputs') pkgs;
-            modules = [ ./home-manager/home.nix ];
-            extraSpecialArgs = {
-              inherit (inputs') pkgs_latest pkgs_for_nvim hmlib;
-              config-values-path = nonNixosMachinesPath + "/${hostname}/config_values.nix";
-            };
-          };
-        }
-      );
 
       overlays = [
         (
@@ -158,8 +132,6 @@
     in
     {
       inherit nixosConfigurations;
-      # for non nixos systems
-      homeConfigurations = nonNixosHmConfigurations;
     }
     // (flake-utils.lib.eachDefaultSystem (
       system:
