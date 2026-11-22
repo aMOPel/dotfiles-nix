@@ -1,27 +1,25 @@
 local treesitter = function()
-  require("nvim-treesitter.configs").setup({
-    highlight = {
-      enable = true,
-      disable = g.treesitter.highlight.disable,
-      additional_vim_regex_highlighting = false,
-    },
-    indent = {
-      enable = false,
-      disable = g.treesitter.indent.disable,
-    },
-    incremental_selection = {
-      enable = false,
-      disable = g.treesitter.incremental_selection.disable,
-    },
-    matchup = {
-      enable = true,
-      disable_virtual_text = { "nim" },
-    },
-    textobjects = {
-      select = {
-        lookahead = true,
-        include_surrounding_whitespace = false,
-      },
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "*",
+    callback = function(ev)
+      local ft = ev.match
+      if vim.tbl_contains(g.treesitter.highlight.disable, ft) then
+        return
+      end
+      local lang = vim.treesitter.language.get_lang(ft)
+
+      if lang and vim.treesitter.language.add(lang) then
+        vim.treesitter.start(ev.buf, lang)
+      end
+    end,
+  })
+end
+
+local treesitter_textobjects = function()
+  require("nvim-treesitter-textobjects").setup({
+    select = {
+      lookahead = true,
+      include_surrounding_whitespace = false,
     },
   })
 end
@@ -54,4 +52,5 @@ local treesitter_context = function()
 end
 
 treesitter()
+treesitter_textobjects()
 treesitter_context()

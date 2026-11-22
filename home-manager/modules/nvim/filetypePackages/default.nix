@@ -259,7 +259,7 @@ let
         markdown
         markdown_inline
       ];
-      lsps = [ ltex-ls ];
+      lsps = [ ltex-ls-plus ];
       linters = [
         proselint
         write-good
@@ -332,7 +332,7 @@ let
     };
 
     tex = {
-      lsps = [ ltex-ls ];
+      lsps = [ ltex-ls-plus ];
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [
         bibtex
         latex
@@ -483,10 +483,28 @@ let
 in
 {
   plugins =
-    extraPlugins
-    ++ lib.lists.flatten (
-      builtins.map (name: builtins.catAttrs name (builtins.attrValues enabledFiletypePackages)) pluginKeys
-    );
+    let
+      plugins =
+        extraPlugins
+        ++ lib.lists.flatten (
+          builtins.map (name: builtins.catAttrs name (builtins.attrValues enabledFiletypePackages)) pluginKeys
+        );
+      pluginsWithTreesitterQueries = (
+        lib.lists.flatten (
+          builtins.map (
+            p:
+            if p ? associatedQuery then
+              [
+                p
+                p.associatedQuery
+              ]
+            else
+              [ p ]
+          ) plugins
+        )
+      );
+    in
+    pluginsWithTreesitterQueries;
   packages = lib.lists.flatten (
     builtins.map (
       name: builtins.catAttrs name (builtins.attrValues enabledFiletypePackages)

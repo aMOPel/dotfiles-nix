@@ -11,6 +11,7 @@ table.insert(plugins, {
       scrolloff = 1,
       fullwidth = 1,
     }
+    vim.g.matchup_treesitter_enabled = true
 
     vim.keymap.set({ "n", "x" }, "%", "<plug>(matchup-%)", { desc = "vim-matchup" })
   end,
