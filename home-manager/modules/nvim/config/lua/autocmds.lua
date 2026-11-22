@@ -1,6 +1,7 @@
 vim.api.nvim_create_augroup("MyAutoCmd", {})
 vim.api.nvim_create_augroup("MyFt", {})
 vim.api.nvim_create_augroup("CustomFileType", {})
+vim.api.nvim_create_augroup("AutoNoHLSearch", { clear = true })
 
 vim.filetype.add({
   pattern = {
@@ -29,4 +30,24 @@ vim.api.nvim_create_autocmd({ "TextYankPost" }, {
     vim.highlight.on_yank({ higroup = "IncSearch", timeout = 500 })
   end,
   desc = "Highlight yanked text",
+})
+
+vim.api.nvim_create_autocmd("InsertEnter", {
+  group = "AutoNoHLSearch",
+  callback = function()
+    vim.schedule(function()
+      vim.cmd("nohlsearch")
+    end)
+  end,
+})
+
+vim.api.nvim_create_autocmd("CursorMoved", {
+  group = "AutoNoHLSearch",
+  callback = function()
+    if vim.v.hlsearch == 1 and vim.fn.searchcount({ recompute = true }).exact_match == 0 then
+      vim.schedule(function()
+        vim.cmd("nohlsearch")
+      end)
+    end
+  end,
 })

@@ -13,7 +13,7 @@ table.insert(plugins, {
     }
     vim.g.matchup_treesitter_enabled = true
 
-    vim.keymap.set({ "n", "x" }, "%", "<plug>(matchup-%)", { desc = "vim-matchup" })
+    vim.keymap.set({ "n", "v", "o" }, "%", "<plug>(matchup-%)", { desc = "vim-matchup" })
   end,
   config = function() end,
 })
@@ -27,15 +27,6 @@ table.insert(plugins, {
     vim.keymap.set("n", "mm", "dd", { desc = "cut whole line" })
     vim.keymap.set("n", "M", "D", { desc = "cut until eol" })
   end,
-})
-
-table.insert(plugins, {
-  name = "vim-asterisk",
-  setup = function()
-    -- see hlslens
-    vim.g["asterisk#keeppos"] = 1
-  end,
-  config = function() end,
 })
 
 table.insert(plugins, {

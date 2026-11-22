@@ -105,7 +105,6 @@ in
 
     # basics
     vim-matchup
-    vim-asterisk
     vim-cutlass
     vim-shot-f
     vim-ipmotion
@@ -134,18 +133,14 @@ in
 
     # visuals
     # look at https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-icons.md
-    nvim-web-devicons
     # look at https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-statusline.md
     lualine-nvim
     onedark-nvim
-    nvim-scrollbar
-    nvim-hlslens
     # replace with https://github.com/folke/snacks.nvim/blob/main/docs/input.md
     dressing-nvim
 
     # text manipulation
     vim-textobj-user
-    dial-nvim
     sideways-vim
     vim-subversive
     vim-yoink

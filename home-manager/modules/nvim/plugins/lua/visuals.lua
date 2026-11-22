@@ -1,17 +1,10 @@
 plugins = g.plugins
 
 table.insert(plugins, {
-  name = "nvim-web-devicons",
+  name = "mini-icons",
   setup = function() end,
   config = function()
-    require("nvim-web-devicons").setup({
-      override = {
-        nim = {
-          icon = "",
-          name = "nim",
-        },
-      },
-    })
+    require("mini.icons").setup()
   end,
 })
 
@@ -144,103 +137,39 @@ table.insert(plugins, {
 })
 
 table.insert(plugins, {
-  name = "nvim-hlslens",
-  setup = function()
-    vim.keymap.set("n", "n", [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]])
-    vim.keymap.set("n", "N", [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]])
-    vim.keymap.set({ "n", "x" }, "*", [[<Plug>(asterisk-z*)<Cmd>lua require('hlslens').start()<CR>]])
-    vim.keymap.set({ "n", "x" }, "#", [[<Plug>(asterisk-z#)<Cmd>lua require('hlslens').start()<CR>]])
-  end,
-  config = function() end,
-})
-
-table.insert(plugins, {
-  name = "nvim-scrollbar",
+  name = "mini-map",
   setup = function() end,
   config = function()
-    require("scrollbar").setup({
-      handle = {
-        highlight = "Visual",
+    local map = require("mini.map")
+    map.setup({
+      symbols = {
+        encode = { "█", "█", resolution = { row = 1, col = 1 } },
+        scroll_line = "•",
+        scroll_view = "┃",
       },
-      marks = {
-        Cursor = {
-          text = "•",
-          priority = 0,
-          gui = nil,
-          color = nil,
-          cterm = nil,
-          color_nr = nil, -- cterm
-          highlight = "Normal",
-        },
-        Search = {
-          text = { "" },
-          priority = 1,
-          gui = nil,
-          color = nil,
-          cterm = nil,
-          color_nr = nil, -- cterm
-          highlight = "WarningMsg",
-        },
-        Error = {
-          text = { "" },
-          priority = 2,
-          gui = nil,
-          color = nil,
-          cterm = nil,
-          color_nr = nil, -- cterm
-          highlight = "DiagnosticError",
-        },
-        Warn = {
-          text = { "" },
-          priority = 3,
-          gui = nil,
-          color = nil,
-          cterm = nil,
-          color_nr = nil, -- cterm
-          highlight = "DiagnosticWarn",
-        },
-        Info = {
-          text = { "" },
-          priority = 4,
-          gui = nil,
-          color = nil,
-          cterm = nil,
-          color_nr = nil, -- cterm
-          highlight = "DiagnosticInfo",
-        },
-        Hint = {
-          text = { "" },
-          priority = 5,
-          gui = nil,
-          color = nil,
-          cterm = nil,
-          color_nr = nil, -- cterm
-          highlight = "DiagnosticHint",
-        },
-        Misc = {
-          text = { "" },
-          priority = 6,
-          gui = nil,
-          color = nil,
-          cterm = nil,
-          color_nr = nil, -- cterm
-          highlight = "Normal",
-        },
+      window = {
+        focusable = false,
+        side = "right",
+        show_integration_count = false,
+        width = 2,
+        winblend = 0,
       },
-      excluded_buftypes = {},
-      excluded_filetypes = {},
+      integrations = {
+        map.gen_integration.builtin_search({ search = "InvSearch" }),
+        map.gen_integration.diff(),
+        map.gen_integration.diagnostic(),
+      },
     })
+    vim.cmd([[
+      hi InvSearch ctermfg=0 ctermbg=11 guifg=#ebd09c guibg=#282c34
+      hi MiniMapNormal guifg=#31353f
+      hi! link MiniMapSymbolLine MiniMapSymbolView
+    ]])
+    for _, key in ipairs({ "n", "N", "*", "#" }) do
+      local rhs = "<Cmd>lua MiniMap.refresh({}, {lines = false, scrollbar = false})<CR>" .. key
+      vim.keymap.set("n", key, rhs)
+    end
 
-    require("scrollbar.handlers.search").setup({
-      auto_enable = true,
-      enable_incsearch = true,
-      calm_down = true,
-      nearest_only = true,
-      nearest_float_when = "always",
-      float_shadow_blend = 50,
-      virt_priority = 100,
-      build_position_cb = nil,
-      override_lens = nil,
-    })
+    map.open()
   end,
 })
