@@ -136,11 +136,8 @@ in
     # look at https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-statusline.md
     lualine-nvim
     onedark-nvim
-    # replace with https://github.com/folke/snacks.nvim/blob/main/docs/input.md
-    dressing-nvim
 
     # text manipulation
-    vim-textobj-user
     sideways-vim
     vim-subversive
     vim-yoink
@@ -155,8 +152,6 @@ in
     # replace with https://github.com/folke/snacks.nvim/blob/main/docs/terminal.md
     toggleterm-nvim
     vim-grepper
-    vim-fugitive
-    vim-rhubarb
     yazi-nvim
     # add https://github.com/folke/snacks.nvim/blob/main/docs/lazygit.md
     todo-comments-nvim

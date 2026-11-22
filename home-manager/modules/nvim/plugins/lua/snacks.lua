@@ -5,7 +5,6 @@ table.insert(plugins, {
   setup = function() end,
   config = function()
     require("snacks").setup({
-
       indent = {
         enabled = true,
         indent = {
@@ -23,6 +22,14 @@ table.insert(plugins, {
         -- filter = function(buf, win)
         --   return vim.g.snacks_indent ~= false and vim.b[buf].snacks_indent ~= false and vim.bo[buf].buftype == ""
         -- end,
+      },
+
+      input = {
+        enabled = true,
+      },
+
+      picker = {
+        enabled = true,
       },
     })
   end,

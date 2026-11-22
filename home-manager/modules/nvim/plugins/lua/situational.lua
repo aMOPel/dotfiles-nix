@@ -191,11 +191,3 @@ table.insert(plugins, {
     })
   end,
 })
-
-table.insert(plugins, {
-  name = "dressing.nvim",
-  setup = function() end,
-  config = function()
-    require("dressing").setup()
-  end,
-})
