@@ -8,7 +8,7 @@ let
   };
   createPreset = name: rec {
     inherit name;
-    text = builtins.readFile (./. + "/${name}.sh");
+    text = builtins.readFile (./gpg-setup + "/${name}.sh");
     executable = true;
     destination = "/bin/${name}";
     # NOTE: writeTextFile uses buildCommand and does not have other phases in it's api
