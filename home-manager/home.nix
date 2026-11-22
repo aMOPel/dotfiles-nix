@@ -1,11 +1,7 @@
 {
-  config-values-path ? ../config_values.nix,
-  config,
-  pkgs_latest,
-  pkgs_for_nvim,
+  config-values-path,
   pkgs,
   lib,
-  hmlib,
   ...
 }:
 let
@@ -20,115 +16,20 @@ let
 in
 {
   imports = [
-    (import ./modules/nvim {
-      inherit config pkgs_latest lib;
-      pkgs = pkgs_for_nvim;
-    })
-    (import ./modules/kitty {
-      inherit
-        config
-        pkgs_latest
-        pkgs
-        lib
-        ;
-    })
-    (import ./modules/bash {
-      inherit
-        config
-        pkgs_latest
-        pkgs
-        lib
-        ;
-    })
-    (import ./modules/git {
-      inherit
-        config
-        pkgs_latest
-        pkgs
-        lib
-        ;
-    })
-    (import ./modules/shelltools {
-      inherit
-        config
-        pkgs_latest
-        pkgs
-        lib
-        ;
-    })
-    (import ./modules/yazi {
-      inherit
-        config
-        pkgs_latest
-        pkgs
-        lib
-        ;
-    })
-    (import ./modules/task {
-      inherit
-        config
-        pkgs_latest
-        pkgs
-        lib
-        ;
-    })
-    (import ./modules/gnome {
-      inherit
-        config
-        pkgs_latest
-        pkgs
-        lib
-        hmlib
-        ;
-    })
-    (import ./modules/gpg {
-      inherit
-        config
-        pkgs_latest
-        pkgs
-        lib
-        ;
-    })
-    (import ./modules/pass {
-      inherit
-        config
-        pkgs_latest
-        pkgs
-        lib
-        ;
-    })
-    (import ./modules/mime-applications {
-      inherit
-        config
-        pkgs_latest
-        pkgs
-        lib
-        ;
-    })
-    (import ./modules/treefmt {
-      inherit
-        config
-        pkgs_latest
-        pkgs
-        lib
-        ;
-    })
-    (import ./modules/lazyjournal {
-      inherit
-        config
-        pkgs_latest
-        pkgs
-        lib
-        ;
-    })
-    (import ./modules/zathura {
-      inherit
-        config
-        pkgs_latest
-        pkgs
-        lib
-        ;
-    })
+    ./modules/nvim
+    ./modules/kitty
+    ./modules/bash
+    ./modules/git
+    ./modules/shelltools
+    ./modules/yazi
+    ./modules/task
+    ./modules/gnome
+    ./modules/gpg
+    ./modules/pass
+    ./modules/mime-applications
+    ./modules/treefmt
+    ./modules/lazyjournal
+    ./modules/zathura
   ];
 
   # uninstall = true;

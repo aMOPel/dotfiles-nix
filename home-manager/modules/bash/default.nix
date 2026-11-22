@@ -1,4 +1,7 @@
-{ pkgs, pkgs_latest, ... }:
+{
+  pkgs,
+  ...
+}:
 {
   home.packages = with pkgs; [
     bash-completion

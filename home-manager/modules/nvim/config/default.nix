@@ -1,11 +1,6 @@
 {
-  lib,
-  pkgs,
-  pkgs_latest,
   ...
 }:
-let
-in
 {
   extraConfig =
     "\n\n"

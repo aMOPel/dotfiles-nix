@@ -1,9 +1,6 @@
 {
   config,
   lib,
-  pkgs,
-  pkgs_latest,
-  hmlib,
   ...
 }:
 let
@@ -292,11 +289,11 @@ in
       };
       "org/gnome/desktop/input-sources" = {
         sources = [
-          (hmlib.gvariant.mkTuple [
+          (lib.hm.gvariant.mkTuple [
             "xkb"
             "us"
           ])
-          (hmlib.gvariant.mkTuple [
+          (lib.hm.gvariant.mkTuple [
             "xkb"
             "de"
           ])

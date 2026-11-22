@@ -1,4 +1,4 @@
-{ pkgs, pkgs_latest, ... }:
+{ pkgs, pkgs-latest, ... }:
 {
 
   fonts.fontconfig = {
@@ -7,7 +7,7 @@
 
   programs.kitty = {
     enable = true;
-    package = pkgs_latest.kitty;
+    package = pkgs-latest.kitty;
 
     font = {
       size = 13;

@@ -1,11 +1,12 @@
 {
   config,
   lib,
-  pkgs,
-  pkgs_latest,
+  pkgs-for-nvim,
+  pkgs-latest,
   ...
 }:
 let
+  pkgs = pkgs-for-nvim;
   cfg = config.myModules.neovim;
 in
 {
@@ -36,11 +37,11 @@ in
     programs.neovim =
       let
         plugins = import ./plugins {
-          inherit lib pkgs pkgs_latest;
+          inherit lib pkgs pkgs-latest;
         };
-        lua = import ./config { inherit lib pkgs pkgs_latest; };
+        lua = import ./config { inherit lib pkgs pkgs-latest; };
         filetypePackages = import ./filetypePackages {
-          inherit lib pkgs pkgs_latest;
+          inherit lib pkgs pkgs-latest;
           filetypes = cfg.filetypes;
         };
       in

@@ -2,7 +2,7 @@
   filetypes ? [ ],
   lib,
   pkgs,
-  pkgs_latest,
+  pkgs-latest,
   ...
 }:
 let
@@ -21,7 +21,7 @@ let
   #
   # and inject it into the R project's environment for each project (in the shell.nix)
   # test with `requireNamespace("nvimcom")` inside the R shell
-  custom-R-nvim = pkgs_latest.vimPlugins.R-nvim.overrideAttrs (
+  custom-R-nvim = pkgs-latest.vimPlugins.R-nvim.overrideAttrs (
     finalAttrs: previousAttrs: {
       nativeBuildInputs =
         previousAttrs.nativeBuildInputs
@@ -355,12 +355,10 @@ let
         jsdoc
       ];
       lsps = [ typescript-language-server ];
-      linters = [ pkgs_latest.eslint_d ];
+      linters = [ pkgs-latest.eslint_d ];
       # TODO:
       # debuggers = [ ];
       ftplugins = with vimPlugins; [
-        typescript-vim
-
         package-info-nvim
         # TODO:
         # typescript-tools-vim

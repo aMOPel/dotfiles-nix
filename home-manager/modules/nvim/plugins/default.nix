@@ -1,7 +1,5 @@
 {
-  lib,
   pkgs,
-  pkgs_latest,
   ...
 }:
 let

@@ -1,4 +1,4 @@
-{ pkgs, pkgs_latest, ... }:
+{ pkgs, pkgs-latest, ... }:
 # TODO:
 # find a way to make xdg-open work with home manager on ubuntu
 # bulk rename in neovim broken, since <c-v> seems to equal <enter>
@@ -56,9 +56,9 @@ in
 
   programs.yazi = {
     enable = true;
-    package = pkgs_latest.yazi;
+    package = pkgs-latest.yazi;
 
-    plugins = with pkgs_latest.yaziPlugins; {
+    plugins = with pkgs-latest.yaziPlugins; {
       "smart-enter" = smart-enter;
       "mount" = mount;
       "git" = git;

@@ -1,10 +1,9 @@
 {
-  pkgs_latest,
-  pkgs_for_nvim,
+  pkgs-latest,
+  pkgs-for-nvim,
   pkgs,
   lib,
   home-manager,
-  hmlib,
   ...
 }:
 let
@@ -31,7 +30,7 @@ in
     backupFileExtension = "backup";
     users."${config-values.username}" = ../../../../home-manager/home.nix;
     extraSpecialArgs = {
-      inherit pkgs_for_nvim pkgs_latest hmlib;
+      inherit pkgs-for-nvim pkgs-latest;
       config-values-path = ./config_values.nix;
     };
   };

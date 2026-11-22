@@ -2,7 +2,7 @@
   config,
   lib,
   pkgs,
-  pkgs_latest,
+  pkgs-latest,
   ...
 }:
 let
@@ -139,7 +139,7 @@ in
     programs.lazygit = lib.mkIf cfg.enableLazygit {
       enable = true;
       # https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
-      package = pkgs_latest.lazygit;
+      package = pkgs-latest.lazygit;
       settings = {
         gui = {
           theme = {
@@ -164,7 +164,7 @@ in
     home.packages = with pkgs; [
       git-crypt
       git-bug
-      pkgs_latest.delta
+      pkgs-latest.delta
     ];
   };
 
