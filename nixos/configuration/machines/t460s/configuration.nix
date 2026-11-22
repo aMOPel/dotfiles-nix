@@ -1,74 +1,53 @@
 {
-  pkgs-latest,
-  pkgs-for-nvim,
-  pkgs,
-  lib,
-  home-manager,
   ...
 }:
-let
-  config-values = import ./config_values.nix;
-  yubikey-disc-encryption = import ../../common/yubikey-disc-encryption.nix {
-    device = config-values.nixos.luksDiskPath;
-  };
-in
-# udev-rule = import ../../../keyboard-layout/udev.nix { inherit pkgs; };
 {
   imports = [
     ./hardware-configuration.nix
-    ../../common/common.nix
-    ../../common/yubikey-support.nix
+    ../../common
     ./remote-builders.nix
-    home-manager.nixosModules.home-manager
-    # udev-rule
-    yubikey-disc-encryption
   ];
+
+  myModules.common-configuration.enable = true;
+  myModules.yubikey-support.enable = true;
+  myModules.yubikey-disc-encryption.enable = true;
+  myModules.home-manager.enable = true;
+  myModules.remote-builders.enable = true;
 
   nix.settings = {
     download-buffer-size = 524288000; # 500 MiB
   };
 
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = false;
-    backupFileExtension = "backup";
-    users."${config-values.username}" = ../../../../home-manager/home.nix;
-    extraSpecialArgs = {
-      inherit pkgs-for-nvim pkgs-latest;
-      config-values-path = ./config_values.nix;
-    };
-  };
+  # programs.nix-ld.enable = true;
+  # programs.nix-ld.libraries = with pkgs; [
+  #   glibc
+  #   gcc-unwrapped
+  # ];
 
-  programs.nix-ld.enable = true;
-  programs.nix-ld.libraries = with pkgs; [
-    glibc
-    gcc-unwrapped
-  ];
+  # virtualisation.libvirtd = {
+  #   enable = true;
+  #   qemu = {
+  #     swtpm.enable = true;
+  #   };
+  # };
+  # programs.virt-manager.enable = true;
 
-  virtualisation.libvirtd = {
-    enable = true;
-    qemu = {
-      swtpm.enable = true;
-    };
-  };
-  programs.virt-manager.enable = true;
-
-  networking.hostName = config-values.nixos.hostname;
-
-  programs.ssh.knownHosts = config-values.nixos.knownHosts;
-
-  users.users."${config-values.username}" = {
-    isNormalUser = true;
-    extraGroups = [
-      # "audio"
-      # "cups"
-      "docker"
-      # "input"
-      "libvirtd"
-      # "lp"
-      # "video"
-      "wheel"
-      # "wireshark"
-    ];
-  };
+  # This option defines the first version of NixOS you have installed on this particular machine,
+  # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
+  #
+  # Most users should NEVER change this value after the initial install, for any reason,
+  # even if you've upgraded your system to a new NixOS release.
+  #
+  # This value does NOT affect the Nixpkgs version your packages and OS are pulled from,
+  # so changing it will NOT upgrade your system - see https://nixos.org/manual/nixos/stable/#sec-upgrading for how
+  # to actually do that.
+  #
+  # This value being lower than the current NixOS release does NOT mean your system is
+  # out of date, out of support, or vulnerable.
+  #
+  # Do NOT change this value unless you have manually inspected all the changes it would make to your configuration,
+  # and migrated your data accordingly.
+  #
+  # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
+  system.stateVersion = "24.11"; # Did you read the comment?
 }

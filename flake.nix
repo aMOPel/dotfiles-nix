@@ -52,12 +52,15 @@
       makeNixosConfiguration =
         hostname:
         let
-          config_values = import (machinesPath + "/${hostname}/config_values.nix");
+          config-values = import (machinesPath + "/${hostname}/config_values.nix");
           nixosConfiguration = machinesPath + "/${hostname}/configuration.nix";
-          system = config_values.nixos.system;
+          system = config-values.nixos.system;
         in
         nixpkgs.lib.nixosSystem {
-          specialArgs = makeSpecialArgs inputs system;
+          specialArgs = {
+            inherit config-values;
+          }
+          // (makeSpecialArgs inputs system);
           modules = [
             nixosConfiguration
             {
@@ -88,16 +91,14 @@
       };
 
       pkgs = import nixpkgs { inherit system overlays config; };
-      scripts = pkgs.callPackage ./nixos/scripts { };
+      scripts = import ./nixos/scripts { inherit pkgs; };
       pre-commit = pkgs.callPackage ./lib/pre-commit.nix { inherit git-hooks-nix; };
     in
     {
       nixosConfigurations = builtins.mapAttrs (key: _: makeNixosConfiguration key) (
         lib.filterAttrs (_: type: type == "directory") (builtins.readDir machinesPath)
       );
-      packages.${system} = {
-      }
-      // scripts;
+      packages.${system} = scripts;
       devShells.${system} = {
         default = pkgs.mkShellNoCC {
           packages = with pkgs; [
@@ -122,6 +123,9 @@
             home-manager.packages."${system}".home-manager
           ];
         };
+      };
+      checks.${system} = {
+        inherit (pre-commit) pre-commit-check;
       };
     };
 }

@@ -1,19 +1,9 @@
 {
-  config-values-path,
+  config-values,
   pkgs,
   lib,
   ...
 }:
-let
-  # check that every leaf is different from emtpy string
-  config-values = lib.attrsets.mapAttrsRecursive (
-    name: value:
-    assert lib.asserts.assertMsg (
-      value != ""
-    ) "you have to provide a value for the key '${lib.strings.concatStringsSep "." name}'";
-    value
-  ) (import config-values-path);
-in
 {
   imports = [
     ./modules/nvim

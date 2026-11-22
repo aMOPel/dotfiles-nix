@@ -1,56 +1,14 @@
 {
-  pkgs-latest,
-  pkgs-for-nvim,
-  pkgs,
-  lib,
-  home-manager,
   ...
 }:
-let
-  config-values = import ./config_values.nix;
-  yubikey-disc-encryption = import ../../common/yubikey-disc-encryption.nix {
-    device = config-values.nixos.luksDiskPath;
-  };
-in
-# udev-rule = import ../../../keyboard-layout/udev.nix { inherit pkgs; };
 {
   imports = [
     ./hardware-configuration.nix
-    ../../common/common.nix
-    ../../common/yubikey-support.nix
-    home-manager.nixosModules.home-manager
-    # udev-rule
-    yubikey-disc-encryption
+    ../../common
   ];
 
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = false;
-    backupFileExtension = "backup";
-    users."${config-values.username}" = ../../../../home-manager/home.nix;
-    extraSpecialArgs = {
-      inherit pkgs-for-nvim pkgs-latest;
-      config-values-path = ./config_values.nix;
-    };
-  };
-
-  services.gnome.gnome-keyring.enable = lib.mkForce false;
-  networking.hostName = config-values.nixos.hostname;
-
-  programs.ssh.knownHosts = config-values.nixos.knownHosts;
-
-  users.users."${config-values.username}" = {
-    isNormalUser = true;
-    extraGroups = [
-      # "audio"
-      # "cups"
-      "docker"
-      # "input"
-      "libvirtd"
-      # "lp"
-      # "video"
-      "wheel"
-      # "wireshark"
-    ];
-  };
+  myModules.common-configuration.enable = true;
+  myModules.yubikey-support.enable = true;
+  myModules.yubikey-disc-encryption.enable = true;
+  myModules.home-manager.enable = true;
 }

@@ -4,18 +4,28 @@
   pkgs,
   ...
 }:
+let
+  name = "yubikey-support";
+  cfg = config.myModules.${name};
+in
 {
-  # TODO: seems to be broken
-  # programs.yubikey-touch-detector.enable = true;
+  options.myModules.${name} = {
+    enable = lib.mkEnableOption name;
+  };
 
-  services.pcscd.enable = true;
-  services.udev.packages = with pkgs; [
-    yubikey-personalization
-  ];
+  config = lib.mkIf cfg.enable {
+    # TODO: seems to be broken
+    # programs.yubikey-touch-detector.enable = true;
 
-  environment.systemPackages = with pkgs; [
-    yubikey-manager
-  ];
+    services.pcscd.enable = true;
+    services.udev.packages = with pkgs; [
+      yubikey-personalization
+    ];
+
+    environment.systemPackages = with pkgs; [
+      yubikey-manager
+    ];
+  };
 }
 
 # WARN: beware of the conflict between pcscd and gpg's scdaemon,

@@ -1,9 +1,6 @@
 {
-  pkgs-latest,
-  pkgs-for-nvim,
   pkgs,
   lib,
-  home-manager,
   sops-nix,
   disko-nix,
   config,
@@ -31,19 +28,10 @@ in
     ./extraLib.nix
     ./auth.nix
     ./forgejo.nix
-    home-manager.nixosModules.home-manager
+    ../../common
   ];
 
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = false;
-    backupFileExtension = "backup";
-    users.root = ../../../../home-manager/home.nix;
-    extraSpecialArgs = {
-      inherit pkgs-for-nvim pkgs-latest;
-      config-values-path = ./config_values.nix;
-    };
-  };
+  myModules.home-manager.enable = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -181,7 +169,7 @@ in
 
   myModules.monitoring = {
     # enable = enableEndUserServices;
-    enable = true;
+    enable = false;
     dataParentDir = "/snapraid/mergerfs";
     exporters = {
       dnsmasq = {
