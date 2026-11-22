@@ -24,7 +24,11 @@ let
       isort = enable;
       rustfmt = enable;
       shfmt = enable;
-      dockfmt = enable;
+      dockfmt = enable // {
+        excludes = [
+          "*.lua"
+        ];
+      };
       taplo = enable;
     };
 
