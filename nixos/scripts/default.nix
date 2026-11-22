@@ -19,43 +19,41 @@ let
   };
 in
 {
-  scripts = {
-    import-gpg = pkgs.callPackage ({ writeTextFile }: writeTextFile (createPreset "import-gpg")) { };
-    setup-gpg-and-yubikey = pkgs.callPackage (
-      { writeTextFile }:
-      writeTextFile (
-        (createPreset "setup-gpg-and-yubikey")
-        // {
-          text =
-            builtins.readFile (./gpg-setup + "/common.sh")
-            + builtins.readFile (./gpg-setup + "/setup-gpg.sh")
-            + builtins.readFile (./gpg-setup + "/setup-yubikey.sh");
-          derivationArgs = { inherit drduhRepo; };
-        }
-      )
-    ) { };
-    setup-gpg = pkgs.callPackage (
-      { writeTextFile }:
-      writeTextFile (
-        (createPreset "setup-gpg")
-        // {
-          text =
-            builtins.readFile (./gpg-setup + "/common.sh") + builtins.readFile (./gpg-setup + "/setup-gpg.sh");
-          derivationArgs = { inherit drduhRepo; };
-        }
-      )
-    ) { };
-    setup-yubikey = pkgs.callPackage (
-      { writeTextFile }:
-      writeTextFile (
-        (createPreset "setup-yubikey")
-        // {
-          text =
-            builtins.readFile (./gpg-setup + "/common.sh")
-            + builtins.readFile (./gpg-setup + "/setup-yubikey.sh");
-          derivationArgs = { inherit drduhRepo; };
-        }
-      )
-    ) { };
-  };
+  import-gpg = pkgs.callPackage ({ writeTextFile }: writeTextFile (createPreset "import-gpg")) { };
+  setup-gpg-and-yubikey = pkgs.callPackage (
+    { writeTextFile }:
+    writeTextFile (
+      (createPreset "setup-gpg-and-yubikey")
+      // {
+        text =
+          builtins.readFile (./gpg-setup + "/common.sh")
+          + builtins.readFile (./gpg-setup + "/setup-gpg.sh")
+          + builtins.readFile (./gpg-setup + "/setup-yubikey.sh");
+        derivationArgs = { inherit drduhRepo; };
+      }
+    )
+  ) { };
+  setup-gpg = pkgs.callPackage (
+    { writeTextFile }:
+    writeTextFile (
+      (createPreset "setup-gpg")
+      // {
+        text =
+          builtins.readFile (./gpg-setup + "/common.sh") + builtins.readFile (./gpg-setup + "/setup-gpg.sh");
+        derivationArgs = { inherit drduhRepo; };
+      }
+    )
+  ) { };
+  setup-yubikey = pkgs.callPackage (
+    { writeTextFile }:
+    writeTextFile (
+      (createPreset "setup-yubikey")
+      // {
+        text =
+          builtins.readFile (./gpg-setup + "/common.sh")
+          + builtins.readFile (./gpg-setup + "/setup-yubikey.sh");
+        derivationArgs = { inherit drduhRepo; };
+      }
+    )
+  ) { };
 }

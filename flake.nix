@@ -4,7 +4,7 @@
     owner = "nix-community";
     repo = "home-manager";
     ref = "release-26.05";
-    inputs.nixpkgs.follows = "nixpkgs2";
+    inputs.nixpkgs.follows = "nixpkgs";
   };
 
   inputs."nixpkgs_for_nvim" = {
@@ -21,9 +21,7 @@
     type = "github";
   };
 
-  # NOTE: calling it "nixpkgs", creates a collision with inputs for other flakes,
-  # for which we don't explicitly define inputs
-  inputs."nixpkgs2" = {
+  inputs."nixpkgs" = {
     ref = "nixos-26.05";
     owner = "NixOS";
     repo = "nixpkgs";
@@ -34,36 +32,33 @@
     owner = "numtide";
     repo = "treefmt-nix";
     type = "github";
-    inputs.nixpkgs.follows = "nixpkgs2";
+    inputs.nixpkgs.follows = "nixpkgs";
   };
-
-  inputs.flake-utils.url = "github:numtide/flake-utils";
 
   inputs."disko-nix" = {
     ref = "v1.13.0";
     owner = "nix-community";
     repo = "disko";
     type = "github";
-    inputs.nixpkgs.follows = "nixpkgs2";
+    inputs.nixpkgs.follows = "nixpkgs";
   };
 
   inputs.git-hooks-nix = {
     type = "github";
     owner = "cachix";
     repo = "git-hooks.nix";
-    inputs.nixpkgs.follows = "nixpkgs2";
+    inputs.nixpkgs.follows = "nixpkgs";
   };
 
   inputs.sops-nix = {
     url = "github:Mic92/sops-nix";
-    inputs.nixpkgs.follows = "nixpkgs2";
+    inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
     {
       self,
-      nixpkgs2,
-      flake-utils,
+      nixpkgs,
       home-manager,
       treefmt-nix,
       git-hooks-nix,
@@ -80,13 +75,13 @@
         hostname:
         let
           config_values = import (machinesPath + "/${hostname}/config_values.nix");
-          path = machinesPath + "/${hostname}/configuration.nix";
+          nixosConfiguration = machinesPath + "/${hostname}/configuration.nix";
           system = config_values.nixos.system;
         in
-        (nixpkgs2.lib.nixosSystem {
-          system = system;
+        (nixpkgs.lib.nixosSystem {
+          inherit system;
           specialArgs = makeInputsForSystem inputs system;
-          modules = [ path ];
+          modules = [ nixosConfiguration ];
         });
 
       overlays = [
@@ -120,12 +115,10 @@
         (
           prev_inputs
           // rec {
-            pkgs = import prev_inputs.nixpkgs2 {
-              inherit system overlays config;
-            };
+            pkgs = import prev_inputs.nixpkgs { inherit system overlays config; };
             pkgs_latest = import prev_inputs.nixpkgs_latest { inherit system overlays config; };
             pkgs_for_nvim = import prev_inputs.nixpkgs_for_nvim { inherit system overlays config; };
-            lib = prev_inputs.nixpkgs2.lib;
+            lib = prev_inputs.nixpkgs.lib;
             hmlib = import "${prev_inputs.home-manager}/modules/lib" { inherit lib; };
           }
         );
@@ -133,18 +126,18 @@
     {
       inherit nixosConfigurations;
     }
-    // (flake-utils.lib.eachDefaultSystem (
-      system:
+    // (
       let
-        pkgs = import nixpkgs2 { inherit system overlays config; };
-        scripts = (pkgs.callPackage ./nixos/scripts { }).scripts;
+        system = "x86_64-linux";
+        pkgs = import nixpkgs { inherit system overlays config; };
+        scripts = pkgs.callPackage ./nixos/scripts { };
         pre-commit = pkgs.callPackage ./lib/pre-commit.nix { };
       in
       {
-        packages = {
+        packages.${system} = {
         }
         // scripts;
-        devShells = {
+        devShells.${system} = {
           default = pkgs.mkShellNoCC {
             packages = with pkgs; [
               gnumake
@@ -165,5 +158,5 @@
           };
         };
       }
-    ));
+    );
 }
