@@ -38,7 +38,6 @@
   };
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
-  inputs.gitignore-nix.url = "github:hercules-ci/gitignore.nix";
 
   inputs."disko-nix" = {
     ref = "v1.13.0";
@@ -68,7 +67,6 @@
       home-manager,
       treefmt-nix,
       git-hooks-nix,
-      gitignore-nix,
       sops-nix,
       disko-nix,
       ...
@@ -130,7 +128,6 @@
           {
             inherit
               treefmt-nix
-              gitignore-nix
               git-hooks-nix
               global-treefmt
               sops-nix
