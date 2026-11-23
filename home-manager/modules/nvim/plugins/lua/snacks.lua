@@ -34,6 +34,14 @@ local function lazygit_config(Snacks)
   end, { desc = "snacks.lazygit" })
 end
 
+local function notifier_config(Snacks)
+  vim.api.nvim_create_user_command(
+    "PickerNotifications",
+    Snacks.picker.notifications,
+    { desc = "snacks.picker notifications" }
+  )
+end
+
 local function terminal_config(Snacks)
   vim.keymap.set({ "n" }, "<leader>ff", function()
     local count = vim.v.count1
@@ -224,10 +232,15 @@ table.insert(plugins, {
           },
         },
       },
+
+      notifier = {
+        enabled = true,
+      },
     })
 
     picker_config(Snacks)
     lazygit_config(Snacks)
     terminal_config(Snacks)
+    notifier_config(Snacks)
   end,
 })

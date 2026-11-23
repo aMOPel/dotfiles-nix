@@ -84,7 +84,6 @@ in
 
     # visuals
     # TODO: look at https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-statusline.md
-    # TODO: snacks-notify
     lualine-nvim
     onedark-nvim
 
