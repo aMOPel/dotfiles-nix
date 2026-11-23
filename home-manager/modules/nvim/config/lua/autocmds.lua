@@ -39,6 +39,7 @@ vim.api.nvim_create_autocmd("InsertEnter", {
       vim.cmd("nohlsearch")
     end)
   end,
+  desc = "disable hlsearch on insert",
 })
 
 vim.api.nvim_create_autocmd("CursorMoved", {
@@ -50,4 +51,5 @@ vim.api.nvim_create_autocmd("CursorMoved", {
       end)
     end
   end,
+  desc = "disable hlsearch when cursor leaves searched word",
 })

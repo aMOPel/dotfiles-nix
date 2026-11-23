@@ -170,6 +170,13 @@ table.insert(plugins, {
       vim.keymap.set("n", key, rhs)
     end
 
-    map.open()
+    vim.api.nvim_create_augroup("minimap", { clear = true })
+    vim.api.nvim_create_autocmd({ "WinResized", "WinEnter" }, {
+      group = "minimap",
+      callback = function()
+        map.open()
+      end,
+      desc = "enable scrollbar",
+    })
   end,
 })
