@@ -6,6 +6,7 @@ utils.addTable(g.lsp.fts, {
 })
 
 utils.addTable(g.lsp.servers.lsp_installer, {
+  emmet_language_server = "default",
   -- tailwindcss = function(on_attach, capabilities)
   -- 	local add_on_attach = function(client, bufnr)
   -- 		client.server_capabilities.document_formatting = false

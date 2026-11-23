@@ -108,19 +108,10 @@ let
       lsps = [
         tailwindcss-language-server
         vscode-langservers-extracted
+        emmet-language-server
       ];
       # TODO:
       # linters = [ stylelint ];
-      ftplugins = with vimPlugins; [
-        {
-          type = "lua";
-          plugin = emmet-vim;
-          config = ''
-            -- vim.g.user_emmet_leader_key = '<C-v>'
-            -- vim.g.user_emmet_mode = 'in'
-          '';
-        }
-      ];
     };
 
     cypher = {
@@ -218,16 +209,9 @@ let
         html
         xml
       ];
-      lsps = [ vscode-langservers-extracted ];
-      ftplugins = with vimPlugins; [
-        {
-          type = "lua";
-          plugin = emmet-vim;
-          config = ''
-            -- vim.g.user_emmet_leader_key = '<C-v>'
-            -- vim.g.user_emmet_mode = 'in'
-          '';
-        }
+      lsps = [
+        vscode-langservers-extracted
+        emmet-language-server
       ];
     };
 
