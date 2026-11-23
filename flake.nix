@@ -84,9 +84,6 @@
         allowUnfreePredicate =
           pkg:
           builtins.elem (lib.getName pkg) [
-            "cmp-calc"
-            "cmp-emoji"
-            "cmp-fuzzy-path"
           ];
       };
 

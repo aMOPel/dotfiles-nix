@@ -64,7 +64,7 @@ local setup_lsps = function()
 
   local function setup_server(server_name, server_config)
     local config = {
-      capabilities = require("cmp_nvim_lsp").default_capabilities(),
+      capabilities = require("blink.cmp").get_lsp_capabilities(),
       on_attach = function() end,
     }
 

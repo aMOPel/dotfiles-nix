@@ -67,8 +67,6 @@ let
 in
 {
   plugins = with pkgs.vimPlugins; [
-    # common
-
     # mono repos
     snacks-nvim
     mini-nvim
@@ -79,26 +77,10 @@ in
     vim-shot-f
     vim-ipmotion
 
-    vim-vsnip
-    vim-vsnip-integ
     friendly-snippets
-    # vscode-angular-snippets
 
-    # TODO: blink.nvim
-    nvim-cmp
-    lspkind-nvim
-    cmp-vsnip
-    cmp-calc
-    cmp-emoji
-    cmp-buffer
-    cmp-nvim-lua
-    cmp-rg
-    cmp-cmdline
-    cmp-git
-    cmp-dap
-    cmp-fuzzy-path
-    cmp-nvim-lsp
-    cmp-vimtex
+    blink-cmp
+    blink-ripgrep-nvim
 
     # visuals
     # TODO: look at https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-statusline.md
