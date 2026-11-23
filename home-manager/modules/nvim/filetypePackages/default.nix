@@ -267,7 +267,7 @@ let
         # nodePackages.alex
         markdownlint-cli
       ];
-      extraTools = [ python312Packages.grip ];
+      extraTools = [ python314Packages.grip ];
       ftplugins = with vimPlugins; [
         vim-grip
       ];
@@ -296,12 +296,12 @@ let
         python
         requirements
       ];
-      lsps = [ python312Packages.python-lsp-server ];
+      lsps = [ python314Packages.python-lsp-server ];
       # TODO:
       # linters = [
       #   pylint
-      #   python312Packages.pydocstyle
-      #   python312Packages.pycodestyle
+      #   python314Packages.pydocstyle
+      #   python314Packages.pycodestyle
       # ];
       # TODO:
       # ftplugins = with vimPlugins; [
