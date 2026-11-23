@@ -16,7 +16,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.keymap.set(
       { "n" },
       "s",
-      [[:<c-u>cdo s/// | update<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>]],
+      [[:<c-u>cdo s// | update<Left><Left><Left><Left><Left><Left><Left><Left><Left>]],
       { buffer = true, desc = "quick search and replace in quickfix" }
     )
   end,
