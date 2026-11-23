@@ -209,7 +209,7 @@ let
             vim.g.go_code_completion_enabled = 0
           '';
         }
-        nvim-dap-go
+        # nvim-dap-go
       ];
     };
 
@@ -465,8 +465,8 @@ let
     nvim-treesitter-textobjects
 
     # debug
-    nvim-dap
-    nvim-dap-ui
+    # nvim-dap
+    # nvim-dap-ui
   ];
 
   # if list is empty, use all filetypes
