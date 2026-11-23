@@ -1,10 +1,20 @@
 local setup_lsps = function()
+  local Snacks = require("snacks")
   -- Global mappings.
   -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-  vim.keymap.set("n", "<space>ld", vim.diagnostic.open_float, { desc = " lsp diagnostics open float" })
-  vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "lsp prev diagnostic" })
-  vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "lsp next diagnostic" })
-  vim.keymap.set("n", "<space>lq", vim.diagnostic.setloclist, { desc = "lsp diagnostics location list" })
+  vim.keymap.set("n", "<leader>ls", Snacks.picker.lsp_symbols, { desc = "lsp symbols" })
+  vim.keymap.set("n", "<leader>lS", Snacks.picker.lsp_workspace_symbols, { desc = "lsp symbols workspace" })
+  vim.keymap.set("n", "<leader>ld", Snacks.picker.diagnostics, { desc = "lsp diagnostics project" })
+  vim.keymap.set("n", "[d", function()
+    vim.diagnostic.jump({ count = -1, float = true })
+  end, { desc = "lsp prev diagnostic" })
+  vim.keymap.set("n", "]d", function()
+    vim.diagnostic.jump({ count = -1, float = true })
+  end, { desc = "lsp next diagnostic" })
+  vim.keymap.set("n", "<leader>lq", Snacks.picker.diagnostics_buffer, { desc = "lsp diagnostics buffer" })
+  vim.keymap.set("n", "<leader>li", function()
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+  end, { desc = "lsp diagnostics buffer" })
 
   -- Use LspAttach autocommand to only map the following keys
   -- after the language server attaches to the current buffer
@@ -13,30 +23,35 @@ local setup_lsps = function()
     callback = function(ev)
       -- Buffer local mappings.
       -- See `:help vim.lsp.*` for documentation on any of the below functions
-      vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = ev.buf, desc = "lsp declaration" })
-      vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = ev.buf, desc = "lsp definition" })
+      vim.keymap.set("n", "gD", Snacks.picker.lsp_declarations, { buffer = ev.buf, desc = "lsp declaration" })
+      vim.keymap.set("n", "gy", Snacks.picker.lsp_type_definitions, { buffer = ev.buf, desc = "lsp type definition" })
+      vim.keymap.set("n", "gI", Snacks.picker.lsp_incoming_calls, { buffer = ev.buf, desc = "lsp incoming calls" })
+      vim.keymap.set("n", "gO", Snacks.picker.lsp_outgoing_calls, { buffer = ev.buf, desc = "lsp outgoing calls" })
+      vim.keymap.set("n", "gd", Snacks.picker.lsp_definitions, { buffer = ev.buf, desc = "lsp definition" })
       vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = ev.buf, desc = "lsp hover" })
-      vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = ev.buf, desc = "lsp implementation" })
-      vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = ev.buf, desc = "lsp references" })
+      vim.keymap.set("n", "gi", Snacks.picker.lsp_implementations, { buffer = ev.buf, desc = "lsp implementation" })
+      vim.keymap.set("n", "gr", Snacks.picker.lsp_references, { buffer = ev.buf, desc = "lsp references" })
       vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, { buffer = ev.buf, desc = "lsp signature_help" })
+      vim.keymap.set("n", "gl", vim.lsp.codelens.run, { buffer = ev.buf, desc = "lsp code lens" })
+
       vim.keymap.set(
         "n",
-        "<space>wa",
+        "<leader>wa",
         vim.lsp.buf.add_workspace_folder,
         { buffer = ev.buf, desc = "lsp add workspace folder" }
       )
       vim.keymap.set(
         "n",
-        "<space>wr",
+        "<leader>wr",
         vim.lsp.buf.remove_workspace_folder,
         { buffer = ev.buf, desc = "lsp remove workspace folder" }
       )
-      vim.keymap.set("n", "<space>wl", function()
+      vim.keymap.set("n", "<leader>wl", function()
         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
       end, { buffer = ev.buf, desc = "lsp list workspace folders" })
-      vim.keymap.set("n", "<space>lr", vim.lsp.buf.rename, { buffer = ev.buf, desc = "lsp rename" })
-      vim.keymap.set({ "n", "v" }, "<space>la", vim.lsp.buf.code_action, { buffer = ev.buf, desc = "lsp code action" })
-      vim.keymap.set("n", "<space>lf", function()
+      vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, { buffer = ev.buf, desc = "lsp rename" })
+      vim.keymap.set({ "n", "v" }, "<leader>la", vim.lsp.buf.code_action, { buffer = ev.buf, desc = "lsp code action" })
+      vim.keymap.set("n", "<leader>lf", function()
         vim.lsp.buf.format({ async = true })
       end, { buffer = ev.buf, desc = "lsp format buffer" })
     end,
@@ -45,7 +60,6 @@ local setup_lsps = function()
   -------------------------------------------------------------------
   -- setup servers
 
-  -- Servers managed by Mason
   local servers = g.lsp.servers.lsp_installer
 
   local function setup_server(server_name, server_config)
