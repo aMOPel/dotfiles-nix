@@ -107,12 +107,13 @@ in
     onedark-nvim
 
     # text manipulation
-    # TODO: get a dial.nvim alternative
     sideways-vim
     vim-subversive
     vim-yoink
     vim-abolish
     camelcasemotion
+    # TODO: get a dial.nvim alternative
+    dial-nvim
 
     # situational
     yazi-nvim
