@@ -1,24 +1,38 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
+let
+  name = "steam";
+  cfg = config.myModules.${name};
+in
 {
-  programs.steam = {
-    enable = true;
-    # remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    # dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    # localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+  options.myModules.${name} = {
+    enable = lib.mkEnableOption name;
   };
 
-  hardware = {
-    graphics = {
+  config = lib.mkIf cfg.enable {
+    nixpkgs.config.allowUnfreePackages = [
+      "steam"
+      "steam-unwrapped"
+    ];
+
+    programs.steam = {
       enable = true;
-      enable32Bit = true;
+      # remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+      # dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+      # localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
     };
-    intel-gpu-tools.enable = true;
-  };
 
-  services.xserver.videoDrivers = [ "intel" ];
+    hardware = {
+      graphics = {
+        enable = true;
+        enable32Bit = true;
+      };
+      intel-gpu-tools.enable = true;
+    };
+
+    services.xserver.videoDrivers = [ "intel" ];
+  };
 }

@@ -14,6 +14,7 @@
   myModules.yubikey-support.enable = true;
   myModules.yubikey-disc-encryption.enable = true;
   myModules.home-manager.enable = true;
+  myModules.steam.enable = false;
 
   services.gnome.gnome-keyring.enable = lib.mkForce false;
 
