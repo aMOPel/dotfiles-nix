@@ -115,12 +115,6 @@ table.insert(plugins, {
     cmp.setup.cmdline(":", {
       mapping = cmp.mapping.preset.cmdline(),
       sources = cmp.config.sources({
-        {
-          name = "fuzzy_path",
-          max_item_count = 20,
-          option = { fd_timeout_msec = 1500 },
-        },
-      }, {
         { name = "cmdline", max_item_count = 30 },
       }),
     })

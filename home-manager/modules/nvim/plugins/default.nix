@@ -68,31 +68,6 @@ in
 {
   plugins = with pkgs.vimPlugins; [
     # common
-    {
-      type = "lua";
-      plugin = plenary-nvim;
-      optional = true;
-    }
-    {
-      type = "lua";
-      plugin = fzf-wrapper;
-      optional = true;
-    }
-    {
-      type = "lua";
-      plugin = fzf-vim;
-      optional = true;
-    }
-    {
-      type = "lua";
-      plugin = fuzzy-nvim;
-      optional = true;
-    }
-    {
-      type = "lua";
-      plugin = nui-nvim;
-      optional = true;
-    }
 
     # mono repos
     snacks-nvim
@@ -103,14 +78,13 @@ in
     vim-cutlass
     vim-shot-f
     vim-ipmotion
-    vim-repeat
-    vim-dotenv
 
     vim-vsnip
     vim-vsnip-integ
     friendly-snippets
     # vscode-angular-snippets
 
+    # TODO: blink.nvim
     nvim-cmp
     lspkind-nvim
     cmp-vsnip
@@ -127,12 +101,13 @@ in
     cmp-vimtex
 
     # visuals
-    # look at https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-icons.md
-    # look at https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-statusline.md
+    # TODO: look at https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-statusline.md
+    # TODO: snacks-notify
     lualine-nvim
     onedark-nvim
 
     # text manipulation
+    # TODO: get a dial.nvim alternative
     sideways-vim
     vim-subversive
     vim-yoink
@@ -143,12 +118,13 @@ in
     yazi-nvim
     # add https://github.com/folke/snacks.nvim/blob/main/docs/lazygit.md
     todo-comments-nvim
-    nvim-bqf
     qf-nvim
 
     # giveitashot
     # add https://github.com/folke/snacks.nvim/blob/main/docs/bigfile.md
     # add https://github.com/folke/snacks.nvim/blob/main/docs/scratch.md
+    # TODO: look at minimax distro https://github.com/nvim-mini/MiniMax
+    # TODO: look at lazyvim distro https://github.com/LazyVim/LazyVim
   ];
 
   extraConfig =

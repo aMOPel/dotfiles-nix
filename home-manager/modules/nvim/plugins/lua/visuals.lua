@@ -125,11 +125,8 @@ table.insert(plugins, {
       },
       extensions = {
         "quickfix",
-        "fugitive",
         "man",
         "nvim-dap-ui",
-        "mundo",
-        "toggleterm",
         "trouble",
       },
     })

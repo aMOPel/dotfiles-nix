@@ -1,36 +1,6 @@
 plugins = g.plugins
 
 table.insert(plugins, {
-  name = "vim-fugitive",
-  setup = function()
-    vim.keymap.set("n", "<leader>gg", "<cmd>-tabnew<cr><cmd>Git ++curwin<CR>", { desc = "open fugitive status" })
-    vim.keymap.set("n", "<leader>gl", "<cmd>-tabnew<cr><cmd>Gclog <CR>", { desc = "open fugitive log" })
-    vim.keymap.set("n", "<leader>gd", "<cmd>-tabnew %<cr><cmd>Gdiffsplit! <cr>", { desc = "open fugitive diff split" })
-    vim.keymap.set(
-      "n",
-      "<leader>go",
-      "<cmd>Gedit :(top)%",
-      { desc = "open current file (which is somewhere in git history) in worktree" }
-    )
-
-    vim.api.nvim_create_autocmd({ "FileType" }, {
-      group = "MyAutoCmd",
-      pattern = { "fugitive" },
-      callback = function(ev)
-        vim.keymap.set("n", "dt", [["zyiw:<c-u>Git difftool -y <c-r>z^...<c-r>z<cr>]], {
-          desc = "open tab for every file that changed in the commit under the cursor",
-          buffer = true,
-          silent = true,
-          noremap = true,
-        })
-      end,
-      desc = "set keymaps in fugitive window",
-    })
-  end,
-  config = function() end,
-})
-
-table.insert(plugins, {
   name = "yazi.nvim",
   setup = function()
     vim.keymap.set({ "n", "v" }, "-", "<cmd>Yazi<cr>", { desc = "Open yazi at the current file" })

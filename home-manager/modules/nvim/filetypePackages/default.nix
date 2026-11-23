@@ -456,6 +456,7 @@ let
     nvim-lspconfig
     SchemaStore-nvim
     nvim-lint
+    # TODO: remove formatter, because treefmt makes it obsolete
     formatter-nvim
 
     # treesitter
