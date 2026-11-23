@@ -59,10 +59,6 @@ vim.keymap.set(
 
 vim.keymap.set({ "x" }, "<leader>sg", [[:s//g<Left><Left>]], { desc = "Quick substitute within selected area" })
 
-vim.keymap.set({ "n" }, "<c-e>", [[:e ./<c-n>]], { desc = "quick file search" })
-
-vim.keymap.set({ "n" }, "<c-q>", [[:b <c-n>]], { desc = "quick buffer search" })
-
 vim.keymap.set({ "t" }, "<f11>", [[<c-\><c-n>]], { desc = "<esc> in terminal mode" })
 
 -- undopoints in insert mode

@@ -85,11 +85,6 @@ in
     }
     {
       type = "lua";
-      plugin = telescope-fzf-native-nvim;
-      optional = true;
-    }
-    {
-      type = "lua";
       plugin = fuzzy-nvim;
       optional = true;
     }
@@ -144,19 +139,10 @@ in
     vim-abolish
     camelcasemotion
 
-    # repalce telescope https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-pick.md
-    # https://github.com/nvim-mini/mini.nvim/blob/main/readmes/mini-extra.md
-    # or with https://github.com/folke/snacks.nvim/blob/main/docs/picker.md
-
     # situational
-    # replace with https://github.com/folke/snacks.nvim/blob/main/docs/terminal.md
-    toggleterm-nvim
-    vim-grepper
     yazi-nvim
     # add https://github.com/folke/snacks.nvim/blob/main/docs/lazygit.md
     todo-comments-nvim
-    # TODO:
-    # undotree
     nvim-bqf
     qf-nvim
 

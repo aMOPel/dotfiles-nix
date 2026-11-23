@@ -1,108 +1,6 @@
 plugins = g.plugins
 
 table.insert(plugins, {
-  name = "toggleterm.nvim",
-  setup = function() end,
-  config = function()
-    local function rh(height)
-      return math.floor(height * vim.o.lines)
-    end
-    local function rw(width)
-      return math.floor(width * vim.o.columns)
-    end
-
-    require("toggleterm").setup({
-      open_mapping = [[<leader>ff]],
-      insert_mappings = false,
-      terminal_mappings = false,
-      shell = "$SHELL",
-      direction = "float",
-      float_opts = {
-        width = rw(0.9),
-        height = rh(0.9),
-      },
-      on_open = function(term)
-        vim.cmd("startinsert!")
-      end,
-    })
-
-    vim.keymap.set("n", "<leader>fs", "<cmd>TermSelect<cr>", {
-      desc = "select terminal",
-    })
-
-    -- TERMIAL WINDOW KEYMAPS
-    function set_terminal_keymaps()
-      local opts = { buffer = 0 }
-      vim.keymap.set("t", "<f11>", [[<C-\><C-n>]], opts)
-      vim.keymap.set("t", "<C-w>", [[<C-\><C-n><C-w>]], opts)
-    end
-
-    vim.api.nvim_create_autocmd({ "TermOpen" }, {
-      group = "MyAutoCmd",
-      pattern = { "term://*toggleterm#*" },
-      callback = function(ev)
-        set_terminal_keymaps()
-      end,
-      desc = "set window keymaps in toggle term",
-    })
-
-    function setup_tui(cmd, lhs)
-      local Terminal = require("toggleterm.terminal").Terminal
-      local tui = Terminal:new({
-        cmd = cmd,
-        hidden = true,
-        direction = "float",
-        float_opts = {
-          width = rw(1.0),
-          height = rh(1.0),
-        },
-      })
-      vim.keymap.set("n", lhs, function()
-        tui:toggle()
-      end, {
-        noremap = true,
-        silent = true,
-        desc = "toggle " .. cmd .. " floating terminal",
-      })
-    end
-
-    -- TUIs
-    setup_tui("lazygit", "<leader>fg")
-    setup_tui("taskwarrior-tui", "<leader>ft")
-  end,
-})
-
-table.insert(plugins, {
-  name = "vim-grepper",
-  setup = function()
-    vim.keymap.set("n", "<c-f>", "<cmd>Grepper -tool rg<CR>", { desc = "ripgrep" })
-
-    vim.cmd([[
-aug Grepper
-  au!
-  au User Grepper ++nested call setqflist([], 'r', {'context': {'bqf': {'pattern_hl': '\%#' . getreg('/')}}})
-aug END
-]])
-
-    vim.g.grepper = {
-      open = 1,
-      prompt_quote = 1,
-      simple_prompt = 1,
-      switch = 1,
-      quickfix = 1,
-      searchreg = 1,
-      highlight = 1,
-      dir = "cwd",
-      tools = { "rg" },
-      rg = {
-        grepprg = "rg -H --no-heading --vimgrep --smart-case --follow --",
-      },
-    }
-  end,
-  config = function() end,
-})
-
-table.insert(plugins, {
   name = "vim-fugitive",
   setup = function()
     vim.keymap.set("n", "<leader>gg", "<cmd>-tabnew<cr><cmd>Git ++curwin<CR>", { desc = "open fugitive status" })
@@ -133,7 +31,7 @@ table.insert(plugins, {
 })
 
 table.insert(plugins, {
-  name = "yazi.nvivm",
+  name = "yazi.nvim",
   setup = function()
     vim.keymap.set({ "n", "v" }, "-", "<cmd>Yazi<cr>", { desc = "Open yazi at the current file" })
     vim.keymap.set({ "n", "v" }, "+", "<cmd>Yazi toggle<cr>", { desc = "Resume the last yazi session" })
