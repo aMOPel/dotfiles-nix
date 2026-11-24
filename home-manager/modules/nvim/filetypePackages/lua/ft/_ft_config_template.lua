@@ -13,24 +13,12 @@ utils.addTable(g.treesitter.indent.disable, {
   ft,
 })
 
-utils.addTable(g.formatter.filetype, {
-  [ft] = { require("formatter.filetypes")[ft].prettierd },
-})
-
-utils.addTable(g.formatter.on_save, {
-  "*." .. ft,
-})
-
 utils.addTable(g.linter.filetype, {
   "",
 })
 
 utils.addTable(g.linter.custom_linter, {
   customName = {},
-})
-
-utils.addTable(g.dap.filetype, {
-  [ft] = { "" },
 })
 
 local configs = {}

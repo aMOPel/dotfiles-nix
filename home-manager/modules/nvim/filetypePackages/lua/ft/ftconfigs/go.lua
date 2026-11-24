@@ -11,16 +11,3 @@ utils.addTable(g.lsp.servers.lsp_installer, {
 utils.addTable(g.linter.filetype, {
   [ft] = { "golangcilint" },
 })
-
-local configs = {}
-
-configs[ft] = function()
-  local optl = vim.opt_local
-  require("dap-go").setup()
-end
-
-vim.api.nvim_create_autocmd({ "Filetype" }, {
-  group = "MyFt",
-  pattern = { ft },
-  callback = configs[ft],
-})
