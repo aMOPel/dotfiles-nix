@@ -257,16 +257,6 @@ let
       ];
     };
 
-    nim = {
-      tsParsers = with vimPlugins.nvim-treesitter-parsers; [
-        nim
-        nim_format_string
-      ];
-      lsps = [ nimlangserver ];
-      # TODO:
-      # ftplugins = with vimPlugins; [ nim.nvim];
-    };
-
     nix = {
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [ nix ];
       lsps = [ nixd ];

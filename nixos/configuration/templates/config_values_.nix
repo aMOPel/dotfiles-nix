@@ -83,7 +83,6 @@ rec {
         "json"
         "lua"
         "markdown"
-        # "nim"
         "nix"
         "python"
         "rust"
