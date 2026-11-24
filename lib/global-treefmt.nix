@@ -14,6 +14,7 @@ let
     projectRootFile = ".git/config";
     programs = {
       air = enable;
+      buf = enable;
       deno = enable;
       clang-format = enable;
       nixfmt = enable;
@@ -80,6 +81,7 @@ let
       gdformat.includes = [ "*.gd" ];
       gofumpt.includes = [ "*.go" ];
       stylua.includes = [ "*.lua" ];
+      buf.includes = [ "*.proto" ];
       black.includes = [
         "*.py"
         "*.py"

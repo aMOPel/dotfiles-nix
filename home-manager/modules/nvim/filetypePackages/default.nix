@@ -265,6 +265,13 @@ let
       ];
     };
 
+    proto = {
+      tsParser = with vimPlugins.nvim-treesitter-parsers; [
+        proto
+      ];
+      lsps = [ buf ];
+    };
+
     python = {
       tsParsers = with vimPlugins.nvim-treesitter-parsers; [
         python

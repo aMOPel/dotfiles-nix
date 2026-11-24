@@ -84,6 +84,7 @@ rec {
         "lua"
         "markdown"
         "nix"
+        # "proto"
         "python"
         "rust"
         "sh"
